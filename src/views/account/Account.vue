@@ -7,21 +7,19 @@
                     >My Account</v-card-title
                 >
 
-                <v-list-item three-line class="mb-5">
+                <v-list-item two-line class="mb-5">
                     <v-list-item-avatar>
                         <v-img
                             src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
                         ></v-img>
                     </v-list-item-avatar>
                     <v-list-item-content>
-                        <v-list-item-title class="title"
+                        <v-list-item-title
+                            class="title font-weight-bold secondary--text"
                             >bastilavar21</v-list-item-title
                         >
-                        <v-list-item-subtitle class="grey--text"
-                            >Sebastian Curtis Lavarias</v-list-item-subtitle
-                        >
                         <v-list-item-subtitle
-                            class="font-weight-bold grey--text"
+                            class="font-weight-bold primary--text"
                             >sebastiancurtislavarias@gmail.com</v-list-item-subtitle
                         >
                     </v-list-item-content>
