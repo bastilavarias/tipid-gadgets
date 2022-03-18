@@ -106,7 +106,7 @@
         <v-col cols="12" md="3">
             <v-card outlined>
                 <v-list dense>
-                    <v-subheader>Posting Rules & Tips</v-subheader>
+                    <v-subheader>Posting an Item Rules & Tips</v-subheader>
                     <template v-for="n in 10">
                         <v-list-item :key="n">
                             {{ n }}. Lorem ipsum dolor.
