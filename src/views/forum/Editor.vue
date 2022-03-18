@@ -10,9 +10,7 @@
                 <v-card-text>
                     <v-row dense>
                         <v-col cols="12">
-                            <div class="subtitle-1 grey--text mb-1">
-                                Section
-                            </div>
+                            <div class="caption grey--text mb-1">Section</div>
                             <v-select
                                 outlined
                                 placeholder="Choose"
@@ -22,9 +20,7 @@
                         </v-col>
 
                         <v-col cols="12">
-                            <div class="subtitle-1 grey--text mb-1">
-                                Subject
-                            </div>
+                            <div class="caption grey--text mb-1">Subject</div>
                             <v-text-field
                                 outlined
                                 placeholder="Name"
@@ -34,7 +30,7 @@
                         </v-col>
 
                         <v-col cols="12" class="mb-5">
-                            <div class="subtitle-1 grey--text mb-1">
+                            <div class="caption grey--text mb-1">
                                 Description
                             </div>
                             <base-text-editor></base-text-editor>

@@ -10,9 +10,7 @@
                 <v-card-text>
                     <v-row dense>
                         <v-col cols="12">
-                            <div class="subtitle-1 grey--text mb-1">
-                                Section
-                            </div>
+                            <div class="caption grey--text mb-1">Section</div>
                             <v-select
                                 outlined
                                 placeholder="Choose"
@@ -22,9 +20,7 @@
                         </v-col>
 
                         <v-col cols="12">
-                            <div class="subtitle-1 grey--text mb-1">
-                                Item Name
-                            </div>
+                            <div class="caption grey--text mb-1">Item Name</div>
                             <v-text-field
                                 outlined
                                 placeholder="Name"
@@ -34,9 +30,7 @@
                         </v-col>
 
                         <v-col cols="12">
-                            <div class="subtitle-1 grey--text mb-1">
-                                Category
-                            </div>
+                            <div class="caption grey--text mb-1">Category</div>
                             <v-select
                                 outlined
                                 placeholder="Choose"
@@ -46,7 +40,7 @@
                         </v-col>
 
                         <v-col cols="12">
-                            <div class="subtitle-1 grey--text mb-1">
+                            <div class="caption grey--text mb-1">
                                 Price or Budget
                             </div>
                             <v-text-field
@@ -60,9 +54,7 @@
                         </v-col>
 
                         <v-col cols="12">
-                            <div class="subtitle-1 grey--text mb-1">
-                                Condition
-                            </div>
+                            <div class="caption grey--text mb-1">Condition</div>
                             <v-select
                                 outlined
                                 placeholder="Choose"
@@ -72,9 +64,7 @@
                         </v-col>
 
                         <v-col cols="12">
-                            <div class="subtitle-1 grey--text mb-1">
-                                Warranty
-                            </div>
+                            <div class="caption grey--text mb-1">Warranty</div>
                             <v-select
                                 outlined
                                 placeholder="Choose"
@@ -84,7 +74,7 @@
                         </v-col>
 
                         <v-col cols="12" class="mb-5">
-                            <div class="subtitle-1 grey--text mb-1">
+                            <div class="caption grey--text mb-1">
                                 Description
                             </div>
                             <base-text-editor></base-text-editor>

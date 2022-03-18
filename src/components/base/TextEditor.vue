@@ -9,16 +9,14 @@
 </template>
 
 <script>
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@/assets/builds/ck-editor';
 
 export default {
     data() {
         return {
             editor: ClassicEditor,
             editorData: null,
-            editorConfig: {
-                removePlugins: ['Heading'],
-            },
+            editorConfig: {},
         };
     },
 };

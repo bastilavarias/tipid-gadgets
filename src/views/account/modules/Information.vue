@@ -8,7 +8,7 @@
                 <v-col cols="12">
                     <v-row dense>
                         <v-col cols="12">
-                            <div class="subtitle-1 grey--text mb-1">Name</div>
+                            <div class="caption grey--text mb-1">Name</div>
                             <v-text-field
                                 outlined
                                 placeholder="Name"
@@ -17,9 +17,7 @@
                             ></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <div class="subtitle-1 grey--text mb-1">
-                                Location
-                            </div>
+                            <div class="caption grey--text mb-1">Location</div>
                             <v-autocomplete
                                 outlined
                                 placeholder="Location"
@@ -48,7 +46,7 @@
                 <v-col cols="12">
                     <v-row dense>
                         <v-col cols="12">
-                            <div class="subtitle-1 grey--text mb-1">
+                            <div class="caption grey--text mb-1">
                                 Current Password
                             </div>
                             <v-text-field
@@ -61,7 +59,7 @@
                         </v-col>
 
                         <v-col cols="12">
-                            <div class="subtitle-1 grey--text mb-1">
+                            <div class="caption grey--text mb-1">
                                 New Password
                             </div>
                             <v-text-field
@@ -74,7 +72,7 @@
                         </v-col>
 
                         <v-col cols="12">
-                            <div class="subtitle-1 grey--text mb-1">
+                            <div class="caption grey--text mb-1">
                                 Confirm Password
                             </div>
                             <v-text-field
