@@ -15,6 +15,18 @@ const routes = [
             },
 
             {
+                path: 'view-item',
+                name: 'view-item',
+                component: () => import('@/views/item/View'),
+            },
+
+            {
+                path: 'item-editor/:operation',
+                name: 'item-editor',
+                component: () => import('@/views/item/Editor'),
+            },
+
+            {
                 path: 'item-editor/:operation',
                 name: 'item-editor',
                 component: () => import('@/views/item/Editor'),

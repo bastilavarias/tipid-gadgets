@@ -2,8 +2,14 @@
     <v-card flat :color="isEven(index) ? '#EEEEEE' : 'white'">
         <v-list-item two-line>
             <v-list-item-content>
-                <v-list-item-title class="primary--text font-weight-bold">
-                    Lenovo ideapad L3 15.6inch i3-10110u Ram 8gb Hdd 1TB
+                <v-list-item-title>
+                    <router-link
+                        class="primary--text font-weight-bold"
+                        :to="{ name: 'view-item' }"
+                        style="text-decoration: none"
+                        >Lenovo ideapad L3 15.6inch i3-10110u Ram 8gb Hdd
+                        1TB</router-link
+                    >
                 </v-list-item-title>
 
                 <v-list-item-subtitle>
