@@ -3,7 +3,7 @@
         <v-icon small class="mr-1"
             >mdi-{{ isPositive ? 'plus' : 'minus' }}</v-icon
         >
-        <span class="font-weight-bold">{{
+        <span class="font-weight-bold overline">{{
             isPositive ? 'Positive' : 'Negative'
         }}</span>
     </v-chip>
