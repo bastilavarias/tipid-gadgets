@@ -55,12 +55,12 @@
 </template>
 
 <script>
-import MainLayoutMainNavigation from '@/components/main-layout/MainNavigation';
-import MainLayoutUserNavigation from '@/components/main-layout/UserNavigation';
-import MainLayoutFollowingCard from '@/components/main-layout/FollowingCard';
-import MainLayoutSearchCard from '@/components/main-layout/SearchCard';
-import MainLayoutCatalogBrowserCard from '@/components/main-layout/CatalogBrowserCard';
-import MainLayoutUpdatedForumCard from '@/components/main-layout/UpdatedForumCard';
+import MainLayoutMainNavigation from '@/components/parts/main-layout/MainNavigation';
+import MainLayoutUserNavigation from '@/components/parts/main-layout/UserNavigation';
+import MainLayoutFollowingCard from '@/components/parts/main-layout/FollowingCard';
+import MainLayoutSearchCard from '@/components/parts/main-layout/SearchCard';
+import MainLayoutCatalogBrowserCard from '@/components/parts/main-layout/CatalogBrowserCard';
+import MainLayoutUpdatedForumCard from '@/components/parts/main-layout/UpdatedForumCard';
 export default {
     name: 'main-layout',
 
