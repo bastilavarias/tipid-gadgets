@@ -41,6 +41,14 @@
                                     <v-col cols="12">
                                         <main-layout-updated-forum-card></main-layout-updated-forum-card>
                                     </v-col>
+
+                                    <v-col cols="12">
+                                        <main-layout-new-item-sale-card></main-layout-new-item-sale-card>
+                                    </v-col>
+
+                                    <v-col cols="12">
+                                        <main-layout-new-item-buy-card></main-layout-new-item-buy-card>
+                                    </v-col>
                                 </v-row>
                             </v-col>
                             <v-col cols="12" md="9">
@@ -61,10 +69,14 @@ import MainLayoutFollowingCard from '@/components/parts/main-layout/FollowingCar
 import MainLayoutSearchCard from '@/components/parts/main-layout/SearchCard';
 import MainLayoutCatalogBrowserCard from '@/components/parts/main-layout/CatalogBrowserCard';
 import MainLayoutUpdatedForumCard from '@/components/parts/main-layout/UpdatedForumCard';
+import MainLayoutNewItemSaleCard from '@/components/parts/main-layout/NewItemSaleCard';
+import MainLayoutNewItemBuyCard from '@/components/parts/main-layout/NewItemcBuyCard';
 export default {
     name: 'main-layout',
 
     components: {
+        MainLayoutNewItemBuyCard,
+        MainLayoutNewItemSaleCard,
         MainLayoutUpdatedForumCard,
         MainLayoutCatalogBrowserCard,
         MainLayoutSearchCard,
