@@ -1,27 +1,40 @@
 <template>
     <v-row>
         <v-col cols="12">
-            <v-col cols="12">
-                <h1 class="title secondary--text font-weight-bold">
-                    New Items for Sale
-                </h1>
-            </v-col>
+            <v-card flat>
+                <v-card-title
+                    class="secondary--text font-weight-bold align-center"
+                    >New Items for Sale</v-card-title
+                >
 
-            <template v-for="index in 15">
-                <item-preview :index="index" :key="index"></item-preview>
-            </template>
+                <v-card-text>
+                    <v-row dense>
+                        <template v-for="index in 15">
+                            <v-col cols="12" :key="index">
+                                <item-preview :index="index"></item-preview>
+                            </v-col>
+                        </template>
+                    </v-row>
+                </v-card-text>
+            </v-card>
         </v-col>
 
         <v-col cols="12">
-            <v-col cols="12">
-                <h1 class="title secondary--text font-weight-bold">
-                    New Want to Buys
-                </h1>
-            </v-col>
+            <v-card flat>
+                <v-card-title class="secondary--text font-weight-bold"
+                    >New Want to Buys</v-card-title
+                >
 
-            <template v-for="index in 15">
-                <item-preview :index="index" :key="index"></item-preview>
-            </template>
+                <v-card-text>
+                    <v-row dense>
+                        <template v-for="index in 15">
+                            <v-col cols="12" :key="index">
+                                <item-preview :index="index"></item-preview>
+                            </v-col>
+                        </template>
+                    </v-row>
+                </v-card-text>
+            </v-card>
         </v-col>
     </v-row>
 </template>
