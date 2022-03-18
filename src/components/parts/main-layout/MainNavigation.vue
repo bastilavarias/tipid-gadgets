@@ -8,7 +8,13 @@
         </v-col>
 
         <v-col cols="12">
-            <v-btn large block depressed color="primary" class="text-capitalize"
+            <v-btn
+                large
+                block
+                depressed
+                color="primary"
+                class="text-capitalize"
+                :to="{ name: 'item-editor', params: { operation: 'create' } }"
                 >Post <span class="text-lowercase mx-1">an</span> Item</v-btn
             >
         </v-col>

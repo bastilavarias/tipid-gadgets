@@ -13,6 +13,12 @@ const routes = [
                 name: 'home',
                 component: () => import('@/views/Home'),
             },
+
+            {
+                path: 'item-editor/:operation',
+                name: 'item-editor',
+                component: () => import('@/views/ItemEditor'),
+            },
         ],
     },
 ];
