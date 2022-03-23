@@ -38,6 +38,18 @@
                 >Post <span class="text-lowercase mx-1">an</span> Item</v-btn
             >
         </v-col>
+
+        <v-col cols="12">
+            <v-btn
+                large
+                block
+                depressed
+                color="primary"
+                class="text-capitalize"
+                :to="{ name: 'login' }"
+                >Login</v-btn
+            >
+        </v-col>
     </v-row>
 </template>
 

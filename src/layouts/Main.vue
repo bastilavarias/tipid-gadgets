@@ -2,13 +2,31 @@
     <v-app class="c-app">
         <v-app-bar app class="secondary" flat>
             <v-container>
-                <v-toolbar-title>
-                    <v-img
-                        :src="require('@/assets/tipidgadgets_logo.png')"
-                        width="15rem"
-                        height="auto"
-                    ></v-img>
-                </v-toolbar-title>
+                <div class="d-flex justify-space-between align-center">
+                    <v-toolbar-title>
+                        <v-img
+                            :src="require('@/assets/tipidgadgets_logo.png')"
+                            width="15rem"
+                            height="auto"
+                        ></v-img>
+                    </v-toolbar-title>
+
+                    <v-menu offset-y>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn text dark v-bind="attrs" v-on="on">
+                                <v-avatar class="mr-1" size="25">
+                                    <v-img
+                                        src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
+                                    ></v-img>
+                                </v-avatar>
+                                <v-icon>mdi-menu-down</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-list>
+                            <v-list-item>Logout</v-list-item>
+                        </v-list>
+                    </v-menu>
+                </div>
             </v-container>
         </v-app-bar>
         <v-main>
