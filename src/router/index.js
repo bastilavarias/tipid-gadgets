@@ -47,6 +47,12 @@ const routes = [
                         name: 'forum/topic-editor',
                         component: () => import('@/views/forum/Editor'),
                     },
+
+                    {
+                        path: 'view-topic',
+                        name: 'view-topic',
+                        component: () => import('@/views/forum/View'),
+                    },
                 ],
             },
 

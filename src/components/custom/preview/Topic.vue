@@ -2,8 +2,14 @@
     <v-card flat :color="isEven(index) ? '#EEEEEE' : 'white'">
         <v-list-item two-line>
             <v-list-item-content>
-                <v-list-item-title class="primary--text font-weight-bold">
-                    Battlefield 2042 (No Trading and Hacking/Cheating)
+                <v-list-item-title>
+                    <router-link
+                        class="primary--text font-weight-bold"
+                        :to="{ name: 'view-topic' }"
+                        style="text-decoration: none"
+                        >Battlefield 2042 (No Trading and
+                        Hacking/Cheating)</router-link
+                    >
                 </v-list-item-title>
 
                 <v-list-item-subtitle>

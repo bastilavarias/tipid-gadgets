@@ -12,6 +12,8 @@
 import ClassicEditor from '@/assets/builds/ck-editor';
 
 export default {
+    name: 'base-text-editor',
+
     data() {
         return {
             editor: ClassicEditor,

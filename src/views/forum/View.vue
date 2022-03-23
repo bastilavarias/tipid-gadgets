@@ -1,34 +1,30 @@
 <template>
-    <v-row>
+    <v-row dense>
         <v-col cols="12">
             <v-card flat>
                 <v-card-title
                     class="secondary--text font-weight-bold align-center"
-                    >Item Details</v-card-title
+                    >Forum Topic</v-card-title
                 >
                 <v-card-subtitle class="primary--text"
-                    >Items for Sale: Laptops/PDAs</v-card-subtitle
+                    >Section: Hardware/Devices</v-card-subtitle
                 >
-                <v-list-item three-line>
+
+                <v-list-item two-line>
                     <v-list-item-content>
                         <v-list-item-title
                             class="primary--text font-weight-bold"
-                            >Lenovo Ideapad Slim3 Core i5 10Gen 1.0 Ghz 512Gb
-                            SSd 2Gb Nvidia mx330</v-list-item-title
+                            >Nvidia Ampere: GeForce RTX3000 Series (No
+                            Trading/No Mentioning of Sellers)</v-list-item-title
                         >
                         <v-list-item-subtitle
-                            class="success--text font-weight-bold"
-                            >PHP 24800.00</v-list-item-subtitle
+                            >Posted by
+                            <span
+                                class="text-decoration-underline primary--text"
+                                >bastilavar21</span
+                            >
+                            3 days ago</v-list-item-subtitle
                         >
-                        <v-list-item-subtitle>
-                            <span class="font-weight-bold success--text"
-                                >Already Used</span
-                            >
-                            <span class="mx-1">with</span>
-                            <span class="font-weight-bold success--text"
-                                >Personal Warranty</span
-                            >
-                        </v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -115,12 +111,11 @@
                                         >bastilavar21</span
                                     >
                                     <v-chip small class="font-weight-bold"
-                                        >Seller</v-chip
+                                        >Author</v-chip
                                     >
                                 </v-list-item-title>
                                 <v-list-item-subtitle
-                                    >on May 14, 2021 01:05
-                                    PM</v-list-item-subtitle
+                                    >Posted 3 days ago</v-list-item-subtitle
                                 >
                                 <v-list-item-subtitle
                                     >Location:
@@ -130,92 +125,97 @@
                                     ></v-list-item-subtitle
                                 >
                             </v-list-item-content>
-                            <v-list-item-action>
-                                <v-tooltip bottom>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            color="primary"
-                                            icon
-                                            v-bind="attrs"
-                                            v-on="on"
-                                        >
-                                            <v-icon>mdi-message-text</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>Inquire</span>
-                                </v-tooltip>
-                            </v-list-item-action>
                         </v-list-item>
 
-                        <v-card-text>
-                            <v-row dense>
-                                <v-col col="12" md="6">
-                                    <div class="d-flex">
-                                        <span class="mr-1">
-                                            <rating-status-chip
-                                                rating="positive"
-                                            ></rating-status-chip>
-                                        </span>
-                                        <span> 100% (678 feedbacks) </span>
-                                    </div>
-                                </v-col>
-                                <v-col cols="12" md="6">
-                                    <div class="d-flex">
-                                        <span class="mr-1">
-                                            <rating-status-chip
-                                                rating="negative"
-                                            ></rating-status-chip>
-                                        </span>
-                                        <span> 0% (0 feedbacks) </span>
-                                    </div>
-                                </v-col>
-                            </v-row>
-                        </v-card-text>
-
                         <v-toolbar flat color="transparent" dense>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        color="primary"
+                                        small
+                                        text
+                                        class="mr-1"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        ><v-icon small>mdi-comment</v-icon
+                                        ><span>(100)</span></v-btn
+                                    >
+                                </template>
+                                <span>Comments</span>
+                            </v-tooltip>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <span v-bind="attrs" v-on="on" class="mr-3"
+                                        ><v-icon small class="mr-1"
+                                            >mdi-eye</v-icon
+                                        ><span
+                                            class="#6A6A6A--text"
+                                            style="color: #6a6a6a"
+                                            >(100)</span
+                                        ></span
+                                    >
+                                </template>
+                                <span>Views</span>
+                            </v-tooltip>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <span v-bind="attrs" v-on="on"
+                                        ><v-icon small class="mr-1"
+                                            >mdi-bookmark</v-icon
+                                        ><span
+                                            class="#6A6A6A--text"
+                                            style="color: #6a6a6a"
+                                            >(100)</span
+                                        ></span
+                                    >
+                                </template>
+                                <span>Bookmarks</span>
+                            </v-tooltip>
                             <v-spacer></v-spacer>
-                            <v-toolbar-items>
-                                <v-tooltip bottom>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            icon
-                                            small
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            ><v-icon small
-                                                >mdi-bookmark</v-icon
-                                            ></v-btn
-                                        >
-                                    </template>
-                                    <span>Bookmark</span>
-                                </v-tooltip>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn icon small v-bind="attrs" v-on="on"
+                                        ><v-icon small
+                                            >mdi-bookmark</v-icon
+                                        ></v-btn
+                                    >
+                                </template>
+                                <span>Bookmark</span>
+                            </v-tooltip>
 
-                                <v-tooltip bottom>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            icon
-                                            small
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            ><v-icon small
-                                                >mdi-alert</v-icon
-                                            ></v-btn
-                                        >
-                                    </template>
-                                    <span>Report to Admin</span>
-                                </v-tooltip>
-                            </v-toolbar-items>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn icon small v-bind="attrs" v-on="on"
+                                        ><v-icon small>mdi-alert</v-icon></v-btn
+                                    >
+                                </template>
+                                <span>Report to Admin</span>
+                            </v-tooltip>
                         </v-toolbar>
                     </v-card>
                 </v-card-text>
             </v-card>
+        </v-col>
+
+        <v-col cols="12">
+            <forum-comment-reply-card></forum-comment-reply-card>
+        </v-col>
+
+        <v-col cols="12">
+            <forum-comment-list-card></forum-comment-list-card>
         </v-col>
     </v-row>
 </template>
 
 <script>
 import RatingStatusChip from '@/components/custom/RatingStatusChip';
+import ForumCommentReplyCard from '@/components/custom/forum/CommentReplyCard';
+import ForumCommentListCard from '@/components/custom/forum/CommentListCard';
 export default {
-    components: { RatingStatusChip },
+    components: {
+        ForumCommentListCard,
+        ForumCommentReplyCard,
+        RatingStatusChip,
+    },
 };
 </script>
