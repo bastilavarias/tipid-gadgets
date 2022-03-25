@@ -21,6 +21,12 @@ const routes = [
             },
 
             {
+                path: 'register',
+                name: 'register',
+                component: () => import('@/views/Register'),
+            },
+
+            {
                 path: 'view-item',
                 name: 'view-item',
                 component: () => import('@/views/item/View'),
@@ -103,6 +109,12 @@ const routes = [
                         ],
                     },
                 ],
+            },
+
+            {
+                path: 'messages',
+                name: 'message',
+                component: () => import('@/views/Message'),
             },
         ],
     },

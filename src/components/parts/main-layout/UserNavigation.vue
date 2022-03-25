@@ -27,10 +27,7 @@ const navigations = [
     },
     {
         text: 'Messages',
-        exact: true,
-    },
-    {
-        text: 'Sign Out',
+        to: { name: 'message' },
         exact: true,
     },
 ];

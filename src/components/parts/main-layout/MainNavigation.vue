@@ -50,6 +50,18 @@
                 >Login</v-btn
             >
         </v-col>
+
+        <v-col cols="12">
+            <v-btn
+                large
+                block
+                depressed
+                color="primary"
+                class="text-capitalize"
+                :to="{ name: 'register' }"
+                >Register</v-btn
+            >
+        </v-col>
     </v-row>
 </template>
 
