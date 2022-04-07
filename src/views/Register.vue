@@ -132,6 +132,7 @@ import { GET_LOCATIONS } from '@/store/types/reference';
 import inputRuleMixin from '@/mixins/inputRule';
 import { REGISTER } from '@/store/types/authentication';
 import utilityMixin from '@/mixins/utility';
+import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 
 const defaultForm = {
     name: null,
@@ -175,16 +176,25 @@ export default {
 
         async register() {
             this.isRegisterStart = true;
-            const { code, data, message } = await this.$store.dispatch(
+            const { code, message } = await this.$store.dispatch(
                 REGISTER,
                 this.form
             );
             if (this.isHTTPRequestSuccess(code)) {
-                console.log(message);
-                this.isRegisterStart = false;
+                this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                    open: true,
+                    message,
+                    color: 'success',
+                });
+                await this.$router.push({ name: 'login' });
                 return;
             }
             this.error = message;
+            this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                open: true,
+                message: 'Something went wrong.',
+                color: 'error',
+            });
             this.isRegisterStart = false;
         },
     },

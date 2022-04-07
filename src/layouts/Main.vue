@@ -29,6 +29,7 @@
                 </div>
             </v-container>
         </v-app-bar>
+
         <v-main>
             <v-container>
                 <v-card color="white" flat>
@@ -77,6 +78,8 @@
                 </v-card>
             </v-container>
         </v-main>
+
+        <system-snackbar></system-snackbar>
     </v-app>
 </template>
 
@@ -89,10 +92,12 @@ import MainLayoutCatalogBrowserCard from '@/components/parts/main-layout/Catalog
 import MainLayoutUpdatedForumCard from '@/components/parts/main-layout/UpdatedForumCard';
 import MainLayoutNewItemSaleCard from '@/components/parts/main-layout/NewItemSaleCard';
 import MainLayoutNewItemBuyCard from '@/components/parts/main-layout/NewItemcBuyCard';
+import SystemSnackbar from '@/components/system/Snackbar';
 export default {
     name: 'main-layout',
 
     components: {
+        SystemSnackbar,
         MainLayoutNewItemBuyCard,
         MainLayoutNewItemSaleCard,
         MainLayoutUpdatedForumCard,

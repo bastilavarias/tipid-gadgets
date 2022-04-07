@@ -6,7 +6,8 @@ const authenticationModule = {
         async [REGISTER](_, payload) {
             try {
                 const response = await apiService.post(
-                    '/authentication/register'
+                    '/authentication/register',
+                    payload
                 );
                 return response.data;
             } catch (error) {
