@@ -39,12 +39,6 @@ const routes = [
             },
 
             {
-                path: 'item-editor/:operation',
-                name: 'item-editor',
-                component: () => import('@/views/item/Editor'),
-            },
-
-            {
                 path: 'forums',
                 component: () => import('@/layouts/Mirror'),
                 children: [
@@ -74,7 +68,6 @@ const routes = [
                 children: [
                     {
                         path: '',
-                        name: 'my-account',
                         component: () => import('@/views/account/Account'),
                         children: [
                             {
@@ -116,12 +109,19 @@ const routes = [
                 name: 'message',
                 component: () => import('@/views/Message'),
             },
+
+            {
+                path: '/oauth/github/callback',
+                name: 'github-callback',
+                component: () => import('@/views/GithubCallback'),
+            },
         ],
     },
 ];
 
 const router = new VueRouter({
     routes,
+    mode: 'history',
 });
 
 export default router;
