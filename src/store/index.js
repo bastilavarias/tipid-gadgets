@@ -1,15 +1,13 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import authenticationModule from '@/store/modules/authentication';
+import referenceModule from '@/store/modules/reference';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
-})
+    modules: {
+        reference: referenceModule,
+        authentication: authenticationModule,
+    },
+});
