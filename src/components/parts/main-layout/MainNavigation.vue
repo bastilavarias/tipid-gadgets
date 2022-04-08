@@ -27,7 +27,7 @@
             >
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="isAuthenticated">
             <v-btn
                 large
                 block
@@ -39,7 +39,7 @@
             >
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="!isAuthenticated">
             <v-btn
                 large
                 block
@@ -51,7 +51,7 @@
             >
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="!isAuthenticated">
             <v-btn
                 large
                 block
@@ -68,5 +68,11 @@
 <script>
 export default {
     name: 'main-layout-main-navigation',
+
+    computed: {
+        isAuthenticated() {
+            return this.$store.state.authentication.isAuthenticated;
+        },
+    },
 };
 </script>

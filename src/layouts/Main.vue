@@ -11,19 +11,23 @@
                         ></v-img>
                     </v-toolbar-title>
 
-                    <v-menu offset-y>
+                    <v-menu offset-y v-if="isAuthenticated">
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn text dark v-bind="attrs" v-on="on">
                                 <v-avatar class="mr-1" size="25">
                                     <v-img
-                                        src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
+                                        :src="
+                                            user.avatar
+                                                ? user.avatar
+                                                : 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png'
+                                        "
                                     ></v-img>
                                 </v-avatar>
                                 <v-icon>mdi-menu-down</v-icon>
                             </v-btn>
                         </template>
                         <v-list>
-                            <v-list-item>Logout</v-list-item>
+                            <v-list-item @click="logout">Logout</v-list-item>
                         </v-list>
                     </v-menu>
                 </div>
@@ -41,11 +45,11 @@
                                         <main-layout-main-navigation></main-layout-main-navigation>
                                     </v-col>
 
-                                    <v-col cols="12">
+                                    <v-col cols="12" v-if="isAuthenticated">
                                         <main-layout-user-navigation></main-layout-user-navigation>
                                     </v-col>
 
-                                    <v-col cols="12">
+                                    <v-col cols="12" v-if="isAuthenticated">
                                         <main-layout-following-card></main-layout-following-card>
                                     </v-col>
 
@@ -93,6 +97,7 @@ import MainLayoutUpdatedForumCard from '@/components/parts/main-layout/UpdatedFo
 import MainLayoutNewItemSaleCard from '@/components/parts/main-layout/NewItemSaleCard';
 import MainLayoutNewItemBuyCard from '@/components/parts/main-layout/NewItemcBuyCard';
 import SystemSnackbar from '@/components/system/Snackbar';
+import { PURGE_AUTHENTICATION } from '@/store/types/authentication';
 export default {
     name: 'main-layout',
 
@@ -106,6 +111,22 @@ export default {
         MainLayoutFollowingCard,
         MainLayoutUserNavigation,
         MainLayoutMainNavigation,
+    },
+
+    computed: {
+        isAuthenticated() {
+            return this.$store.state.authentication.isAuthenticated;
+        },
+
+        user() {
+            return this.$store.state.authentication.user || null;
+        },
+    },
+
+    methods: {
+        logout() {
+            this.$store.commit(PURGE_AUTHENTICATION);
+        },
     },
 };
 </script>
