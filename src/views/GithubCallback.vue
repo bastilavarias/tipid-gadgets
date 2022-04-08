@@ -15,10 +15,34 @@
 </template>
 
 <script>
+import { GITHUB_AUTHENTICATION } from '@/store/types/authentication';
+import utilityMixin from '@/mixins/utility';
+import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
+
 export default {
+    mixins: [utilityMixin],
+
     async created() {
         const { code } = this.$route.query;
-        console.log(code);
+        if (code) {
+            const result = await this.$store.dispatch(GITHUB_AUTHENTICATION, {
+                code,
+            });
+            if (this.isHTTPRequestSuccess(result.code)) {
+                this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                    open: true,
+                    message: result.message,
+                    color: 'success',
+                });
+                return await this.$router.push({ name: 'home' });
+            }
+            this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                open: true,
+                message: result.message,
+                color: 'error',
+            });
+        }
+        await this.$router.push({ name: 'login' });
     },
 };
 </script>

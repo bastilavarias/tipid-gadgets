@@ -101,13 +101,14 @@
                         depressed
                         :disabled="!isFormValid"
                         :loading="isRegisterStart"
+                        large
                         @click="register"
                         >Register</v-btn
                     >
                 </v-col>
 
                 <v-col cols="12" class="my-5">
-                    <div class="text-center overline">Or Register VIa</div>
+                    <div class="text-center overline">Or Register Via</div>
                 </v-col>
 
                 <v-col cols="12">
@@ -117,6 +118,8 @@
                         class="text-capitalize"
                         depressed
                         dark
+                        large
+                        @click="githubLoginRedirection"
                     >
                         <v-icon class="mr-1">mdi-github</v-icon>
                         Git<span class="text-capitalize">H</span>ub
@@ -196,6 +199,11 @@ export default {
                 color: 'error',
             });
             this.isRegisterStart = false;
+        },
+
+        githubLoginRedirection() {
+            const githubClientID = process.env.VUE_APP_GITHUB_CLIENT_ID;
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=${githubClientID}`;
         },
     },
 

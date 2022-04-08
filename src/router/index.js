@@ -111,7 +111,7 @@ const routes = [
             },
 
             {
-                path: '/oauth/github/callback',
+                path: '/oauth2/code/github',
                 name: 'github-callback',
                 component: () => import('@/views/GithubCallback'),
             },
