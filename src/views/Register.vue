@@ -189,15 +189,9 @@ export default {
                     message,
                     color: 'success',
                 });
-                await this.$router.push({ name: 'login' });
-                return;
+                return await this.$router.push({ name: 'login' });
             }
             this.error = message;
-            this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
-                open: true,
-                message: 'Something went wrong.',
-                color: 'error',
-            });
             this.isRegisterStart = false;
         },
 

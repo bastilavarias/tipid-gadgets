@@ -2,6 +2,7 @@ import apiService from '@/services/api';
 import {
     AUTHENTICATE_SELF,
     GITHUB_AUTHENTICATION,
+    LOGIN,
     PURGE_AUTHENTICATION,
     REGISTER,
     SET_AUTHENTICATION,
@@ -81,6 +82,26 @@ const authenticationModule = {
             } catch (error) {
                 commit(PURGE_AUTHENTICATION);
                 return false;
+            }
+        },
+
+        async [LOGIN]({ commit }, payload) {
+            try {
+                const response = await apiService.post(
+                    '/authentication/login',
+                    payload
+                );
+                if (response.data.code === 200) {
+                    const { access_token, user } = response.data.data;
+                    const authPayload = {
+                        token: access_token,
+                        user,
+                    };
+                    commit(SET_AUTHENTICATION, authPayload);
+                    return response.data;
+                }
+            } catch (error) {
+                return error.response.data;
             }
         },
     },

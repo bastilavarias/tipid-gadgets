@@ -13,12 +13,18 @@
                         </v-card-title>
                     </v-card>
                 </v-col>
+                <v-col cols="12" v-if="error">
+                    <v-alert border="right" type="error" elevation="2">
+                        {{ error }}
+                    </v-alert></v-col
+                >
                 <v-col cols="12">
                     <div class="caption grey--text mb-1">Username</div>
                     <v-text-field
                         placeholder="Username"
                         outlined
                         dense
+                        v-model="form.username"
                     ></v-text-field>
                 </v-col>
 
@@ -29,6 +35,7 @@
                         outlined
                         dense
                         type="password"
+                        v-model="form.password"
                     ></v-text-field>
                 </v-col>
 
@@ -39,6 +46,8 @@
                         class="text-capitalize"
                         depressed
                         large
+                        :loading="isLoginStart"
+                        @click="login"
                         >Login</v-btn
                     >
                 </v-col>
@@ -67,11 +76,48 @@
 </template>
 
 <script>
+import { LOGIN } from '@/store/types/authentication';
+import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
+import utilityMixin from '@/mixins/utility';
+
+const defaultForm = {
+    username: null,
+    password: null,
+};
+
 export default {
+    mixins: [utilityMixin],
+
+    data() {
+        return {
+            isLoginStart: false,
+            form: Object.assign({}, defaultForm),
+            error: null,
+        };
+    },
+
     methods: {
         githubLoginRedirection() {
             const githubClientID = process.env.VUE_APP_GITHUB_CLIENT_ID;
             window.location.href = `https://github.com/login/oauth/authorize?client_id=${githubClientID}`;
+        },
+
+        async login() {
+            this.isLoginStart = true;
+            const { code, message } = await this.$store.dispatch(
+                LOGIN,
+                this.form
+            );
+            if (this.isHTTPRequestSuccess(code)) {
+                this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                    open: true,
+                    message,
+                    color: 'success',
+                });
+                return await this.$router.push({ name: 'home' });
+            }
+            this.error = message;
+            this.isLoginStart = false;
         },
     },
 };
