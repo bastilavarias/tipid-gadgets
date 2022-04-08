@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import { AUTHENTICATE_SELF } from '@/store/types/authentication';
+import store from '@/store';
 
 Vue.use(VueRouter);
 
@@ -36,6 +38,9 @@ const routes = [
                 path: 'item-editor/:operation',
                 name: 'item-editor',
                 component: () => import('@/views/item/Editor'),
+                meta: {
+                    requiresAuth: true,
+                },
             },
 
             {
@@ -52,6 +57,9 @@ const routes = [
                         path: 'topic-editor/:operation',
                         name: 'forum/topic-editor',
                         component: () => import('@/views/forum/Editor'),
+                        meta: {
+                            requiresAuth: true,
+                        },
                     },
 
                     {
@@ -108,6 +116,9 @@ const routes = [
                 path: 'messages',
                 name: 'message',
                 component: () => import('@/views/Message'),
+                meta: {
+                    requiresAuth: true,
+                },
             },
 
             {
@@ -120,8 +131,25 @@ const routes = [
 ];
 
 const router = new VueRouter({
-    routes,
     mode: 'history',
+    base: process.env.BASE_URL,
+    routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+    await store.dispatch(AUTHENTICATE_SELF);
+    const { isAuthenticated } = store.state.authentication;
+    const isProtectedRoute = to.matched.some(
+        (record) => record.meta.requiresAuth
+    );
+    const unProtectedRoutes = ['login', 'register'];
+
+    console.log(isProtectedRoute);
+    if (isProtectedRoute && !isAuthenticated) return next({ name: 'login' });
+    if (unProtectedRoutes.includes(to.name) && isAuthenticated)
+        return next({ name: 'home' });
+
+    next();
 });
 
 export default router;
