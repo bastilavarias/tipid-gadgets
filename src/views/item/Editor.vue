@@ -264,6 +264,7 @@ export default {
 
     watch: {
         selectedDraft(val) {
+            this.error = null;
             if (val) {
                 const {
                     item_section_id,
@@ -275,7 +276,6 @@ export default {
                     description,
                     id,
                 } = val;
-
                 this.form = Object.assign(
                     {},
                     {
@@ -293,7 +293,6 @@ export default {
                 return;
             }
             this.form = Object.assign({}, defaultForm);
-            this.error = null;
         },
     },
 
@@ -339,6 +338,9 @@ export default {
                 this.form = Object.assign({}, defaultForm);
                 this.error = null;
                 this.isSaveDraftStart = false;
+                this.$nextTick(() => {
+                    this.$vuetify.goTo(0);
+                });
                 return;
             }
             this.error = message;
@@ -366,6 +368,9 @@ export default {
                 this.form = Object.assign({}, defaultForm);
                 this.error = null;
                 this.isDeleteDraftStart = false;
+                this.$nextTick(() => {
+                    this.$vuetify.goTo(0);
+                });
                 return;
             }
             this.error = message;
