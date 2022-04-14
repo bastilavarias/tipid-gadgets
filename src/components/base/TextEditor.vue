@@ -14,12 +14,26 @@ import ClassicEditor from '@/assets/builds/ck-editor';
 export default {
     name: 'base-text-editor',
 
+    props: {
+        value: String,
+    },
+
     data() {
         return {
             editor: ClassicEditor,
-            editorData: null,
+            editorData: this.value || '',
             editorConfig: {},
         };
+    },
+
+    watch: {
+        value(val) {
+            this.editorData = val || '';
+        },
+
+        editorData(val) {
+            this.$emit('input', val);
+        },
     },
 };
 </script>

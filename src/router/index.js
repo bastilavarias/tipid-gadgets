@@ -144,7 +144,6 @@ router.beforeEach(async (to, from, next) => {
     );
     const unProtectedRoutes = ['login', 'register'];
 
-    console.log(isProtectedRoute);
     if (isProtectedRoute && !isAuthenticated) return next({ name: 'login' });
     if (unProtectedRoutes.includes(to.name) && isAuthenticated)
         return next({ name: 'home' });
