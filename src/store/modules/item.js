@@ -1,6 +1,7 @@
 import {
     DELETE_DRAFT_ITEM,
     GET_DRAFT_ITEMS,
+    GET_ITEM_IMAGES,
     GET_ITEMS,
     SAVE_DRAFT_ITEM,
     SAVE_POST_ITEM,
@@ -60,6 +61,15 @@ const itemModule = {
                 if (orderBy) params.set('order_by', orderBy);
                 if (search) params.set('search', search);
                 const response = await apiService.get(`/item?${params}`);
+                return response.data.data;
+            } catch (error) {
+                return [];
+            }
+        },
+
+        async [GET_ITEM_IMAGES](_, itemID) {
+            try {
+                const response = await apiService.get(`/item/${itemID}/images`);
                 return response.data.data;
             } catch (error) {
                 return [];

@@ -35,74 +35,44 @@
                     </v-tooltip>
                 </v-card-title>
 
-                <v-card-text v-if="isClassicMode">
-                    <v-row dense v-if="itemForSale.loading">
-                        <template v-for="i in 10">
-                            <v-col cols="12" :key="i">
-                                <v-skeleton-loader type="list-item-two-line">
-                                </v-skeleton-loader>
-                            </v-col>
-                        </template>
-                    </v-row>
-                    <v-row dense v-else>
-                        <template v-for="(item, index) in itemForSale.items">
-                            <v-col cols="12" :key="index">
-                                <item-preview
-                                    :name="item.name"
-                                    :price="item.price"
-                                    :category="item.item_category"
-                                    :user="item.user"
-                                    component="list-item"
-                                    :index="index"
-                                ></item-preview>
-                            </v-col>
-                        </template>
-                    </v-row>
-                </v-card-text>
-
-                <v-card-text v-else>
-                    <v-row
-                        v-masonry
-                        origin-left="true"
-                        horizontal-order="true"
-                        transition-duration="0.3s"
-                        item-selector=".item"
-                        v-if="wantToBuy.loading"
-                    >
-                        <template v-for="i in 10">
-                            <v-col
-                                v-masonry-tile
-                                class="item"
-                                :key="i"
-                                xs="12"
-                                md="6"
-                                lg="4"
+                <v-card-text>
+                    <template v-if="isClassicMode">
+                        <v-row dense v-if="itemForSale.loading">
+                            <template v-for="i in 10">
+                                <v-col cols="12" :key="i">
+                                    <v-skeleton-loader
+                                        type="list-item-two-line"
+                                    >
+                                    </v-skeleton-loader>
+                                </v-col>
+                            </template>
+                        </v-row>
+                        <v-row dense v-else>
+                            <template
+                                v-for="(item, index) in itemForSale.items"
                             >
-                                <v-skeleton-loader
-                                    type="card, list-item-two-line"
-                                >
-                                </v-skeleton-loader>
-                            </v-col>
-                        </template>
-                    </v-row>
-
-                    <v-row
-                        v-masonry
-                        origin-left="true"
-                        horizontal-order="true"
-                        transition-duration="0.3s"
-                        item-selector=".item"
-                        v-else
-                    >
-                        <template v-for="(item, index) in itemForSale.items">
-                            <v-col
-                                v-masonry-tile
-                                class="item"
-                                :key="i"
-                                xs="12"
-                                md="6"
+                                <v-col cols="12" :key="index">
+                                    <item-preview
+                                        :itemID="item.id"
+                                        :name="item.name"
+                                        :price="item.price"
+                                        :category="item.item_category"
+                                        :user="item.user"
+                                        component="list-item"
+                                        :index="index"
+                                    ></item-preview>
+                                </v-col>
+                            </template>
+                        </v-row>
+                    </template>
+                    <template v-if="!isClassicMode">
+                        <masonry :cols="2" :gutter="30">
+                            <div
+                                v-for="(item, index) in itemForSale.items"
+                                :key="index"
                             >
                                 <item-preview
+                                    :itemID="item.id"
                                     :name="item.name"
                                     :price="item.price"
                                     :category="item.item_category"
@@ -110,45 +80,46 @@
                                     component="card"
                                     :index="index"
                                 ></item-preview>
-                            </v-col>
-                        </template>
-                    </v-row>
+                            </div>
+                        </masonry>
+                    </template>
                 </v-card-text>
             </v-card>
         </v-col>
 
-        <v-col cols="12">
-            <v-card flat>
-                <v-card-title class="secondary--text font-weight-bold"
-                    >New Want to Buys</v-card-title
-                >
+        <!--        <v-col cols="12">-->
+        <!--            <v-card flat>-->
+        <!--                <v-card-title class="secondary&#45;&#45;text font-weight-bold"-->
+        <!--                    >New Want to Buys</v-card-title-->
+        <!--                >-->
 
-                <v-card-text>
-                    <v-row dense v-if="wantToBuy.loading">
-                        <template v-for="i in 10">
-                            <v-col cols="12" :key="i">
-                                <v-skeleton-loader type="list-item-two-line">
-                                </v-skeleton-loader>
-                            </v-col>
-                        </template>
-                    </v-row>
-                    <v-row dense v-else>
-                        <template v-for="(item, index) in wantToBuy.items">
-                            <v-col cols="12" :key="index">
-                                <item-preview
-                                    :name="item.name"
-                                    :price="item.price"
-                                    :category="item.item_category"
-                                    :user="item.user"
-                                    component="list-item"
-                                    :index="index"
-                                ></item-preview>
-                            </v-col>
-                        </template>
-                    </v-row>
-                </v-card-text>
-            </v-card>
-        </v-col>
+        <!--                <v-card-text>-->
+        <!--                    <v-row dense v-if="wantToBuy.loading">-->
+        <!--                        <template v-for="i in 10">-->
+        <!--                            <v-col cols="12" :key="i">-->
+        <!--                                <v-skeleton-loader type="list-item-two-line">-->
+        <!--                                </v-skeleton-loader>-->
+        <!--                            </v-col>-->
+        <!--                        </template>-->
+        <!--                    </v-row>-->
+        <!--                    <v-row dense v-else>-->
+        <!--                        <template v-for="(item, index) in wantToBuy.items">-->
+        <!--                            <v-col cols="12" :key="index">-->
+        <!--                                <item-preview-->
+        <!--                                    :name="item.name"-->
+        <!--                                    :price="item.price"-->
+        <!--                                    :category="item.item_category"-->
+        <!--                                    :user="item.user"-->
+        <!--                                    component="list-item"-->
+        <!--                                    :index="index"-->
+        <!--                                ></item-preview>-->
+        <!--                            </v-col>-->
+        <!--                        </template>-->
+        <!--                    </v-row>-->
+        <!--                </v-card-text>-->
+        <!--            </v-card>-->
+        <!--        </v-col>-->
+        <!--      -->
     </v-row>
 </template>
 
@@ -183,7 +154,7 @@ export default {
                 orderBy: 'desc',
             },
 
-            mode: 'classic',
+            mode: 'card',
         };
     },
 

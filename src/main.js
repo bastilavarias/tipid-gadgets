@@ -5,12 +5,12 @@ import store from './store';
 import vuetify from './plugins/vuetify';
 import CKEditor from '@ckeditor/ckeditor5-vue2';
 import apiService from '@/services/api';
-import { VueMasonryPlugin } from 'vue-masonry';
+import VueMasonry from 'vue-masonry-css';
 
 Vue.config.productionTip = false;
 apiService.init();
 Vue.use(CKEditor);
-Vue.use(VueMasonryPlugin);
+Vue.use(VueMasonry);
 
 new Vue({
     router,
