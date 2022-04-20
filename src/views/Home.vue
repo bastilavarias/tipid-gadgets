@@ -20,7 +20,7 @@
                         </template>
                         <span>Switch to Card Mode</span>
                     </v-tooltip>
-                    <v-tooltip bottom v-if="!isClassicMode">
+                    <v-tooltip bottom v-if="isCardMode">
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
                                 icon
@@ -65,8 +65,8 @@
                             </template>
                         </v-row>
                     </template>
-                    <template v-if="!isClassicMode">
-                        <masonry :cols="2" :gutter="30">
+                    <template v-if="isCardMode">
+                        <masonry :cols="2" :gutter="15">
                             <div
                                 v-for="(item, index) in itemForSale.items"
                                 :key="index"
@@ -78,6 +78,7 @@
                                     :category="item.item_category"
                                     :user="item.user"
                                     component="card"
+                                    style="margin-bottom: 15px"
                                     :index="index"
                                 ></item-preview>
                             </div>
@@ -87,39 +88,62 @@
             </v-card>
         </v-col>
 
-        <!--        <v-col cols="12">-->
-        <!--            <v-card flat>-->
-        <!--                <v-card-title class="secondary&#45;&#45;text font-weight-bold"-->
-        <!--                    >New Want to Buys</v-card-title-->
-        <!--                >-->
+        <v-col cols="12">
+            <v-card flat>
+                <v-card-title class="secondary--text font-weight-bold"
+                    >New Want to Buys</v-card-title
+                >
 
-        <!--                <v-card-text>-->
-        <!--                    <v-row dense v-if="wantToBuy.loading">-->
-        <!--                        <template v-for="i in 10">-->
-        <!--                            <v-col cols="12" :key="i">-->
-        <!--                                <v-skeleton-loader type="list-item-two-line">-->
-        <!--                                </v-skeleton-loader>-->
-        <!--                            </v-col>-->
-        <!--                        </template>-->
-        <!--                    </v-row>-->
-        <!--                    <v-row dense v-else>-->
-        <!--                        <template v-for="(item, index) in wantToBuy.items">-->
-        <!--                            <v-col cols="12" :key="index">-->
-        <!--                                <item-preview-->
-        <!--                                    :name="item.name"-->
-        <!--                                    :price="item.price"-->
-        <!--                                    :category="item.item_category"-->
-        <!--                                    :user="item.user"-->
-        <!--                                    component="list-item"-->
-        <!--                                    :index="index"-->
-        <!--                                ></item-preview>-->
-        <!--                            </v-col>-->
-        <!--                        </template>-->
-        <!--                    </v-row>-->
-        <!--                </v-card-text>-->
-        <!--            </v-card>-->
-        <!--        </v-col>-->
-        <!--      -->
+                <v-card-text>
+                    <template v-if="isClassicMode">
+                        <v-row dense v-if="wantToBuy.loading">
+                            <template v-for="i in 10">
+                                <v-col cols="12" :key="i">
+                                    <v-skeleton-loader
+                                        type="list-item-two-line"
+                                    >
+                                    </v-skeleton-loader>
+                                </v-col>
+                            </template>
+                        </v-row>
+                        <v-row dense v-else>
+                            <template v-for="(item, index) in wantToBuy.items">
+                                <v-col cols="12" :key="index">
+                                    <item-preview
+                                        :itemID="item.id"
+                                        :name="item.name"
+                                        :price="item.price"
+                                        :category="item.item_category"
+                                        :user="item.user"
+                                        component="list-item"
+                                        :index="index"
+                                    ></item-preview>
+                                </v-col>
+                            </template>
+                        </v-row>
+                    </template>
+                    <template v-if="isCardMode">
+                        <masonry :cols="2" :gutter="15">
+                            <div
+                                v-for="(item, index) in wantToBuy.items"
+                                :key="index"
+                            >
+                                <item-preview
+                                    :itemID="item.id"
+                                    :name="item.name"
+                                    :price="item.price"
+                                    :category="item.item_category"
+                                    :user="item.user"
+                                    component="card"
+                                    style="margin-bottom: 15px"
+                                    :index="index"
+                                ></item-preview>
+                            </div>
+                        </masonry>
+                    </template>
+                </v-card-text>
+            </v-card>
+        </v-col>
     </v-row>
 </template>
 
@@ -161,6 +185,10 @@ export default {
     computed: {
         isClassicMode() {
             return this.mode === 'classic';
+        },
+
+        isCardMode() {
+            return this.mode === 'card';
         },
     },
 

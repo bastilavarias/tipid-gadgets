@@ -32,72 +32,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-card-text class="secondary--text">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Accusamus at dicta, eaque facilis id illo itaque, iusto
-                    neque nobis non, provident quia repellat sapiente unde
-                    voluptatum. A ab aliquid architecto asperiores at cum
-                    deserunt doloremque dolores ducimus ea exercitationem illum
-                    ipsum magnam molestiae, nemo nihil officia possimus quo,
-                    ratione saepe sapiente suscipit vero vitae. Architecto
-                    beatae et facilis minima mollitia nisi quo repudiandae
-                    suscipit tenetur totam! Animi aperiam corporis ducimus
-                    explicabo harum, rem! Accusamus aliquam aperiam beatae
-                    blanditiis culpa cupiditate delectus, deleniti deserunt
-                    doloremque dolores esse eum ex fugit impedit in, ipsa iusto
-                    laudantium nemo neque nesciunt non nulla obcaecati
-                    praesentium provident quaerat quidem quo repellat
-                    repellendus reprehenderit repudiandae saepe ut vel veniam!
-                    Aliquam, at corporis exercitationem in obcaecati perferendis
-                    sed sit totam? Accusamus consectetur cumque dicta velit? A
-                    aperiam deleniti, distinctio explicabo neque nobis odio
-                    placeat reiciendis voluptas. Ducimus eos, maxime modi
-                    mollitia nobis sapiente temporibus! Aperiam aut culpa dolore
-                    earum, eos expedita explicabo fugit, nam nostrum officiis
-                    possimus praesentium quasi saepe soluta unde! Culpa delectus
-                    deserunt doloribus eum eveniet exercitationem expedita,
-                    fugit id illum natus neque odio officia optio perferendis
-                    provident quas quod reprehenderit similique totam vitae?
-                    Consequuntur dicta dignissimos eligendi eos hic, labore
-                    molestias nobis officia quaerat, soluta totam ullam, vel
-                    voluptas. Amet aut culpa cupiditate dignissimos dolorum eum
-                    expedita id illo ipsa libero, nobis non odio reprehenderit.
-                    Deleniti dignissimos dolores harum provident quaerat ratione
-                    rem sunt voluptates. Harum ipsa officiis porro repellendus?
-                    At blanditiis debitis dignissimos error est ex
-                    exercitationem facere facilis inventore ipsum iusto minima
-                    officia qui recusandae, rem sint soluta. Animi corporis cum,
-                    distinctio molestias mollitia obcaecati possimus rem
-                    voluptatem? Assumenda debitis iste magni, odio praesentium
-                    quis tempora. Commodi consequatur cum debitis dicta eos
-                    explicabo fugit hic illum iste iure labore, laborum magni
-                    minima molestias natus non numquam officiis optio quibusdam,
-                    quod sint, soluta tempora ullam unde velit voluptate
-                    voluptatum. Ad blanditiis commodi consequuntur cumque enim
-                    incidunt ipsum necessitatibus, sapiente temporibus voluptas.
-                    A animi, consequatur, distinctio doloribus error harum
-                    incidunt ipsa iusto nulla numquam quibusdam reprehenderit
-                    sapiente, sed tempore vitae! Ab consequuntur dolore expedita
-                    laborum, laudantium nihil officiis quidem quisquam soluta
-                    unde. Asperiores blanditiis commodi, debitis dolores ducimus
-                    eius esse expedita iusto nihil, non omnis porro quidem quo
-                    repellendus sint tenetur totam vitae! Ad animi beatae hic id
-                    incidunt ipsam, itaque laudantium libero maiores minima,
-                    modi nemo neque nobis officia pariatur praesentium, sit
-                    temporibus voluptatibus. Accusamus aspernatur autem
-                    blanditiis consequatur consequuntur culpa cupiditate dolorum
-                    eligendi enim eos excepturi expedita explicabo facere hic id
-                    ipsam magni maxime minima nam necessitatibus neque nihil
-                    nisi numquam, odio officiis pariatur, porro quis quos
-                    recusandae rerum soluta sunt suscipit totam unde veniam vero
-                    voluptatum! Blanditiis debitis fuga itaque minima minus nam,
-                    nulla omnis quos suscipit ullam! A accusamus, animi, aperiam
-                    consequatur, doloribus excepturi id impedit in nam nemo nisi
-                    odio odit placeat praesentium repellendus repudiandae sed
-                    sunt. Culpa deleniti ipsam natus nihil quaerat quia quod
-                    repellat rerum sint? Amet blanditiis deserunt doloribus
-                    eaque, exercitationem in ipsam ipsum iusto maxime natus
-                    nostrum nulla, odio, quod sit suscipit. Nam, qui quo?
+                <v-card-text class="secondary--text" v-html="sampleHTML">
                 </v-card-text>
 
                 <v-card-text>
@@ -217,5 +152,11 @@
 import RatingStatusChip from '@/components/custom/RatingStatusChip';
 export default {
     components: { RatingStatusChip },
+
+    data() {
+        return {
+            sampleHTML: ``,
+        };
+    },
 };
 </script>
