@@ -66,6 +66,16 @@
                         </v-row>
                     </template>
                     <template v-if="isCardMode">
+                        <v-row dense v-if="itemForSale.loading">
+                            <template v-for="i in 10">
+                                <v-col cols="12" md="6" :key="i">
+                                    <v-skeleton-loader
+                                        type="list-item-two-line, image"
+                                    >
+                                    </v-skeleton-loader>
+                                </v-col>
+                            </template>
+                        </v-row>
                         <masonry :cols="2" :gutter="15">
                             <div
                                 v-for="(item, index) in itemForSale.items"
@@ -123,6 +133,16 @@
                         </v-row>
                     </template>
                     <template v-if="isCardMode">
+                        <v-row dense v-if="wantToBuy.loading">
+                            <template v-for="i in 10">
+                                <v-col cols="12" md="6" :key="i">
+                                    <v-skeleton-loader
+                                        type="list-item-two-line, image"
+                                    >
+                                    </v-skeleton-loader>
+                                </v-col>
+                            </template>
+                        </v-row>
                         <masonry :cols="2" :gutter="15">
                             <div
                                 v-for="(item, index) in wantToBuy.items"
@@ -178,7 +198,7 @@ export default {
                 orderBy: 'desc',
             },
 
-            mode: 'card',
+            mode: 'classic',
         };
     },
 
