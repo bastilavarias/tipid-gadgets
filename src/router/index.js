@@ -29,7 +29,7 @@ const routes = [
             },
 
             {
-                path: 'view-item',
+                path: 'item/:slug',
                 name: 'view-item',
                 component: () => import('@/views/item/View'),
             },

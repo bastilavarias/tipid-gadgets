@@ -59,6 +59,7 @@
                                         :category="item.item_category"
                                         :user="item.user"
                                         component="list-item"
+                                        :slug="item.slug"
                                         :index="index"
                                     ></item-preview>
                                 </v-col>
@@ -89,6 +90,7 @@
                                     :user="item.user"
                                     component="card"
                                     style="margin-bottom: 15px"
+                                    :slug="item.slug"
                                     :index="index"
                                 ></item-preview>
                             </div>
@@ -126,6 +128,7 @@
                                         :category="item.item_category"
                                         :user="item.user"
                                         component="list-item"
+                                        :slug="item.slug"
                                         :index="index"
                                     ></item-preview>
                                 </v-col>
@@ -156,6 +159,7 @@
                                     :user="item.user"
                                     component="card"
                                     style="margin-bottom: 15px"
+                                    :slug="item.slug"
                                     :index="index"
                                 ></item-preview>
                             </div>

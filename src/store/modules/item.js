@@ -1,6 +1,7 @@
 import {
     DELETE_DRAFT_ITEM,
     GET_DRAFT_ITEMS,
+    GET_ITEM,
     GET_ITEM_IMAGES,
     GET_ITEMS,
     SAVE_DRAFT_ITEM,
@@ -73,6 +74,15 @@ const itemModule = {
                 return response.data.data;
             } catch (error) {
                 return [];
+            }
+        },
+
+        async [GET_ITEM](_, slug) {
+            try {
+                const response = await apiService.get(`/item/${slug}`);
+                return response.data.data;
+            } catch (error) {
+                return null;
             }
         },
     },

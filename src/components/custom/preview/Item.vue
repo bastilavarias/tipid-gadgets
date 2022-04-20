@@ -10,7 +10,7 @@
                 <v-list-item-title>
                     <router-link
                         class="primary--text font-weight-bold"
-                        :to="{ name: 'view-item' }"
+                        :to="{ name: 'view-item', params: { slug } }"
                         style="text-decoration: none"
                         >{{ name }}</router-link
                     >
@@ -74,6 +74,7 @@ export default {
         price: String,
         category: Object,
         user: Object,
+        slug: String,
         component: String,
     },
 

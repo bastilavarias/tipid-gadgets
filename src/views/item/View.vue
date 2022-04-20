@@ -1,53 +1,56 @@
 <template>
     <v-row>
-        <v-col cols="12">
+        <v-col cols="12" v-if="information">
             <v-card flat>
                 <v-card-title
                     class="secondary--text font-weight-bold align-center"
                     >Item Details</v-card-title
                 >
                 <v-card-subtitle class="primary--text"
-                    >Items for Sale: Laptops/PDAs</v-card-subtitle
+                    >{{ information.item_section.name }}:
+                    {{ information.item_category.name }}</v-card-subtitle
                 >
                 <v-list-item three-line>
                     <v-list-item-content>
                         <v-list-item-title
                             class="primary--text font-weight-bold"
-                            >Lenovo Ideapad Slim3 Core i5 10Gen 1.0 Ghz 512Gb
-                            SSd 2Gb Nvidia mx330</v-list-item-title
+                            >{{ information.name }}</v-list-item-title
                         >
                         <v-list-item-subtitle
                             class="success--text font-weight-bold"
-                            >PHP 24800.00</v-list-item-subtitle
+                            >{{
+                                formatCurrency('PHP', information.price)
+                            }}</v-list-item-subtitle
                         >
                         <v-list-item-subtitle>
-                            <span class="font-weight-bold success--text"
-                                >Already Used</span
-                            >
+                            <span class="font-weight-bold success--text">{{
+                                information.item_condition.name
+                            }}</span>
                             <span class="mx-1">with</span>
-                            <span class="font-weight-bold success--text"
-                                >Personal Warranty</span
-                            >
+                            <span class="font-weight-bold success--text">{{
+                                information.item_warranty.name
+                            }}</span>
                         </v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-card-text class="secondary--text" v-html="sampleHTML">
+                <v-card-text
+                    class="secondary--text"
+                    v-html="information.description"
+                >
                 </v-card-text>
 
                 <v-card-text>
                     <v-card color="#f0f0f0" flat outlined>
                         <v-list-item three-line>
                             <v-list-item-avatar>
-                                <v-img
-                                    src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
-                                ></v-img>
+                                <v-img :src="information.user.avatar"></v-img>
                             </v-list-item-avatar>
                             <v-list-item-content>
                                 <v-list-item-title class="d-flex align-center"
                                     ><span
                                         class="primary--text font-weight-bold mr-1"
-                                        >bastilavar21</span
+                                        >{{ information.user.username }}</span
                                     >
                                     <v-chip small class="font-weight-bold"
                                         >Seller</v-chip
@@ -150,13 +153,38 @@
 
 <script>
 import RatingStatusChip from '@/components/custom/RatingStatusChip';
+import { GET_ITEM } from '@/store/types/item';
+import utilityMixin from '@/mixins/utility';
+
 export default {
     components: { RatingStatusChip },
 
+    mixins: [utilityMixin],
+
     data() {
         return {
-            sampleHTML: ``,
+            information: null,
         };
+    },
+
+    computed: {
+        slug() {
+            return this.$route.params.slug || null;
+        },
+    },
+
+    methods: {
+        async getInformation() {
+            this.information = await this.$store.dispatch(GET_ITEM, this.slug);
+            this.$nextTick(() => {
+                this.$vuetify.goTo(0);
+            });
+        },
+    },
+
+    async created() {
+        if (!this.slug) return this.$router.go(-1);
+        await this.getInformation();
     },
 };
 </script>
