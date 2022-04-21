@@ -57,15 +57,22 @@
                                     >
                                 </v-list-item-title>
                                 <v-list-item-subtitle
-                                    >on May 14, 2021 01:05
-                                    PM</v-list-item-subtitle
-                                >
+                                    >on
+                                    {{ toPostDate(information.created_at) }}
+                                </v-list-item-subtitle>
                                 <v-list-item-subtitle
-                                    >Location:
-                                    <span
-                                        class="font-weight-bold secondary--text"
-                                        >Quezon City, Metro Manila</span
-                                    ></v-list-item-subtitle
+                                    ><span v-if="information.user.location">
+                                        Location:
+                                        <span
+                                            class="font-weight-bold secondary--text"
+                                            >{{
+                                                information.user.location
+                                            }}</span
+                                        >
+                                    </span>
+                                    <span class="grey--text" v-else>
+                                        No location included
+                                    </span></v-list-item-subtitle
                                 >
                             </v-list-item-content>
                             <v-list-item-action>
@@ -155,11 +162,12 @@
 import RatingStatusChip from '@/components/custom/RatingStatusChip';
 import { GET_ITEM } from '@/store/types/item';
 import utilityMixin from '@/mixins/utility';
+import dateMixin from '@/mixins/date';
 
 export default {
     components: { RatingStatusChip },
 
-    mixins: [utilityMixin],
+    mixins: [utilityMixin, dateMixin],
 
     data() {
         return {
