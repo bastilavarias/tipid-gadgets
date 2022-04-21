@@ -3,6 +3,7 @@ import {
     CHECK_ITEM_BOOKMARK,
     CHECK_ITEM_LIKE,
     COUNT_ITEM_LIKE,
+    COUNT_ITEM_VIEW,
     DELETE_DRAFT_ITEM,
     GET_DRAFT_ITEMS,
     GET_ITEM,
@@ -148,6 +149,17 @@ const itemModule = {
             try {
                 const response = await apiService.get(
                     `/item/likes/count/${itemID}`
+                );
+                return response.data.data;
+            } catch (error) {
+                return 0;
+            }
+        },
+
+        async [COUNT_ITEM_VIEW](_, itemID) {
+            try {
+                const response = await apiService.get(
+                    `/item/views/count/${itemID}`
                 );
                 return response.data.data;
             } catch (error) {

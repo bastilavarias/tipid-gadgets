@@ -70,16 +70,17 @@
             <v-toolbar flat color="transparent" dense>
                 <v-tooltip bottom v-if="!isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
-                        <span v-bind="attrs" v-on="on">
-                            <v-icon>mdi-thumb-up</v-icon
-                            ><span style="color: rgba(0, 0, 0, 0.6)"
-                                >({{ toMillify(likesCount) }})</span
-                            >
-                        </span>
+                        <v-btn
+                            v-bind="attrs"
+                            v-on="on"
+                            depressed
+                            text
+                            style="color: rgba(0, 0, 0, 0.6)"
+                            ><v-icon>mdi-thumb-up</v-icon
+                            ><span>({{ toMillify(likesCount) }})</span></v-btn
+                        >
                     </template>
-                    <span
-                        >{{ toMillify(likesCount) }} users like this Item</span
-                    >
+                    <span>{{ toMillify(likesCount) }} likes</span>
                 </v-tooltip>
                 <v-tooltip bottom v-if="isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
@@ -91,12 +92,25 @@
                             :text="isLiked"
                             @click="likeItem"
                             style="color: rgba(0, 0, 0, 0.6)"
-                            v-if="isAuthenticated"
                             ><v-icon>mdi-thumb-up</v-icon
                             ><span>({{ toMillify(likesCount) }})</span></v-btn
                         >
                     </template>
                     <span>{{ isLiked ? 'Unlike' : 'Like' }}</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            v-bind="attrs"
+                            v-on="on"
+                            depressed
+                            text
+                            style="color: rgba(0, 0, 0, 0.6)"
+                            ><v-icon>mdi-eye</v-icon
+                            ><span>({{ toMillify(viewsCount) }})</span></v-btn
+                        >
+                    </template>
+                    <span>{{ toMillify(viewsCount) }} Views</span>
                 </v-tooltip>
                 <v-spacer></v-spacer>
                 <v-tooltip bottom v-if="isAuthenticated">
@@ -135,6 +149,7 @@ import {
     CHECK_ITEM_BOOKMARK,
     CHECK_ITEM_LIKE,
     COUNT_ITEM_LIKE,
+    COUNT_ITEM_VIEW,
     LIKE_ITEM,
 } from '@/store/types/item';
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
@@ -160,6 +175,7 @@ export default {
             isBookmarked: false,
             isLiked: false,
             likesCount: 0,
+            viewsCount: 0,
         };
     },
 
@@ -226,6 +242,13 @@ export default {
             );
         },
 
+        async getViewsCount() {
+            this.viewsCount = await this.$store.dispatch(
+                COUNT_ITEM_VIEW,
+                this.itemID
+            );
+        },
+
         async checkItemLike() {
             this.isLiked = await this.$store.dispatch(
                 CHECK_ITEM_LIKE,
@@ -243,6 +266,7 @@ export default {
 
     async created() {
         await this.getLikesCount();
+        await this.getViewsCount();
         if (this.isAuthenticated) {
             await this.checkItemLike();
             await this.checkItemBookmark();

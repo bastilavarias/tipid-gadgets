@@ -11,3 +11,4 @@ export const CHECK_ITEM_BOOKMARK = 'item/check-bookmark';
 export const LIKE_ITEM = 'item/like';
 export const CHECK_ITEM_LIKE = 'item/check-like';
 export const COUNT_ITEM_LIKE = 'item/count-like';
+export const COUNT_ITEM_VIEW = 'item/count-view';
