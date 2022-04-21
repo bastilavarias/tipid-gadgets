@@ -10,6 +10,7 @@
     "@ckeditor/ckeditor5-vue2": "^2.0.0",
     "axios": "^0.26.1",
     "core-js": "^3.6.5",
+    "millify": "^4.0.0",
     "moment": "^2.29.3",
     "vue": "^2.6.11",
     "vue-axios": "^3.4.1",

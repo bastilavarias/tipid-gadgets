@@ -68,7 +68,20 @@
 
         <v-card-text class="pt-0 pb-0">
             <v-toolbar flat color="transparent" dense>
-                <v-tooltip bottom>
+                <v-tooltip bottom v-if="!isAuthenticated">
+                    <template v-slot:activator="{ on, attrs }">
+                        <span v-bind="attrs" v-on="on">
+                            <v-icon>mdi-thumb-up</v-icon
+                            ><span style="color: rgba(0, 0, 0, 0.6)"
+                                >({{ toMillify(likesCount) }})</span
+                            >
+                        </span>
+                    </template>
+                    <span
+                        >{{ toMillify(likesCount) }} users like this Item</span
+                    >
+                </v-tooltip>
+                <v-tooltip bottom v-if="isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
                             v-bind="attrs"
@@ -79,13 +92,14 @@
                             @click="likeItem"
                             style="color: rgba(0, 0, 0, 0.6)"
                             v-if="isAuthenticated"
-                            ><v-icon>mdi-thumb-up</v-icon>(99)</v-btn
+                            ><v-icon>mdi-thumb-up</v-icon
+                            ><span>({{ toMillify(likesCount) }})</span></v-btn
                         >
                     </template>
                     <span>{{ isLiked ? 'Unlike' : 'Like' }}</span>
                 </v-tooltip>
                 <v-spacer></v-spacer>
-                <v-tooltip bottom>
+                <v-tooltip bottom v-if="isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
                             icon
@@ -93,7 +107,6 @@
                             v-on="on"
                             :color="isBookmarked ? 'primary' : ''"
                             @click="bookmarkItem"
-                            v-if="isAuthenticated"
                             ><v-icon>mdi-bookmark</v-icon></v-btn
                         >
                     </template>
@@ -101,7 +114,7 @@
                         isBookmarked ? 'Remove bookmark' : 'Bookmark'
                     }}</span>
                 </v-tooltip>
-                <v-tooltip bottom>
+                <v-tooltip bottom v-if="isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn icon v-bind="attrs" v-on="on"
                             ><v-icon>mdi-alert</v-icon></v-btn
@@ -121,6 +134,7 @@ import {
     BOOKMARK_ITEM,
     CHECK_ITEM_BOOKMARK,
     CHECK_ITEM_LIKE,
+    COUNT_ITEM_LIKE,
     LIKE_ITEM,
 } from '@/store/types/item';
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
@@ -145,6 +159,7 @@ export default {
         return {
             isBookmarked: false,
             isLiked: false,
+            likesCount: 0,
         };
     },
 
@@ -169,10 +184,7 @@ export default {
                     message,
                     color: 'success',
                 });
-                this.isBookmarked = await this.$store.dispatch(
-                    CHECK_ITEM_BOOKMARK,
-                    this.itemID
-                );
+                await this.checkItemBookmark();
                 return;
             }
             this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
@@ -196,10 +208,8 @@ export default {
                     message,
                     color: 'success',
                 });
-                this.isLiked = await this.$store.dispatch(
-                    CHECK_ITEM_LIKE,
-                    this.itemID
-                );
+                await this.checkItemLike();
+                await this.getLikesCount();
                 return;
             }
             this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
@@ -208,18 +218,34 @@ export default {
                 color: 'error',
             });
         },
-    },
 
-    async created() {
-        if (this.isAuthenticated) {
+        async getLikesCount() {
+            this.likesCount = await this.$store.dispatch(
+                COUNT_ITEM_LIKE,
+                this.itemID
+            );
+        },
+
+        async checkItemLike() {
             this.isLiked = await this.$store.dispatch(
                 CHECK_ITEM_LIKE,
                 this.itemID
             );
+        },
+
+        async checkItemBookmark() {
             this.isBookmarked = await this.$store.dispatch(
                 CHECK_ITEM_BOOKMARK,
                 this.itemID
             );
+        },
+    },
+
+    async created() {
+        await this.getLikesCount();
+        if (this.isAuthenticated) {
+            await this.checkItemLike();
+            await this.checkItemBookmark();
         }
     },
 };

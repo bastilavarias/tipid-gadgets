@@ -1,3 +1,5 @@
+import millify from 'millify';
+
 const utilityMixin = {
     methods: {
         isEven(number) {
@@ -16,6 +18,10 @@ const utilityMixin = {
             });
 
             return formatter.format(amount);
+        },
+
+        toMillify(value) {
+            return millify(value);
         },
     },
 };

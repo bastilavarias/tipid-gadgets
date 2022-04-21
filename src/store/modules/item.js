@@ -2,6 +2,7 @@ import {
     BOOKMARK_ITEM,
     CHECK_ITEM_BOOKMARK,
     CHECK_ITEM_LIKE,
+    COUNT_ITEM_LIKE,
     DELETE_DRAFT_ITEM,
     GET_DRAFT_ITEMS,
     GET_ITEM,
@@ -140,6 +141,17 @@ const itemModule = {
                 return response.data.data;
             } catch (error) {
                 return false;
+            }
+        },
+
+        async [COUNT_ITEM_LIKE](_, itemID) {
+            try {
+                const response = await apiService.get(
+                    `/item/likes/count/${itemID}`
+                );
+                return response.data.data;
+            } catch (error) {
+                return 0;
             }
         },
     },
