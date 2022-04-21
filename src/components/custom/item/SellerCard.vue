@@ -76,6 +76,7 @@
                             v-on="on"
                             :color="isBookmarked ? 'primary' : ''"
                             @click="bookmarkItem"
+                            v-if="isAuthenticated"
                             ><v-icon small>mdi-bookmark</v-icon></v-btn
                         >
                     </template>
@@ -161,10 +162,11 @@ export default {
     },
 
     async created() {
-        this.isBookmarked = await this.$store.dispatch(
-            CHECK_ITEM_BOOKMARK,
-            this.itemID
-        );
+        if (this.isAuthenticated)
+            this.isBookmarked = await this.$store.dispatch(
+                CHECK_ITEM_BOOKMARK,
+                this.itemID
+            );
     },
 };
 </script>
