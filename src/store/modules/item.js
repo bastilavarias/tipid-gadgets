@@ -1,11 +1,13 @@
 import {
     BOOKMARK_ITEM,
     CHECK_ITEM_BOOKMARK,
+    CHECK_ITEM_LIKE,
     DELETE_DRAFT_ITEM,
     GET_DRAFT_ITEMS,
     GET_ITEM,
     GET_ITEM_IMAGES,
     GET_ITEMS,
+    LIKE_ITEM,
     SAVE_DRAFT_ITEM,
     SAVE_POST_ITEM,
     VIEW_ITEM,
@@ -114,6 +116,26 @@ const itemModule = {
             try {
                 const response = await apiService.get(
                     `/item/bookmarks/check/${itemID}`
+                );
+                return response.data.data;
+            } catch (error) {
+                return false;
+            }
+        },
+
+        async [LIKE_ITEM](_, payload) {
+            try {
+                const response = await apiService.post('/item/likes', payload);
+                return response.data;
+            } catch (error) {
+                return error.response.data;
+            }
+        },
+
+        async [CHECK_ITEM_LIKE](_, itemID) {
+            try {
+                const response = await apiService.get(
+                    `/item/likes/check/${itemID}`
                 );
                 return response.data.data;
             } catch (error) {

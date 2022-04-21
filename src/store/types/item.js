@@ -7,4 +7,6 @@ export const GET_ITEM_IMAGES = 'item/get-images';
 export const GET_ITEM = 'item/get-post';
 export const VIEW_ITEM = 'item/view';
 export const BOOKMARK_ITEM = 'item/bookmark';
-export const CHECK_ITEM_BOOKMARK = 'item/check';
+export const CHECK_ITEM_BOOKMARK = 'item/check-bookmark';
+export const LIKE_ITEM = 'item/like';
+export const CHECK_ITEM_LIKE = 'item/check-like';
