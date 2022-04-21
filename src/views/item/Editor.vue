@@ -285,7 +285,7 @@ export default {
                         price,
                         item_condition_id,
                         item_warranty_id,
-                        description,
+                        description: description.content || null,
                         id,
                     }
                 );
@@ -299,7 +299,7 @@ export default {
     methods: {
         async savePost() {
             this.isSavePostStart = true;
-            const { code, message } = await this.$store.dispatch(
+            const { code, message, data } = await this.$store.dispatch(
                 SAVE_POST_ITEM,
                 this.form
             );
@@ -311,7 +311,10 @@ export default {
                 });
                 await this.getDrafts();
                 this.selectedDraft = null;
-                return await this.$router.push({ name: 'view-item' });
+                return await this.$router.push({
+                    name: 'view-item',
+                    params: { slug: data.slug },
+                });
             }
             this.error = message;
             this.isSavePostStart = false;

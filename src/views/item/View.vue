@@ -36,7 +36,7 @@
 
                 <v-card-text
                     class="secondary--text"
-                    v-html="information.description"
+                    v-html="information.description.content"
                 >
                 </v-card-text>
 
