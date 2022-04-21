@@ -1,4 +1,6 @@
 import {
+    BOOKMARK_ITEM,
+    CHECK_ITEM_BOOKMARK,
     DELETE_DRAFT_ITEM,
     GET_DRAFT_ITEMS,
     GET_ITEM,
@@ -6,6 +8,7 @@ import {
     GET_ITEMS,
     SAVE_DRAFT_ITEM,
     SAVE_POST_ITEM,
+    VIEW_ITEM,
 } from '@/store/types/item';
 import apiService from '@/services/api';
 
@@ -83,6 +86,38 @@ const itemModule = {
                 return response.data.data;
             } catch (error) {
                 return null;
+            }
+        },
+
+        async [VIEW_ITEM](_, payload) {
+            try {
+                const response = await apiService.post('/item/views', payload);
+                return response.data;
+            } catch (error) {
+                return error.response.data;
+            }
+        },
+
+        async [BOOKMARK_ITEM](_, payload) {
+            try {
+                const response = await apiService.post(
+                    '/item/bookmarks',
+                    payload
+                );
+                return response.data;
+            } catch (error) {
+                return error.response.data;
+            }
+        },
+
+        async [CHECK_ITEM_BOOKMARK](_, itemID) {
+            try {
+                const response = await apiService.get(
+                    `/item/bookmarks/check/${itemID}`
+                );
+                return response.data.data;
+            } catch (error) {
+                return false;
             }
         },
     },

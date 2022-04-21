@@ -5,3 +5,6 @@ export const DELETE_DRAFT_ITEM = 'item/delete-draft';
 export const GET_ITEMS = 'item/get-posts';
 export const GET_ITEM_IMAGES = 'item/get-images';
 export const GET_ITEM = 'item/get-post';
+export const VIEW_ITEM = 'item/view';
+export const BOOKMARK_ITEM = 'item/bookmark';
+export const CHECK_ITEM_BOOKMARK = 'item/check';

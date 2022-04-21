@@ -41,117 +41,13 @@
                 </v-card-text>
 
                 <v-card-text>
-                    <v-card color="#f0f0f0" flat outlined>
-                        <v-list-item three-line>
-                            <v-list-item-avatar>
-                                <v-img :src="information.user.avatar"></v-img>
-                            </v-list-item-avatar>
-                            <v-list-item-content>
-                                <v-list-item-title class="d-flex align-center"
-                                    ><span
-                                        class="primary--text font-weight-bold mr-1"
-                                        >{{ information.user.username }}</span
-                                    >
-                                    <v-chip small class="font-weight-bold"
-                                        >Seller</v-chip
-                                    >
-                                </v-list-item-title>
-                                <v-list-item-subtitle
-                                    >on
-                                    {{ toPostDate(information.created_at) }}
-                                </v-list-item-subtitle>
-                                <v-list-item-subtitle
-                                    ><span v-if="information.user.location">
-                                        Location:
-                                        <span
-                                            class="font-weight-bold secondary--text"
-                                            >{{
-                                                information.user.location
-                                            }}</span
-                                        >
-                                    </span>
-                                    <span class="grey--text" v-else>
-                                        No location included
-                                    </span></v-list-item-subtitle
-                                >
-                            </v-list-item-content>
-                            <v-list-item-action>
-                                <v-tooltip bottom>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            color="primary"
-                                            icon
-                                            v-bind="attrs"
-                                            v-on="on"
-                                        >
-                                            <v-icon>mdi-message-text</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>Inquire</span>
-                                </v-tooltip>
-                            </v-list-item-action>
-                        </v-list-item>
-
-                        <v-card-text>
-                            <v-row dense>
-                                <v-col col="12" md="6">
-                                    <div class="d-flex">
-                                        <span class="mr-1">
-                                            <rating-status-chip
-                                                rating="positive"
-                                            ></rating-status-chip>
-                                        </span>
-                                        <span> 100% (678 feedbacks) </span>
-                                    </div>
-                                </v-col>
-                                <v-col cols="12" md="6">
-                                    <div class="d-flex">
-                                        <span class="mr-1">
-                                            <rating-status-chip
-                                                rating="negative"
-                                            ></rating-status-chip>
-                                        </span>
-                                        <span> 0% (0 feedbacks) </span>
-                                    </div>
-                                </v-col>
-                            </v-row>
-                        </v-card-text>
-
-                        <v-toolbar flat color="transparent" dense>
-                            <v-spacer></v-spacer>
-                            <v-toolbar-items>
-                                <v-tooltip bottom>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            icon
-                                            small
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            ><v-icon small
-                                                >mdi-bookmark</v-icon
-                                            ></v-btn
-                                        >
-                                    </template>
-                                    <span>Bookmark</span>
-                                </v-tooltip>
-
-                                <v-tooltip bottom>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            icon
-                                            small
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            ><v-icon small
-                                                >mdi-alert</v-icon
-                                            ></v-btn
-                                        >
-                                    </template>
-                                    <span>Report to Admin</span>
-                                </v-tooltip>
-                            </v-toolbar-items>
-                        </v-toolbar>
-                    </v-card>
+                    <item-seller-card
+                        :itemID="information.id"
+                        :avatar="information.user.avatar"
+                        :username="information.user.username"
+                        :created-at="information.created_at"
+                        :location="information.user.location"
+                    ></item-seller-card>
                 </v-card-text>
             </v-card>
         </v-col>
@@ -159,15 +55,14 @@
 </template>
 
 <script>
-import RatingStatusChip from '@/components/custom/RatingStatusChip';
-import { GET_ITEM } from '@/store/types/item';
+import { GET_ITEM, VIEW_ITEM } from '@/store/types/item';
 import utilityMixin from '@/mixins/utility';
-import dateMixin from '@/mixins/date';
+import ItemSellerCard from '@/components/custom/item/SellerCard';
 
 export default {
-    components: { RatingStatusChip },
+    components: { ItemSellerCard },
 
-    mixins: [utilityMixin, dateMixin],
+    mixins: [utilityMixin],
 
     data() {
         return {
@@ -176,8 +71,24 @@ export default {
     },
 
     computed: {
+        user() {
+            return this.$store.state.authentication.user || null;
+        },
+
         slug() {
             return this.$route.params.slug || null;
+        },
+    },
+
+    watch: {
+        async information(val) {
+            if (val) {
+                const payload = {
+                    item_id: this.information.id,
+                    user_id: this.user.id || null,
+                };
+                await this.$store.dispatch(VIEW_ITEM, payload);
+            }
         },
     },
 
