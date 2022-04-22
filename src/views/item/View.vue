@@ -41,13 +41,21 @@
                 </v-card-text>
 
                 <v-card-text>
-                    <item-seller-card
-                        :itemID="information.id"
-                        :avatar="information.user.avatar"
-                        :username="information.user.username"
-                        :created-at="information.created_at"
-                        :location="information.user.location"
-                    ></item-seller-card>
+                    <v-row>
+                        <v-col cols="12" v-if="isAuthenticated">
+                            <item-post-insight-card></item-post-insight-card>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <item-seller-card
+                                :itemID="information.id"
+                                :avatar="information.user.avatar"
+                                :username="information.user.username"
+                                :created-at="information.created_at"
+                                :location="information.user.location"
+                            ></item-seller-card>
+                        </v-col>
+                    </v-row>
                 </v-card-text>
             </v-card>
         </v-col>
@@ -58,9 +66,10 @@
 import { GET_ITEM, VIEW_ITEM } from '@/store/types/item';
 import utilityMixin from '@/mixins/utility';
 import ItemSellerCard from '@/components/custom/item/SellerCard';
+import ItemPostInsightCard from '@/components/custom/item/PostInsightCard';
 
 export default {
-    components: { ItemSellerCard },
+    components: { ItemPostInsightCard, ItemSellerCard },
 
     mixins: [utilityMixin],
 
@@ -77,6 +86,10 @@ export default {
 
         slug() {
             return this.$route.params.slug || null;
+        },
+
+        isAuthenticated() {
+            return this.$store.state.authentication.isAuthenticated;
         },
     },
 
