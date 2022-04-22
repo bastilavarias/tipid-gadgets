@@ -1,0 +1,14 @@
+export const SAVE_POST_TOPIC = 'topic/save-post';
+export const SAVE_DRAFT_TOPIC = 'topic/save-draft';
+export const GET_DRAFT_TOPICS = 'topic/get-drafts';
+export const DELETE_DRAFT_TOPIC = 'topic/delete-draft';
+export const GET_TOPICS = 'topic/get-posts';
+export const GET_TOPIC_IMAGES = 'topic/get-images';
+export const GET_TOPIC = 'topic/get-post';
+export const VIEW_TOPIC = 'topic/view';
+export const BOOKMARK_TOPIC = 'topic/bookmark';
+export const CHECK_TOPIC_BOOKMARK = 'topic/check-bookmark';
+export const LIKE_TOPIC = 'topic/like';
+export const CHECK_TOPIC_LIKE = 'topic/check-like';
+export const COUNT_TOPIC_LIKE = 'topic/count-like';
+export const COUNT_TOPIC_VIEW = 'topic/count-view';

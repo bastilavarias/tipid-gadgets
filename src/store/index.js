@@ -4,6 +4,8 @@ import authenticationModule from '@/store/modules/authentication';
 import referenceModule from '@/store/modules/reference';
 import systemModule from '@/store/modules/system';
 import itemModule from '@/store/modules/item';
+import insightModule from '@/store/modules/insight';
+import topicModule from '@/store/modules/topic';
 
 Vue.use(Vuex);
 
@@ -13,5 +15,7 @@ export default new Vuex.Store({
         reference: referenceModule,
         authentication: authenticationModule,
         item: itemModule,
+        insight: insightModule,
+        topic: topicModule,
     },
 });

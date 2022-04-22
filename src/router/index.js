@@ -63,7 +63,7 @@ const routes = [
                     },
 
                     {
-                        path: 'view-topic',
+                        path: ':slug',
                         name: 'view-topic',
                         component: () => import('@/views/forum/View'),
                     },

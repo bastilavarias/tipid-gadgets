@@ -202,7 +202,6 @@ import {
     GET_ITEM_SECTIONS,
     GET_ITEM_WARRANTIES,
 } from '@/store/types/reference';
-import { REGISTER } from '@/store/types/authentication';
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 import utilityMixin from '@/mixins/utility';
 import {

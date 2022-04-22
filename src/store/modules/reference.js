@@ -5,6 +5,7 @@ import {
     GET_ITEM_SECTIONS,
     GET_ITEM_WARRANTIES,
     GET_LOCATIONS,
+    GET_TOPIC_SECTIONS,
 } from '@/store/types/reference';
 
 const referenceModule = {
@@ -104,6 +105,26 @@ const referenceModule = {
                     JSON.stringify(itemWarranties)
                 );
                 return itemWarranties;
+            } catch (error) {
+                return [];
+            }
+        },
+
+        async [GET_TOPIC_SECTIONS]() {
+            try {
+                let topicSections =
+                    JSON.parse(window.localStorage.getItem('topic_sections')) ||
+                    [];
+                if (topicSections.length > 0) return topicSections;
+                const response = await apiService.get(
+                    '/reference/topic/sections'
+                );
+                topicSections = response.data.data;
+                window.localStorage.setItem(
+                    'topic_sections',
+                    JSON.stringify(topicSections)
+                );
+                return topicSections;
             } catch (error) {
                 return [];
             }
