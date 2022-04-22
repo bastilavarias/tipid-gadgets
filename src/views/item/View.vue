@@ -43,7 +43,9 @@
                 <v-card-text>
                     <v-row>
                         <v-col cols="12" v-if="isAuthenticated">
-                            <item-post-insight-card></item-post-insight-card>
+                            <item-post-insight-card
+                                :itemID="information.id"
+                            ></item-post-insight-card>
                         </v-col>
 
                         <v-col cols="12">
