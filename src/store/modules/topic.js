@@ -67,7 +67,6 @@ const topicModule = {
                 const params = new URLSearchParams(url.search);
                 if (page) params.set('page', page);
                 if (perPage) params.set('per_page', perPage);
-                if (filterBy) params.set('filter_by', filterBy);
                 if (sortBy) params.set('sort_by', sortBy);
                 if (orderBy) params.set('order_by', orderBy);
                 if (search) params.set('search', search);

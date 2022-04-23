@@ -174,9 +174,12 @@
 <script>
 import ItemPreview from '@/components/custom/preview/Item';
 import { GET_ITEMS } from '@/store/types/item';
+import pageMixin from '@/mixins/page';
 
 export default {
     name: 'Home',
+
+    mixins: [pageMixin],
 
     components: { ItemPreview },
 
@@ -186,7 +189,7 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 10,
+                perPage: 20,
                 filterBy: 'item_for_sale',
                 sortBy: 'created_at',
                 orderBy: 'desc',
@@ -196,7 +199,7 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 10,
+                perPage: 20,
                 filterBy: 'want_to_buy',
                 sortBy: 'created_at',
                 orderBy: 'desc',
@@ -253,9 +256,26 @@ export default {
         },
     },
 
-    async created() {
-        await this.getItemsForSale();
-        await this.getWantToBuys();
+    async beforeRouteEnter(to, from, next) {
+        next(async (vm) => {
+            if (from.name) {
+                const { itemForSale, wantToBuy } = vm.retrievePageData(to.name);
+                vm.itemForSale = Object.assign({}, itemForSale);
+                vm.wantToBuy = Object.assign({}, wantToBuy);
+                return;
+            }
+            await vm.getItemsForSale();
+            await vm.getWantToBuys();
+            next();
+        });
+    },
+
+    async beforeRouteLeave(to, from, next) {
+        this.savePageData(from.name, {
+            itemForSale: this.itemForSale,
+            wantToBuy: this.wantToBuy,
+        });
+        next();
     },
 };
 </script>

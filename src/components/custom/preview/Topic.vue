@@ -5,18 +5,19 @@
                 <v-list-item-title>
                     <router-link
                         class="primary--text font-weight-bold"
-                        :to="{ name: 'view-topic' }"
+                        :to="{ name: 'view-topic', params: { slug } }"
                         style="text-decoration: none"
-                        >Battlefield 2042 (No Trading and
-                        Hacking/Cheating)</router-link
+                        >{{ name }}</router-link
                     >
                 </v-list-item-title>
 
                 <v-list-item-subtitle>
-                    <span class="primary--text">Software/Games</span
+                    <span class="primary--text">{{ section.name }}</span
                     ><span class="grey--text"> - posted by</span>
-                    <span class="primary--text"> axelangel007</span>
-                    <span class="grey--text"> on 18 Mar 2022 — 50 replies</span>
+                    <span class="primary--text"> {{ user.username }}</span>
+                    <span class="grey--text">
+                        on {{ toPostDate(createdAt) }} — 50 replies</span
+                    >
                 </v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
@@ -25,14 +26,21 @@
 
 <script>
 import utilityMixin from '@/mixins/utility';
+import dateMixin from '@/mixins/date';
 
 export default {
     name: 'topic-preview',
 
+    mixins: [utilityMixin, dateMixin],
+
     props: {
         index: Number,
+        topicID: Number,
+        name: String,
+        section: Object,
+        user: Object,
+        createdAt: String,
+        slug: String,
     },
-
-    mixins: [utilityMixin],
 };
 </script>
