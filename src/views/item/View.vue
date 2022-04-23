@@ -7,8 +7,8 @@
                     >Item Details</v-card-title
                 >
                 <v-card-subtitle class="primary--text"
-                    >{{ information.item_section.name }}:
-                    {{ information.item_category.name }}</v-card-subtitle
+                    >{{ information.section.name }}:
+                    {{ information.category.name }}</v-card-subtitle
                 >
                 <v-list-item three-line>
                     <v-list-item-content>
@@ -24,11 +24,11 @@
                         >
                         <v-list-item-subtitle>
                             <span class="font-weight-bold success--text">{{
-                                information.item_condition.name
+                                information.condition.name
                             }}</span>
                             <span class="mx-1">with</span>
                             <span class="font-weight-bold success--text">{{
-                                information.item_warranty.name
+                                information.warranty.name
                             }}</span>
                         </v-list-item-subtitle>
                     </v-list-item-content>
