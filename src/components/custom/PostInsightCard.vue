@@ -60,16 +60,17 @@
 </template>
 
 <script>
-import { GET_ITEM_INSIGHT } from '@/store/types/insight';
+import { GET_ITEM_INSIGHT, GET_TOPIC_INSIGHT } from '@/store/types/insight';
 import utilityMixin from '@/mixins/utility';
 
 export default {
-    name: 'item-post-insight-card',
+    name: 'post-insight-card',
 
     mixins: [utilityMixin],
 
     props: {
-        itemID: Number,
+        id: Number,
+        type: String,
     },
 
     data() {
@@ -82,10 +83,9 @@ export default {
     methods: {
         async getInsights() {
             this.isGetInsightsStart = true;
-            this.insights = await this.$store.dispatch(
-                GET_ITEM_INSIGHT,
-                this.itemID
-            );
+            const actionName =
+                this.type === 'item' ? GET_ITEM_INSIGHT : GET_TOPIC_INSIGHT;
+            this.insights = await this.$store.dispatch(actionName, this.id);
             this.isGetInsightsStart = false;
         },
     },

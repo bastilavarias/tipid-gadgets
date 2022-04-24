@@ -37,6 +37,13 @@
 
                 <v-card-text>
                     <v-row>
+                        <v-col cols="12" v-if="isPoster">
+                            <post-insight-card
+                                :id="information.id"
+                                type="topic"
+                            ></post-insight-card>
+                        </v-col>
+
                         <v-col cols="12">
                             <topic-author-card
                                 :topicID="information.id"
@@ -69,9 +76,11 @@ import utilityMixin from '@/mixins/utility';
 import { VIEW_TOPIC, GET_TOPIC } from '@/store/types/topic';
 import dateMixin from '@/mixins/date';
 import TopicAuthorCard from '@/components/custom/forum/AuthorCard';
+import PostInsightCard from '@/components/custom/PostInsightCard';
 
 export default {
     components: {
+        PostInsightCard,
         TopicAuthorCard,
         ForumCommentListCard,
         ForumCommentReplyCard,

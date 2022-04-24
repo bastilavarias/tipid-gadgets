@@ -1,6 +1,6 @@
 <template>
     <v-card color="#f0f0f0" flat outlined>
-        <v-list-item three-line>
+        <v-list-item two-line>
             <v-list-item-avatar>
                 <v-img :src="avatar"></v-img>
             </v-list-item-avatar>
@@ -11,10 +11,6 @@
                     }}</span>
                     <v-chip small class="font-weight-bold">Author</v-chip>
                 </v-list-item-title>
-                <v-list-item-subtitle
-                    >on
-                    {{ toPostDate(createdAt) }}
-                </v-list-item-subtitle>
                 <v-list-item-subtitle
                     ><span v-if="location">
                         Location:

@@ -43,9 +43,10 @@
                 <v-card-text>
                     <v-row>
                         <v-col cols="12" v-if="isPoster">
-                            <item-post-insight-card
-                                :itemID="information.id"
-                            ></item-post-insight-card>
+                            <post-insight-card
+                                :id="information.id"
+                                type="item"
+                            ></post-insight-card>
                         </v-col>
 
                         <v-col cols="12">
@@ -68,10 +69,10 @@
 import { GET_ITEM, VIEW_ITEM } from '@/store/types/item';
 import utilityMixin from '@/mixins/utility';
 import ItemSellerCard from '@/components/custom/item/SellerCard';
-import ItemPostInsightCard from '@/components/custom/item/PostInsightCard';
+import PostInsightCard from '@/components/custom/PostInsightCard';
 
 export default {
-    components: { ItemPostInsightCard, ItemSellerCard },
+    components: { PostInsightCard, ItemSellerCard },
 
     mixins: [utilityMixin],
 
