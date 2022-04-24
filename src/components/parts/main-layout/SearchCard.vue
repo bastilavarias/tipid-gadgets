@@ -10,6 +10,7 @@
                         dense
                         placeholder="Search"
                         hide-details
+                        v-model="query"
                     ></v-text-field>
                 </v-col>
 
@@ -22,6 +23,7 @@
                         :items="types"
                         item-value="slug"
                         item-text="name"
+                        v-model="selectedType"
                     ></v-select>
                 </v-col>
 
@@ -31,6 +33,8 @@
                         depressed
                         block
                         class="text-capitalize"
+                        @click="search"
+                        :disabled="!query"
                     >
                         Search
                     </v-btn>
@@ -56,7 +60,18 @@ export default {
     data() {
         return {
             types: [],
+            query: null,
+            selectedType: null,
         };
+    },
+
+    methods: {
+        async search() {
+            await this.$router.push({
+                name: 'search',
+                query: { query: this.query, type: this.selectedType },
+            });
+        },
     },
 
     async created() {
