@@ -42,7 +42,7 @@
 
                 <v-card-text>
                     <v-row>
-                        <v-col cols="12" v-if="isAuthenticated">
+                        <v-col cols="12" v-if="isPoster">
                             <item-post-insight-card
                                 :itemID="information.id"
                             ></item-post-insight-card>
@@ -92,6 +92,11 @@ export default {
 
         isAuthenticated() {
             return this.$store.state.authentication.isAuthenticated;
+        },
+
+        isPoster() {
+            if (!this.isAuthenticated || !this.information) return false;
+            return this.information.user.id === this.user.id;
         },
     },
 
