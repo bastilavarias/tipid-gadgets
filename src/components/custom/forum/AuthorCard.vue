@@ -9,7 +9,7 @@
                     ><span class="primary--text font-weight-bold mr-1">{{
                         username
                     }}</span>
-                    <v-chip small class="font-weight-bold">Seller</v-chip>
+                    <v-chip small class="font-weight-bold">Author</v-chip>
                 </v-list-item-title>
                 <v-list-item-subtitle
                     >on
@@ -27,42 +27,7 @@
                     </span></v-list-item-subtitle
                 >
             </v-list-item-content>
-            <v-list-item-action>
-                <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-btn color="primary" icon v-bind="attrs" v-on="on">
-                            <v-icon>mdi-message-text</v-icon>
-                        </v-btn>
-                    </template>
-                    <span>Inquire</span>
-                </v-tooltip>
-            </v-list-item-action>
         </v-list-item>
-
-        <v-card-text>
-            <v-row dense>
-                <v-col col="12" md="6">
-                    <div class="d-flex">
-                        <span class="mr-1">
-                            <rating-status-chip
-                                rating="positive"
-                            ></rating-status-chip>
-                        </span>
-                        <span> 100% (678 feedbacks) </span>
-                    </div>
-                </v-col>
-                <v-col cols="12" md="6">
-                    <div class="d-flex">
-                        <span class="mr-1">
-                            <rating-status-chip
-                                rating="negative"
-                            ></rating-status-chip>
-                        </span>
-                        <span> 0% (0 feedbacks) </span>
-                    </div>
-                </v-col>
-            </v-row>
-        </v-card-text>
 
         <v-card-text class="pt-0 pb-0">
             <v-toolbar flat color="transparent" dense>
@@ -145,27 +110,24 @@
 
 <script>
 import dateMixin from '@/mixins/date';
-import RatingStatusChip from '@/components/custom/RatingStatusChip';
 import {
-    BOOKMARK_ITEM,
-    CHECK_ITEM_BOOKMARK,
-    CHECK_ITEM_LIKE,
-    COUNT_ITEM_LIKE,
-    COUNT_ITEM_VIEW,
-    LIKE_ITEM,
-} from '@/store/types/item';
+    BOOKMARK_TOPIC,
+    CHECK_TOPIC_BOOKMARK,
+    CHECK_TOPIC_LIKE,
+    COUNT_TOPIC_LIKE,
+    COUNT_TOPIC_VIEW,
+    LIKE_TOPIC,
+} from '@/store/types/topic';
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 import utilityMixin from '@/mixins/utility';
 
 export default {
-    name: 'item-seller-card',
-
-    components: { RatingStatusChip },
+    name: 'topic-author-card',
 
     mixins: [dateMixin, utilityMixin],
 
     props: {
-        itemID: Number,
+        topicID: Number,
         avatar: String,
         username: String,
         createdAt: String,
@@ -190,10 +152,10 @@ export default {
     methods: {
         async bookmarkItem() {
             const payload = {
-                item_id: this.itemID,
+                topic_id: this.topicID,
             };
             const { code, message } = await this.$store.dispatch(
-                BOOKMARK_ITEM,
+                BOOKMARK_TOPIC,
                 payload
             );
             if (this.isHTTPRequestSuccess(code)) {
@@ -214,10 +176,10 @@ export default {
 
         async likeItem() {
             const payload = {
-                item_id: this.itemID,
+                topic_id: this.topicID,
             };
             const { code, message } = await this.$store.dispatch(
-                LIKE_ITEM,
+                LIKE_TOPIC,
                 payload
             );
             if (this.isHTTPRequestSuccess(code)) {
@@ -239,29 +201,29 @@ export default {
 
         async getLikesCount() {
             this.likesCount = await this.$store.dispatch(
-                COUNT_ITEM_LIKE,
-                this.itemID
+                COUNT_TOPIC_LIKE,
+                this.topicID
             );
         },
 
         async getViewsCount() {
             this.viewsCount = await this.$store.dispatch(
-                COUNT_ITEM_VIEW,
-                this.itemID
+                COUNT_TOPIC_VIEW,
+                this.topicID
             );
         },
 
         async checkItemLike() {
             this.isLiked = await this.$store.dispatch(
-                CHECK_ITEM_LIKE,
-                this.itemID
+                CHECK_TOPIC_LIKE,
+                this.topicID
             );
         },
 
         async checkItemBookmark() {
             this.isBookmarked = await this.$store.dispatch(
-                CHECK_ITEM_BOOKMARK,
-                this.itemID
+                CHECK_TOPIC_BOOKMARK,
+                this.topicID
             );
         },
     },
