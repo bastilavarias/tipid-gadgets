@@ -19,6 +19,9 @@
                         outlined
                         dense
                         placeholder="Type"
+                        :items="types"
+                        item-value="slug"
+                        item-text="name"
                     ></v-select>
                 </v-col>
 
@@ -45,7 +48,19 @@
 </template>
 
 <script>
+import { GET_SEARCH_TYPES } from '@/store/types/reference';
+
 export default {
     name: 'main-layout-search-card',
+
+    data() {
+        return {
+            types: [],
+        };
+    },
+
+    async created() {
+        this.types = await this.$store.dispatch(GET_SEARCH_TYPES);
+    },
 };
 </script>

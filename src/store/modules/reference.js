@@ -5,6 +5,7 @@ import {
     GET_ITEM_SECTIONS,
     GET_ITEM_WARRANTIES,
     GET_LOCATIONS,
+    GET_SEARCH_TYPES,
     GET_TOPIC_SECTIONS,
 } from '@/store/types/reference';
 
@@ -125,6 +126,26 @@ const referenceModule = {
                     JSON.stringify(topicSections)
                 );
                 return topicSections;
+            } catch (error) {
+                return [];
+            }
+        },
+
+        async [GET_SEARCH_TYPES]() {
+            try {
+                let searchTypes =
+                    JSON.parse(window.localStorage.getItem('search_types')) ||
+                    [];
+                if (searchTypes.length > 0) return searchTypes;
+                const response = await apiService.get(
+                    '/reference/search-types'
+                );
+                searchTypes = response.data.data;
+                window.localStorage.setItem(
+                    'search_types',
+                    JSON.stringify(searchTypes)
+                );
+                return searchTypes;
             } catch (error) {
                 return [];
             }
