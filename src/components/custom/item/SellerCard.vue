@@ -30,8 +30,14 @@
             <v-list-item-action>
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-btn color="primary" icon v-bind="attrs" v-on="on">
-                            <v-icon>mdi-message-text</v-icon>
+                        <v-btn
+                            dense
+                            color="primary"
+                            icon
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            <v-icon small>mdi-message-text</v-icon>
                         </v-btn>
                     </template>
                     <span>Inquire</span>
@@ -71,12 +77,13 @@
                 <v-tooltip bottom v-if="!isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
+                            dense
                             v-bind="attrs"
                             v-on="on"
                             depressed
                             text
                             style="color: rgba(0, 0, 0, 0.6)"
-                            ><v-icon>mdi-thumb-up</v-icon
+                            ><v-icon small>mdi-thumb-up</v-icon
                             ><span>({{ toMillify(likesCount) }})</span></v-btn
                         >
                     </template>
@@ -85,6 +92,7 @@
                 <v-tooltip bottom v-if="isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
+                            dense
                             v-bind="attrs"
                             v-on="on"
                             depressed
@@ -92,7 +100,7 @@
                             :text="isLiked"
                             @click="likeItem"
                             style="color: rgba(0, 0, 0, 0.6)"
-                            ><v-icon>mdi-thumb-up</v-icon
+                            ><v-icon small>mdi-thumb-up</v-icon
                             ><span>({{ toMillify(likesCount) }})</span></v-btn
                         >
                     </template>
@@ -101,12 +109,13 @@
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
+                            dense
                             v-bind="attrs"
                             v-on="on"
                             depressed
                             text
                             style="color: rgba(0, 0, 0, 0.6)"
-                            ><v-icon>mdi-eye</v-icon
+                            ><v-icon small>mdi-eye</v-icon
                             ><span>({{ toMillify(viewsCount) }})</span></v-btn
                         >
                     </template>
@@ -116,12 +125,13 @@
                 <v-tooltip bottom v-if="isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
+                            dense
                             icon
                             v-bind="attrs"
                             v-on="on"
                             :color="isBookmarked ? 'primary' : ''"
                             @click="bookmarkItem"
-                            ><v-icon>mdi-bookmark</v-icon></v-btn
+                            ><v-icon small>mdi-bookmark</v-icon></v-btn
                         >
                     </template>
                     <span>{{
@@ -130,8 +140,8 @@
                 </v-tooltip>
                 <v-tooltip bottom v-if="isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
-                        <v-btn icon v-bind="attrs" v-on="on"
-                            ><v-icon>mdi-alert</v-icon></v-btn
+                        <v-btn dense icon v-bind="attrs" v-on="on"
+                            ><v-icon small>mdi-alert</v-icon></v-btn
                         >
                     </template>
                     <span>Report to Admin</span>
