@@ -256,26 +256,18 @@ export default {
         },
     },
 
-    async beforeRouteEnter(to, from, next) {
-        next(async (vm) => {
-            if (from.name) {
-                const { itemForSale, wantToBuy } = vm.retrievePageData(to.name);
-                vm.itemForSale = Object.assign({}, itemForSale);
-                vm.wantToBuy = Object.assign({}, wantToBuy);
-                return;
-            }
-            await vm.getItemsForSale();
-            await vm.getWantToBuys();
-            next();
-        });
+    async created() {
+        await this.getItemsForSale();
+        await this.getWantToBuys();
     },
 
-    async beforeRouteLeave(to, from, next) {
-        this.savePageData(from.name, {
-            itemForSale: this.itemForSale,
-            wantToBuy: this.wantToBuy,
+    beforeRouteEnter(to, from, next) {
+        next(async (vm) => {
+            if (!from.name) {
+                await vm.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
+            }
+            next();
         });
-        next();
     },
 };
 </script>

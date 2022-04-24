@@ -22,6 +22,14 @@
                 </v-card-title>
 
                 <v-card-text>
+                    <v-row dense v-if="topics.loading">
+                        <template v-for="i in 20">
+                            <v-col cols="12" :key="i">
+                                <v-skeleton-loader type="list-item-two-line">
+                                </v-skeleton-loader>
+                            </v-col>
+                        </template>
+                    </v-row>
                     <v-row dense>
                         <template v-for="(topic, index) in topics.items">
                             <v-col cols="12" :key="index">
@@ -46,8 +54,11 @@
 <script>
 import TopicPreview from '@/components/custom/preview/Topic';
 import { GET_TOPICS } from '@/store/types/topic';
+import pageMixin from '@/mixins/page';
 export default {
     name: 'Home',
+
+    mixins: [pageMixin],
 
     components: { TopicPreview },
 
@@ -62,7 +73,6 @@ export default {
                 sortBy: 'created_at',
                 orderBy: 'desc',
             },
-            shouldEnableLoading: false,
         };
     },
 
@@ -76,7 +86,7 @@ export default {
                 sortBy,
                 orderBy,
             };
-            if (this.shouldEnableLoading) this.topics.loading = true;
+            this.topics.loading = true;
             this.topics.items = await this.$store.dispatch(GET_TOPICS, payload);
             this.topics.loading = false;
         },
@@ -84,12 +94,6 @@ export default {
 
     async created() {
         await this.getTopics();
-    },
-
-    async beforeRouteEnter(to, from, next) {
-        const routeNames = ['view-topic'];
-        if (routeNames.includes(from)) this.shouldEnableLoading = true;
-        next();
     },
 };
 </script>

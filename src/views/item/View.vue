@@ -111,7 +111,7 @@ export default {
         async getInformation() {
             this.information = await this.$store.dispatch(GET_ITEM, this.slug);
             this.$nextTick(() => {
-                this.$vuetify.goTo(0);
+                this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
             });
         },
     },

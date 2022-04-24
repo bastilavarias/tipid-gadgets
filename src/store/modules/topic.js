@@ -70,7 +70,9 @@ const topicModule = {
                 if (sortBy) params.set('sort_by', sortBy);
                 if (orderBy) params.set('order_by', orderBy);
                 if (search) params.set('search', search);
-                const response = await apiService.get(`/topic?${params}`);
+                const response = await apiService.get(`/topic?${params}`, {
+                    useCache: true,
+                });
                 return response.data.data;
             } catch (error) {
                 return [];
