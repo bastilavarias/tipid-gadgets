@@ -30,14 +30,8 @@
             <v-list-item-action>
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                            dense
-                            color="primary"
-                            icon
-                            v-bind="attrs"
-                            v-on="on"
-                        >
-                            <v-icon small>mdi-message-text</v-icon>
+                        <v-btn color="primary" icon v-bind="attrs" v-on="on">
+                            <v-icon>mdi-message-text</v-icon>
                         </v-btn>
                     </template>
                     <span>Inquire</span>
@@ -77,7 +71,7 @@
                 <v-tooltip bottom v-if="!isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
-                            dense
+                            small
                             v-bind="attrs"
                             v-on="on"
                             depressed
@@ -92,7 +86,7 @@
                 <v-tooltip bottom v-if="isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
-                            dense
+                            small
                             v-bind="attrs"
                             v-on="on"
                             depressed
@@ -109,7 +103,7 @@
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
-                            dense
+                            small
                             v-bind="attrs"
                             v-on="on"
                             depressed
@@ -125,7 +119,7 @@
                 <v-tooltip bottom v-if="isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
-                            dense
+                            small
                             icon
                             v-bind="attrs"
                             v-on="on"
@@ -140,7 +134,7 @@
                 </v-tooltip>
                 <v-tooltip bottom v-if="isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
-                        <v-btn dense icon v-bind="attrs" v-on="on"
+                        <v-btn small icon v-bind="attrs" v-on="on"
                             ><v-icon small>mdi-alert</v-icon></v-btn
                         >
                     </template>
