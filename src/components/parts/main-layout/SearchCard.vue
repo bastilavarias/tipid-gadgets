@@ -43,7 +43,7 @@
         </v-card-text>
 
         <v-card-actions>
-            <v-btn color="primary" text block>
+            <v-btn color="primary" text block :to="{ name: 'search' }">
                 <span class="text-capitalize">Use Advance Search</span>
                 <v-icon class="ml-1">mdi-magnify</v-icon>
             </v-btn>
