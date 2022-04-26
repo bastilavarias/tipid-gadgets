@@ -1,7 +1,7 @@
 <template>
     <v-card color="#f0f0f0" flat outlined>
         <v-list-item three-line>
-            <v-list-item-avatar>
+            <v-list-item-avatar v-if="avatar">
                 <v-img :src="avatar"></v-img>
             </v-list-item-avatar>
             <v-list-item-content>

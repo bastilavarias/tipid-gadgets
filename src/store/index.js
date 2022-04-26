@@ -6,6 +6,7 @@ import systemModule from '@/store/modules/system';
 import itemModule from '@/store/modules/item';
 import insightModule from '@/store/modules/insight';
 import topicModule from '@/store/modules/topic';
+import userModule from '@/store/modules/user';
 
 Vue.use(Vuex);
 
@@ -17,5 +18,6 @@ export default new Vuex.Store({
         item: itemModule,
         insight: insightModule,
         topic: topicModule,
+        user: userModule,
     },
 });

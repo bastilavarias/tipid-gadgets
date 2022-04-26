@@ -107,6 +107,32 @@
                             </template>
                         </v-row>
                     </template>
+
+                    <template v-if="mode.members">
+                        <v-row dense v-if="member.loading">
+                            <template v-for="i in 20">
+                                <v-col cols="12" :key="i">
+                                    <v-skeleton-loader
+                                        type="list-item-two-line"
+                                    >
+                                    </v-skeleton-loader>
+                                </v-col>
+                            </template>
+                        </v-row>
+                        <v-row dense>
+                            <template v-for="(user, index) in member.items">
+                                <v-col cols="12" :key="index">
+                                    <user-preview
+                                        :userID="user.id"
+                                        :name="user.name"
+                                        :username="user.username"
+                                        :location="user.location"
+                                        :avatar="user.avatar"
+                                    ></user-preview>
+                                </v-col>
+                            </template>
+                        </v-row>
+                    </template>
                 </v-card-text>
             </v-card>
         </v-col>
@@ -124,9 +150,11 @@ import ItemPreview from '@/components/custom/preview/Item';
 import { GET_SEARCH_TYPES } from '@/store/types/reference';
 import { GET_TOPICS } from '@/store/types/topic';
 import TopicPreview from '@/components/custom/preview/Topic';
+import { GET_USERS } from '@/store/types/user';
+import UserPreview from '@/components/custom/preview/User';
 
 export default {
-    components: { TopicPreview, ItemPreview, SearchOptionDialog },
+    components: { UserPreview, TopicPreview, ItemPreview, SearchOptionDialog },
 
     data() {
         return {
@@ -141,6 +169,7 @@ export default {
                 warrantyID: null,
                 minimumPrice: null,
                 maximumPrice: null,
+                location: null,
                 sortBy: 'created_at',
                 orderBy: 'desc',
             },
@@ -163,6 +192,14 @@ export default {
                 orderBy: 'desc',
             },
             forumTopic: {
+                loading: false,
+                items: [],
+                page: 1,
+                perPage: 20,
+                sortBy: 'created_at',
+                orderBy: 'desc',
+            },
+            member: {
                 loading: false,
                 items: [],
                 page: 1,
@@ -239,6 +276,7 @@ export default {
                 maximumPrice,
                 sortBy,
                 orderBy,
+                location,
             } = this.options;
             if (type === 'items_for_sale') {
                 const payload = {
@@ -297,6 +335,20 @@ export default {
                 );
                 this.forumTopic.loading = false;
             } else if (type === 'members') {
+                const payload = {
+                    page: 1,
+                    perPage: 20,
+                    location,
+                    sortBy,
+                    orderBy: orderBy,
+                    search: keywords,
+                };
+                this.member.loading = true;
+                this.member.items = await this.$store.dispatch(
+                    GET_USERS,
+                    payload
+                );
+                this.member.loading = false;
             }
 
             await this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
