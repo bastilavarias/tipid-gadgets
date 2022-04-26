@@ -18,6 +18,12 @@
                             dense
                             hide-details
                             label="Type"
+                            item-value="slug"
+                            item-text="name"
+                            :items="types"
+                            clearable
+                            @click:clear="optionsLocal.type = null"
+                            v-model="optionsLocal.type"
                         ></v-select>
                     </v-col>
 
@@ -27,37 +33,56 @@
                             hide-details
                             label="Keywords"
                             outlined
+                            v-model="optionsLocal.keywords"
                         ></v-text-field>
                     </v-col>
 
-                    <v-col cols="12">
+                    <v-col cols="12" v-if="isItemsForSale || isWantToBuys">
                         <v-select
                             outlined
                             dense
                             hide-details
                             label="Category"
+                            item-value="id"
+                            item-text="name"
+                            :items="categories"
+                            clearable
+                            @click:clear="optionsLocal.categoryID = null"
+                            v-model="optionsLocal.categoryID"
                         ></v-select>
                     </v-col>
 
-                    <v-col cols="12">
+                    <v-col cols="12" v-if="isItemsForSale || isWantToBuys">
                         <v-select
                             outlined
                             dense
                             hide-details
                             label="Condition"
+                            item-value="id"
+                            item-text="name"
+                            :items="conditions"
+                            clearable
+                            @click:clear="optionsLocal.conditionID = null"
+                            v-model="optionsLocal.conditionID"
                         ></v-select>
                     </v-col>
 
-                    <v-col cols="12">
+                    <v-col cols="12" v-if="isItemsForSale || isWantToBuys">
                         <v-select
                             outlined
                             dense
                             hide-details
                             label="Warranty"
+                            item-value="id"
+                            item-text="name"
+                            :items="warranties"
+                            clearable
+                            @click:clear="optionsLocal.warrantyID = null"
+                            v-model="optionsLocal.warrantyID"
                         ></v-select>
                     </v-col>
 
-                    <v-col cols="12">
+                    <v-col cols="12" v-if="isItemsForSale || isWantToBuys">
                         <v-row dense>
                             <v-col cols="12" md="6">
                                 <v-text-field
@@ -65,6 +90,7 @@
                                     dense
                                     hide-details
                                     label="Minimum Price"
+                                    v-model="optionsLocal.minimumPrice"
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12" md="6">
@@ -73,12 +99,13 @@
                                     dense
                                     hide-details
                                     label="Maximum Price"
+                                    v-model="optionsLocal.maximumPrice"
                                 ></v-text-field>
                             </v-col>
                         </v-row>
                     </v-col>
 
-                    <v-col cols="12">
+                    <v-col cols="12" v-if="isItemsForSale || isWantToBuys">
                         <v-row dense>
                             <v-col cols="12" md="6">
                                 <v-select
@@ -104,7 +131,13 @@
 
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="secondary" class="text-capitalize" depressed>
+                <v-btn
+                    color="secondary"
+                    class="text-capitalize"
+                    depressed
+                    @click="search"
+                    :disabled="!optionsLocal.type"
+                >
                     Search
                 </v-btn>
             </v-card-actions>
@@ -113,6 +146,13 @@
 </template>
 
 <script>
+import {
+    GET_ITEM_CATEGORIES,
+    GET_ITEM_CONDITIONS,
+    GET_ITEM_WARRANTIES,
+    GET_SEARCH_TYPES,
+} from '@/store/types/reference';
+
 export default {
     name: 'search-option-dialog',
 
@@ -125,7 +165,29 @@ export default {
         return {
             isOpenLocal: this.isOpen,
             optionsLocal: Object.assign({}, this.options),
+            types: [],
+            categories: [],
+            conditions: [],
+            warranties: [],
         };
+    },
+
+    computed: {
+        isItemsForSale() {
+            return this.optionsLocal.type === 'items_for_sale';
+        },
+
+        isWantToBuys() {
+            return this.optionsLocal.type === 'want_to_buys';
+        },
+
+        isForumTopics() {
+            return this.optionsLocal.type === 'forum_topics';
+        },
+
+        isMembers() {
+            return this.optionsLocal.type === 'members';
+        },
     },
 
     watch: {
@@ -136,6 +198,29 @@ export default {
         isOpenLocal(val) {
             this.$emit('update:isOpen', val);
         },
+
+        options(val) {
+            this.optionsLocal = Object.assign(
+                {},
+                {
+                    ...val,
+                }
+            );
+        },
+    },
+
+    methods: {
+        search() {
+            this.$emit('search', this.optionsLocal);
+            this.isOpenLocal = false;
+        },
+    },
+
+    async created() {
+        this.types = await this.$store.dispatch(GET_SEARCH_TYPES);
+        this.categories = await this.$store.dispatch(GET_ITEM_CATEGORIES);
+        this.conditions = await this.$store.dispatch(GET_ITEM_CONDITIONS);
+        this.warranties = await this.$store.dispatch(GET_ITEM_WARRANTIES);
     },
 };
 </script>

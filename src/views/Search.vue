@@ -139,6 +139,8 @@
 
         <search-option-dialog
             :is-open.sync="isOptionDialogOpen"
+            :options="options"
+            @search="setSearchOptions"
         ></search-option-dialog>
     </v-row>
 </template>
@@ -240,26 +242,8 @@ export default {
     },
 
     watch: {
-        async type(val) {
-            this.options = Object.assign(
-                {},
-                {
-                    ...this.options,
-                    type: val,
-                }
-            );
-            await this.search();
-        },
-
-        async query(val) {
-            this.options = Object.assign(
-                {},
-                {
-                    ...this.options,
-                    keywords: val,
-                }
-            );
-            await this.search();
+        async '$route.query'(val) {
+            if (val) await this.search();
         },
     },
 
@@ -292,6 +276,7 @@ export default {
                     minimumPrice,
                     maximumPrice,
                 };
+                console.log(payload);
                 this.itemForSale.loading = true;
                 this.itemForSale.items = await this.$store.dispatch(
                     GET_ITEMS,
@@ -353,18 +338,35 @@ export default {
 
             await this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
         },
+
+        async setSearchOptions(options) {
+            Object.keys(options).forEach((key) => {
+                if (options[key] === null) {
+                    delete options[key];
+                }
+            });
+            this.options = Object.assign(
+                {},
+                {
+                    ...options,
+                }
+            );
+            await this.$router.push({
+                name: 'search',
+                query: { ...options, query: options.keywords },
+            });
+        },
     },
 
     async created() {
-        const { query, type } = this.$route.query;
+        const { type } = this.$route.query;
         this.types = await this.$store.dispatch(GET_SEARCH_TYPES);
-        if (!query && !type) return this.$router.go(-1);
+        if (!type) return this.$router.go(-1);
         this.options = Object.assign(
             {},
             {
                 ...this.options,
-                type,
-                keywords: query,
+                ...this.$route.query,
             }
         );
         await this.search();
