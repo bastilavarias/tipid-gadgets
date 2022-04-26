@@ -25,16 +25,7 @@
                         <v-text-field
                             dense
                             hide-details
-                            label="Name Keywords"
-                            outlined
-                        ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12">
-                        <v-text-field
-                            dense
-                            hide-details
-                            label="Description Keywords"
+                            label="Keywords"
                             outlined
                         ></v-text-field>
                     </v-col>
@@ -127,11 +118,13 @@ export default {
 
     props: {
         isOpen: false,
+        options: Object,
     },
 
     data() {
         return {
             isOpenLocal: this.isOpen,
+            optionsLocal: Object.assign({}, this.options),
         };
     },
 

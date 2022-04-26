@@ -56,7 +56,19 @@ const itemModule = {
 
         async [GET_ITEMS](
             _,
-            { page, perPage, filterBy, sortBy, orderBy, search }
+            {
+                page,
+                perPage,
+                filterBy,
+                sortBy,
+                orderBy,
+                search,
+                categoryID,
+                conditionID,
+                warrantyID,
+                minimumPrice,
+                maximumPrice,
+            }
         ) {
             try {
                 const route = `${apiService.baseURL()}/item`;
@@ -68,6 +80,11 @@ const itemModule = {
                 if (sortBy) params.set('sort_by', sortBy);
                 if (orderBy) params.set('order_by', orderBy);
                 if (search) params.set('search', search);
+                if (categoryID) params.set('category_id', categoryID);
+                if (conditionID) params.set('condition_id', conditionID);
+                if (warrantyID) params.set('warranty_id', warrantyID);
+                if (minimumPrice) params.set('minimum_price', minimumPrice);
+                if (maximumPrice) params.set('maximum_price', maximumPrice);
                 const response = await apiService.get(`/item?${params}`, {
                     useCache: true,
                 });

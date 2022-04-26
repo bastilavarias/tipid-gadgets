@@ -34,7 +34,7 @@
                         block
                         class="text-capitalize"
                         @click="search"
-                        :disabled="!query"
+                        :disabled="!isFormValid"
                     >
                         Search
                     </v-btn>
@@ -63,6 +63,12 @@ export default {
             query: null,
             selectedType: null,
         };
+    },
+
+    computed: {
+        isFormValid() {
+            return this.selectedType || this.query;
+        },
     },
 
     methods: {
