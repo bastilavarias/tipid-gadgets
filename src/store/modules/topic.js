@@ -59,7 +59,7 @@ const topicModule = {
 
         async [GET_TOPICS](
             _,
-            { page, perPage, filterBy, sortBy, orderBy, search }
+            { page, perPage, sectionID, sortBy, orderBy, search }
         ) {
             try {
                 const route = `${apiService.baseURL()}/topic`;
@@ -70,6 +70,7 @@ const topicModule = {
                 if (sortBy) params.set('sort_by', sortBy);
                 if (orderBy) params.set('order_by', orderBy);
                 if (search) params.set('search', search);
+                if (sectionID) params.set('section_id', sectionID);
                 const response = await apiService.get(`/topic?${params}`, {
                     useCache: true,
                 });

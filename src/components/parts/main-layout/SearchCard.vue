@@ -67,7 +67,7 @@ export default {
 
     computed: {
         isFormValid() {
-            return this.selectedType || this.query;
+            return this.selectedType;
         },
     },
 

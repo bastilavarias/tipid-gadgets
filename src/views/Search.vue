@@ -77,6 +77,36 @@
                             </template>
                         </v-row>
                     </template>
+
+                    <template v-if="mode.forumTopics">
+                        <v-row dense v-if="forumTopic.loading">
+                            <template v-for="i in 20">
+                                <v-col cols="12" :key="i">
+                                    <v-skeleton-loader
+                                        type="list-item-two-line"
+                                    >
+                                    </v-skeleton-loader>
+                                </v-col>
+                            </template>
+                        </v-row>
+                        <v-row dense>
+                            <template
+                                v-for="(topic, index) in forumTopic.items"
+                            >
+                                <v-col cols="12" :key="index">
+                                    <topic-preview
+                                        :topicID="topic.id"
+                                        :name="topic.name"
+                                        :section="topic.section"
+                                        :user="topic.user"
+                                        :created-at="topic.created_at"
+                                        :slug="topic.slug"
+                                        :index="index"
+                                    ></topic-preview>
+                                </v-col>
+                            </template>
+                        </v-row>
+                    </template>
                 </v-card-text>
             </v-card>
         </v-col>
@@ -92,9 +122,11 @@ import SearchOptionDialog from '@/components/custom/search/OptionDialog';
 import { GET_ITEMS } from '@/store/types/item';
 import ItemPreview from '@/components/custom/preview/Item';
 import { GET_SEARCH_TYPES } from '@/store/types/reference';
+import { GET_TOPICS } from '@/store/types/topic';
+import TopicPreview from '@/components/custom/preview/Topic';
 
 export default {
-    components: { ItemPreview, SearchOptionDialog },
+    components: { TopicPreview, ItemPreview, SearchOptionDialog },
 
     data() {
         return {
@@ -127,6 +159,14 @@ export default {
                 page: 1,
                 perPage: 20,
                 filterBy: 'want_to_buy',
+                sortBy: 'created_at',
+                orderBy: 'desc',
+            },
+            forumTopic: {
+                loading: false,
+                items: [],
+                page: 1,
+                perPage: 20,
                 sortBy: 'created_at',
                 orderBy: 'desc',
             },
@@ -242,6 +282,20 @@ export default {
                 );
                 this.wantToBuy.loading = false;
             } else if (type === 'forum_topics') {
+                const payload = {
+                    page: 1,
+                    perPage: 20,
+                    sectionID,
+                    sortBy,
+                    orderBy: orderBy,
+                    search: keywords,
+                };
+                this.forumTopic.loading = true;
+                this.forumTopic.items = await this.$store.dispatch(
+                    GET_TOPICS,
+                    payload
+                );
+                this.forumTopic.loading = false;
             } else if (type === 'members') {
             }
 
