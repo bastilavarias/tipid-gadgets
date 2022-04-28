@@ -42,6 +42,7 @@
                     </template>
                     <span>{{ toMillify(likesCount) }} likes</span>
                 </v-tooltip>
+
                 <v-tooltip bottom v-if="isAuthenticated">
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn

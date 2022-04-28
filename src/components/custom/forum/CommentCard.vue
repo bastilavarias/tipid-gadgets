@@ -1,6 +1,6 @@
 <template>
     <v-card flat color="transparent">
-        <v-card-subtitle>Comment</v-card-subtitle>
+        <v-card-subtitle v-if="isAuthenticated">Comment</v-card-subtitle>
 
         <v-card-text>
             <v-row>
@@ -10,7 +10,7 @@
                     </v-alert></v-col
                 >
 
-                <v-col cols="12">
+                <v-col cols="12" v-if="isAuthenticated">
                     <base-text-editor v-model="content"></base-text-editor>
                 </v-col>
 
@@ -82,47 +82,15 @@
             <v-row dense v-else>
                 <template v-for="(comment, index) in comments.items">
                     <v-col cols="12" :key="index" :id="`comment_${comment.id}`">
-                        <v-card outlined>
-                            <v-list-item three-line>
-                                <v-list-item-avatar v-if="comment.user.avatar">
-                                    <v-img :src="comment.user.avatar"></v-img>
-                                </v-list-item-avatar>
-                                <v-list-item-content>
-                                    <v-list-item-title
-                                        class="primary--text font-weight-bold"
-                                        >{{
-                                            comment.user.username
-                                        }}</v-list-item-title
-                                    >
-                                    <v-list-item-subtitle
-                                        >Commented
-                                        {{
-                                            toPostDate(comment.created_at)
-                                        }}</v-list-item-subtitle
-                                    >
-                                    <v-list-item-subtitle
-                                        ><span v-if="comment.user.location">
-                                            Location:
-                                            <span
-                                                class="font-weight-bold secondary--text"
-                                                >{{
-                                                    comment.user.location
-                                                }}</span
-                                            >
-                                        </span>
-                                        <span class="grey--text" v-else>
-                                            No location included
-                                        </span></v-list-item-subtitle
-                                    >
-                                </v-list-item-content>
-                            </v-list-item>
-
-                            <v-card-text
-                                class="black--text"
-                                v-html="comment.content"
-                            >
-                            </v-card-text>
-                        </v-card>
+                        <comment-preview
+                            :topicID="topicID"
+                            :commentID="comment.id"
+                            :user="comment.user"
+                            :created-at="comment.created_at"
+                            :content="comment.content"
+                            :comments.sync="comments.items"
+                            :reply-to="comment.reply_to"
+                        ></comment-preview>
                     </v-col>
                 </template>
             </v-row>
@@ -140,10 +108,11 @@ import {
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 import utilityMixin from '@/mixins/utility';
 import dateMixin from '@/mixins/date';
+import CommentPreview from '@/components/custom/preview/Comment';
 export default {
     name: 'forum-comment-card',
 
-    components: { BaseTextEditor },
+    components: { CommentPreview, BaseTextEditor },
 
     mixins: [utilityMixin, dateMixin],
 
@@ -165,6 +134,8 @@ export default {
                 orderBy: 'desc',
             },
             commentsCount: 0,
+            shouldShowReplyEditor: false,
+            replyContent: '',
         };
     },
 
@@ -181,6 +152,10 @@ export default {
                     slug: 'desc',
                 },
             ];
+        },
+
+        isAuthenticated() {
+            return this.$store.state.authentication.isAuthenticated;
         },
     },
 
