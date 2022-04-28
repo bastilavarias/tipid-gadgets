@@ -276,7 +276,6 @@ export default {
                     minimumPrice,
                     maximumPrice,
                 };
-                console.log(payload);
                 this.itemForSale.loading = true;
                 this.itemForSale.items = await this.$store.dispatch(
                     GET_ITEMS,
@@ -367,6 +366,7 @@ export default {
             {
                 ...this.options,
                 ...this.$route.query,
+                keywords: this.$route.query.query,
             }
         );
         await this.search();

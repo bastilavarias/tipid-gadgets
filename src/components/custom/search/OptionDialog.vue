@@ -38,74 +38,98 @@
                     </v-col>
 
                     <v-col cols="12" v-if="isItemsForSale || isWantToBuys">
-                        <v-select
-                            outlined
-                            dense
-                            hide-details
-                            label="Category"
-                            item-value="id"
-                            item-text="name"
-                            :items="categories"
-                            clearable
-                            @click:clear="optionsLocal.categoryID = null"
-                            v-model="optionsLocal.categoryID"
-                        ></v-select>
-                    </v-col>
-
-                    <v-col cols="12" v-if="isItemsForSale || isWantToBuys">
-                        <v-select
-                            outlined
-                            dense
-                            hide-details
-                            label="Condition"
-                            item-value="id"
-                            item-text="name"
-                            :items="conditions"
-                            clearable
-                            @click:clear="optionsLocal.conditionID = null"
-                            v-model="optionsLocal.conditionID"
-                        ></v-select>
-                    </v-col>
-
-                    <v-col cols="12" v-if="isItemsForSale || isWantToBuys">
-                        <v-select
-                            outlined
-                            dense
-                            hide-details
-                            label="Warranty"
-                            item-value="id"
-                            item-text="name"
-                            :items="warranties"
-                            clearable
-                            @click:clear="optionsLocal.warrantyID = null"
-                            v-model="optionsLocal.warrantyID"
-                        ></v-select>
-                    </v-col>
-
-                    <v-col cols="12" v-if="isItemsForSale || isWantToBuys">
-                        <v-row dense>
-                            <v-col cols="12" md="6">
-                                <v-text-field
-                                    outlined
-                                    dense
-                                    hide-details
-                                    label="Minimum Price"
-                                    v-model="optionsLocal.minimumPrice"
-                                ></v-text-field>
+                        <v-row>
+                            <v-col cols="12">
+                                <div class="subtitle-2">More Options</div>
                             </v-col>
-                            <v-col cols="12" md="6">
-                                <v-text-field
+
+                            <v-col cols="12">
+                                <v-select
                                     outlined
                                     dense
                                     hide-details
-                                    label="Maximum Price"
-                                    v-model="optionsLocal.maximumPrice"
-                                ></v-text-field>
+                                    label="Category"
+                                    item-value="id"
+                                    item-text="name"
+                                    :items="categories"
+                                    clearable
+                                    @click:clear="
+                                        optionsLocal.categoryID = null
+                                    "
+                                    v-model="optionsLocal.categoryID"
+                                ></v-select>
+                            </v-col>
+
+                            <v-col cols="12">
+                                <v-select
+                                    outlined
+                                    dense
+                                    hide-details
+                                    label="Condition"
+                                    item-value="id"
+                                    item-text="name"
+                                    :items="conditions"
+                                    clearable
+                                    @click:clear="
+                                        optionsLocal.conditionID = null
+                                    "
+                                    v-model="optionsLocal.conditionID"
+                                ></v-select>
+                            </v-col>
+
+                            <v-col cols="12">
+                                <v-select
+                                    outlined
+                                    dense
+                                    hide-details
+                                    label="Warranty"
+                                    item-value="id"
+                                    item-text="name"
+                                    :items="warranties"
+                                    clearable
+                                    @click:clear="
+                                        optionsLocal.warrantyID = null
+                                    "
+                                    v-model="optionsLocal.warrantyID"
+                                ></v-select>
+                            </v-col>
+
+                            <v-col cols="12">
+                                <v-row dense>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details
+                                            label="Minimum Price"
+                                            type="number"
+                                            v-model="optionsLocal.minimumPrice"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details
+                                            label="Maximum Price"
+                                            type="number"
+                                            v-model="optionsLocal.maximumPrice"
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
                             </v-col>
                         </v-row>
                     </v-col>
 
-                    <v-col cols="12" v-if="isItemsForSale || isWantToBuys">
+                    <v-col
+                        cols="12"
+                        v-if="
+                            isItemsForSale ||
+                            isWantToBuys ||
+                            isForumTopics ||
+                            isMembers
+                        "
+                    >
                         <v-row dense>
                             <v-col cols="12" md="6">
                                 <v-select
@@ -113,6 +137,12 @@
                                     dense
                                     hide-details
                                     label="Sort by"
+                                    :items="sortTypes[optionsLocal.type]"
+                                    item-value="slug"
+                                    item-text="name"
+                                    clearable
+                                    @click:clear="optionsLocal.sortBy = null"
+                                    v-model="optionsLocal.sortBy"
                                 ></v-select>
                             </v-col>
 
@@ -122,6 +152,12 @@
                                     dense
                                     hide-details
                                     label="Order"
+                                    :items="orderTypes"
+                                    item-value="slug"
+                                    item-text="name"
+                                    clearable
+                                    @click:clear="optionsLocal.orderBy = null"
+                                    v-model="optionsLocal.orderBy"
                                 ></v-select>
                             </v-col>
                         </v-row>
@@ -136,7 +172,7 @@
                     class="text-capitalize"
                     depressed
                     @click="search"
-                    :disabled="!optionsLocal.type"
+                    :disabled="!isFormValid"
                 >
                     Search
                 </v-btn>
@@ -187,6 +223,90 @@ export default {
 
         isMembers() {
             return this.optionsLocal.type === 'members';
+        },
+
+        sortTypes() {
+            return {
+                items_for_sale: [
+                    {
+                        name: 'Posted At',
+                        slug: 'created_at',
+                    },
+
+                    {
+                        name: 'Price',
+                        slug: 'price',
+                    },
+                    {
+                        name: 'Name',
+                        slug: 'name',
+                    },
+                ],
+
+                want_to_buys: [
+                    {
+                        name: 'Posted At',
+                        slug: 'created_at',
+                    },
+
+                    {
+                        name: 'Price',
+                        slug: 'price',
+                    },
+                    {
+                        name: 'Name',
+                        slug: 'name',
+                    },
+                ],
+
+                forum_topics: [
+                    {
+                        name: 'Posted At',
+                        slug: 'created_at',
+                    },
+
+                    // {
+                    //     name: 'Relevance',
+                    //     slug: 'relevance',
+                    // },
+
+                    {
+                        name: 'Name',
+                        slug: 'name',
+                    },
+                ],
+
+                members: [
+                    {
+                        name: 'Posted At',
+                        slug: 'created_at',
+                    },
+
+                    {
+                        name: 'Name',
+                        slug: 'name',
+                    },
+                ],
+            };
+        },
+
+        orderTypes() {
+            return [
+                {
+                    name: 'Ascending',
+                    slug: 'asc',
+                },
+
+                {
+                    name: 'Descending',
+                    slug: 'desc',
+                },
+            ];
+        },
+
+        isFormValid() {
+            const { type } = this.optionsLocal;
+            return type;
         },
     },
 
