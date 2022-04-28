@@ -2,12 +2,13 @@ import {
     BOOKMARK_TOPIC,
     CHECK_TOPIC_BOOKMARK,
     CHECK_TOPIC_LIKE,
+    COUNT_TOPIC_COMMENT,
     COUNT_TOPIC_LIKE,
     COUNT_TOPIC_VIEW,
     DELETE_DRAFT_TOPIC,
     GET_DRAFT_TOPICS,
     GET_TOPIC,
-    GET_TOPIC_IMAGES,
+    GET_TOPIC_COMMENTS,
     GET_TOPICS,
     LIKE_TOPIC,
     POST_TOPIC_COMMENT,
@@ -75,17 +76,6 @@ const topicModule = {
                 const response = await apiService.get(`/topic?${params}`, {
                     useCache: true,
                 });
-                return response.data.data;
-            } catch (error) {
-                return [];
-            }
-        },
-
-        async [GET_TOPIC_IMAGES](_, topicID) {
-            try {
-                const response = await apiService.get(
-                    `/topic/${topicID}/images`
-                );
                 return response.data.data;
             } catch (error) {
                 return [];
@@ -184,6 +174,41 @@ const topicModule = {
                 return response.data;
             } catch (error) {
                 return error.response.data;
+            }
+        },
+
+        async [GET_TOPIC_COMMENTS](
+            _,
+            { page, perPage, topicID, sortBy, orderBy }
+        ) {
+            try {
+                const route = `${apiService.baseURL()}/topic/comments/${topicID}`;
+                const url = new URL(route);
+                const params = new URLSearchParams(url.search);
+                if (page) params.set('page', page);
+                if (perPage) params.set('per_page', perPage);
+                if (sortBy) params.set('sort_by', sortBy);
+                if (orderBy) params.set('order_by', orderBy);
+                const response = await apiService.get(
+                    `/topic/comments/${topicID}?${params}`,
+                    {
+                        useCache: true,
+                    }
+                );
+                return response.data.data;
+            } catch (error) {
+                return [];
+            }
+        },
+
+        async [COUNT_TOPIC_COMMENT](_, topicID) {
+            try {
+                const response = await apiService.get(
+                    `/topic/comments/count/${topicID}`
+                );
+                return response.data.data;
+            } catch (error) {
+                return 0;
             }
         },
     },
