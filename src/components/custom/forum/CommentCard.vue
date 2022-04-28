@@ -144,12 +144,12 @@ export default {
             return [
                 {
                     name: 'Newest',
-                    slug: 'asc',
+                    slug: 'desc',
                 },
 
                 {
                     name: 'Oldest',
-                    slug: 'desc',
+                    slug: 'asc',
                 },
             ];
         },

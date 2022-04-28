@@ -43,7 +43,7 @@
                             <v-list-item-subtitle
                                 >Commented
                                 {{
-                                    toPostDate(replyTo.comment.createdAt)
+                                    toPostDate(replyTo.comment.created_at)
                                 }}</v-list-item-subtitle
                             >
                             <v-list-item-subtitle
