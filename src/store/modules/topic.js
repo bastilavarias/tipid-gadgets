@@ -10,6 +10,7 @@ import {
     GET_TOPIC_IMAGES,
     GET_TOPICS,
     LIKE_TOPIC,
+    POST_TOPIC_COMMENT,
     SAVE_DRAFT_TOPIC,
     SAVE_POST_TOPIC,
     VIEW_TOPIC,
@@ -171,6 +172,18 @@ const topicModule = {
                 return response.data.data;
             } catch (error) {
                 return 0;
+            }
+        },
+
+        async [POST_TOPIC_COMMENT](_, payload) {
+            try {
+                const response = await apiService.post(
+                    '/topic/comments',
+                    payload
+                );
+                return response.data;
+            } catch (error) {
+                return error.response.data;
             }
         },
     },

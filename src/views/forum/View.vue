@@ -58,8 +58,8 @@
             </v-card>
         </v-col>
 
-        <v-col cols="12">
-            <forum-comment-reply-card></forum-comment-reply-card>
+        <v-col cols="12" v-if="information && isPoster">
+            <forum-comment-card :topicID="information.id"></forum-comment-card>
         </v-col>
 
         <v-col cols="12">
@@ -70,20 +70,20 @@
 
 <script>
 import RatingStatusChip from '@/components/custom/RatingStatusChip';
-import ForumCommentReplyCard from '@/components/custom/forum/CommentReplyCard';
 import ForumCommentListCard from '@/components/custom/forum/CommentListCard';
 import utilityMixin from '@/mixins/utility';
 import { VIEW_TOPIC, GET_TOPIC } from '@/store/types/topic';
 import dateMixin from '@/mixins/date';
 import TopicAuthorCard from '@/components/custom/forum/AuthorCard';
 import PostInsightCard from '@/components/custom/PostInsightCard';
+import ForumCommentCard from '@/components/custom/forum/CommentReplyCard';
 
 export default {
     components: {
+        ForumCommentCard,
         PostInsightCard,
         TopicAuthorCard,
         ForumCommentListCard,
-        ForumCommentReplyCard,
         RatingStatusChip,
     },
 

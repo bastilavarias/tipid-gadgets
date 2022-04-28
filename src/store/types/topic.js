@@ -12,3 +12,4 @@ export const LIKE_TOPIC = 'topic/like';
 export const CHECK_TOPIC_LIKE = 'topic/check-like';
 export const COUNT_TOPIC_LIKE = 'topic/count-like';
 export const COUNT_TOPIC_VIEW = 'topic/count-view';
+export const POST_TOPIC_COMMENT = 'topic/post-comment';
