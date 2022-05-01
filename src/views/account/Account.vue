@@ -8,26 +8,24 @@
                 >
 
                 <v-list-item two-line class="mb-5">
-                    <v-list-item-avatar>
-                        <v-img
-                            src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
-                        ></v-img>
+                    <v-list-item-avatar v-if="user.avatar">
+                        <v-img :src="user.avatar"></v-img>
                     </v-list-item-avatar>
                     <v-list-item-content>
                         <v-list-item-title
                             class="title font-weight-bold secondary--text"
-                            >bastilavar21</v-list-item-title
+                            >{{ user.username }}</v-list-item-title
                         >
                         <v-list-item-subtitle
                             class="font-weight-bold primary--text"
-                            >sebastiancurtislavarias@gmail.com</v-list-item-subtitle
+                            >{{ user.email }}</v-list-item-subtitle
                         >
                     </v-list-item-content>
-                    <v-list-item-action>
-                        <v-btn icon>
-                            <v-icon>mdi-email-edit</v-icon>
-                        </v-btn>
-                    </v-list-item-action>
+                    <!--                    <v-list-item-action>-->
+                    <!--                        <v-btn icon>-->
+                    <!--                            <v-icon>mdi-email-edit</v-icon>-->
+                    <!--                        </v-btn>-->
+                    <!--                    </v-list-item-action>-->
                 </v-list-item>
 
                 <v-tabs color="primary" hide-slider v-model="tab">
@@ -89,6 +87,10 @@ export default {
     computed: {
         tabs() {
             return tabs;
+        },
+
+        user() {
+            return this.$store.state.authentication.user || null;
         },
     },
 };

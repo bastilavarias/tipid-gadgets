@@ -1,4 +1,4 @@
-import { GET_USERS } from '@/store/types/user';
+import { GET_USERS, UPDATE_USER } from '@/store/types/user';
 import apiService from '@/services/api';
 
 const userModule = {
@@ -23,6 +23,16 @@ const userModule = {
                 return response.data.data;
             } catch (error) {
                 return [];
+            }
+        },
+
+        async [UPDATE_USER](_, payload) {
+            try {
+                payload._method = 'PUT';
+                const response = await apiService.post('/user', payload);
+                return response.data;
+            } catch (error) {
+                return error.response.data;
             }
         },
     },

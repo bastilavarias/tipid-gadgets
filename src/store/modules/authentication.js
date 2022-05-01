@@ -6,6 +6,7 @@ import {
     PURGE_AUTHENTICATION,
     REGISTER,
     SET_AUTHENTICATION,
+    SET_USER_INFORMATION,
 } from '@/store/types/authentication';
 import tokenService from '@/services/token';
 
@@ -29,6 +30,11 @@ const authenticationModule = {
             state.user = Object.assign({}, {});
             window.localStorage.removeItem('user');
             tokenService.remove('access_token');
+        },
+
+        [SET_USER_INFORMATION](state, payload) {
+            state.user = Object.assign({}, payload);
+            window.localStorage.setItem('user', JSON.stringify(payload));
         },
     },
 
