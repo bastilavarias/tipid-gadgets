@@ -5,3 +5,4 @@ export const PURGE_AUTHENTICATION = 'authentication/purge';
 export const AUTHENTICATE_SELF = 'authentication/authenticate-self';
 export const LOGIN = 'authentication/login';
 export const SET_USER_INFORMATION = 'authentication/set-user-information';
+export const CHANGE_PASSWORD = 'authentication/change-password';

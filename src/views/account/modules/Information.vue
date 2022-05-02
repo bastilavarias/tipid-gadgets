@@ -62,6 +62,15 @@
                 </v-col>
                 <v-col cols="12">
                     <v-row dense>
+                        <v-col
+                            ref="changePasswordError"
+                            cols="12"
+                            v-if="changePasswordError"
+                        >
+                            <v-alert border="right" type="error" elevation="2">
+                                {{ changePasswordError }}
+                            </v-alert></v-col
+                        >
                         <v-col cols="12">
                             <div class="caption grey--text mb-1">
                                 Current Password
@@ -72,6 +81,7 @@
                                 dense
                                 color="primary"
                                 type="password"
+                                v-model="password.current"
                             ></v-text-field>
                         </v-col>
 
@@ -85,6 +95,10 @@
                                 dense
                                 color="primary"
                                 type="password"
+                                :rules="[
+                                    rules.counter(6, password.newPassword),
+                                ]"
+                                v-model="password.newPassword"
                             ></v-text-field>
                         </v-col>
 
@@ -98,6 +112,15 @@
                                 dense
                                 color="primary"
                                 type="password"
+                                :rules="[
+                                    rules.sameAs(
+                                        password.newPassword,
+                                        password.confirmation,
+                                        'Password confirmation is incorrect.'
+                                    ),
+                                    rules.counter(6, password.confirmation),
+                                ]"
+                                v-model="password.confirmation"
                             ></v-text-field>
                         </v-col>
 
@@ -106,9 +129,15 @@
                                 class="d-flex justify-space-between align-center"
                             >
                                 <v-spacer></v-spacer>
-                                <v-btn color="primary" depressed>
+                                <v-btn
+                                    color="primary"
+                                    depressed
+                                    :disabled="!isPasswordValid"
+                                    :loading="isChangePasswordStart"
+                                    @click="changePassword"
+                                >
                                     <span class="text-capitalize mr-1"
-                                        >Change Password</span
+                                        >Change</span
                                     >
                                     <v-icon>mdi-lock-reset</v-icon>
                                 </v-btn>
@@ -127,11 +156,15 @@
 import { GET_LOCATIONS } from '@/store/types/reference';
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 import { UPDATE_USER } from '@/store/types/user';
-import { SET_USER_INFORMATION } from '@/store/types/authentication';
+import {
+    CHANGE_PASSWORD,
+    SET_USER_INFORMATION,
+} from '@/store/types/authentication';
 import utilityMixin from '@/mixins/utility';
+import inputRuleMixin from '@/mixins/inputRule';
 
 export default {
-    mixins: [utilityMixin],
+    mixins: [utilityMixin, inputRuleMixin],
 
     data() {
         return {
@@ -139,9 +172,18 @@ export default {
                 name: null,
                 location: null,
             },
+
             locations: [],
             isUpdateStart: false,
             updateError: null,
+
+            password: {
+                current: null,
+                newPassword: null,
+                confirmation: null,
+            },
+            changePasswordError: null,
+            isChangePasswordStart: false,
         };
     },
 
@@ -152,8 +194,19 @@ export default {
 
         isInformationValid() {
             const { name, location } = this.information;
-
             return name && location;
+        },
+
+        isPasswordValid() {
+            const { newPassword, current, confirmation } = this.password;
+            return (
+                newPassword &&
+                current &&
+                confirmation &&
+                newPassword === confirmation &&
+                newPassword.length >= 6 &&
+                confirmation.length >= 6
+            );
         },
     },
 
@@ -170,19 +223,51 @@ export default {
                     message,
                     color: 'success',
                 });
-                console.log(data);
                 this.$store.commit(SET_USER_INFORMATION, data);
                 this.updateError = null;
                 this.isUpdateStart = false;
-                this.$nextTick(() => {
-                    this.$vuetify.goTo(0);
-                });
                 return;
             }
             this.updateError = message;
             this.isUpdateStart = false;
             this.$nextTick(() => {
                 this.$vuetify.goTo(this.$refs.updateError);
+            });
+        },
+
+        async changePassword() {
+            const payload = {
+                password: this.password.newPassword,
+                password_confirmation: this.password.confirmation,
+                current_password: this.password.current,
+            };
+            this.isChangePasswordStart = true;
+            const { code, message, data } = await this.$store.dispatch(
+                CHANGE_PASSWORD,
+                payload
+            );
+            if (this.isHTTPRequestSuccess(code)) {
+                this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                    open: true,
+                    message,
+                    color: 'success',
+                });
+                this.password = Object.assign(
+                    {},
+                    {
+                        current: null,
+                        newPassword: null,
+                        confirmation: null,
+                    }
+                );
+                this.changePasswordError = null;
+                this.isChangePasswordStart = false;
+                return;
+            }
+            this.changePasswordError = message;
+            this.isChangePasswordStart = false;
+            this.$nextTick(() => {
+                this.$vuetify.goTo(this.$refs.changePasswordError);
             });
         },
     },

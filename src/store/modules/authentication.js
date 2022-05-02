@@ -1,6 +1,7 @@
 import apiService from '@/services/api';
 import {
     AUTHENTICATE_SELF,
+    CHANGE_PASSWORD,
     GITHUB_AUTHENTICATION,
     LOGIN,
     PURGE_AUTHENTICATION,
@@ -106,6 +107,19 @@ const authenticationModule = {
                     commit(SET_AUTHENTICATION, authPayload);
                     return response.data;
                 }
+            } catch (error) {
+                return error.response.data;
+            }
+        },
+
+        async [CHANGE_PASSWORD]({ commit }, payload) {
+            try {
+                payload._method = 'PUT';
+                const response = await apiService.post(
+                    '/authentication/password',
+                    payload
+                );
+                return response.data;
             } catch (error) {
                 return error.response.data;
             }
