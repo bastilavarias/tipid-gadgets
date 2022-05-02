@@ -68,6 +68,7 @@ const itemModule = {
                 warrantyID,
                 minimumPrice,
                 maximumPrice,
+                userID,
             }
         ) {
             try {
@@ -85,6 +86,7 @@ const itemModule = {
                 if (warrantyID) params.set('warranty_id', warrantyID);
                 if (minimumPrice) params.set('minimum_price', minimumPrice);
                 if (maximumPrice) params.set('maximum_price', maximumPrice);
+                if (userID) params.set('user_id', userID);
                 const response = await apiService.get(`/item?${params}`, {
                     useCache: true,
                 });

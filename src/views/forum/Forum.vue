@@ -22,7 +22,7 @@
                 </v-card-title>
 
                 <v-card-text>
-                    <v-row dense v-if="topics.loading">
+                    <v-row dense v-if="topic.loading">
                         <template v-for="i in 20">
                             <v-col cols="12" :key="i">
                                 <v-skeleton-loader type="list-item-two-line">
@@ -31,7 +31,7 @@
                         </template>
                     </v-row>
                     <v-row dense>
-                        <template v-for="(topic, index) in topics.items">
+                        <template v-for="(topic, index) in topic.items">
                             <v-col cols="12" :key="index">
                                 <topic-preview
                                     :topicID="topic.id"
@@ -64,7 +64,7 @@ export default {
 
     data() {
         return {
-            topics: {
+            topic: {
                 loading: false,
                 items: [],
                 page: 1,
@@ -78,7 +78,7 @@ export default {
 
     methods: {
         async getTopics() {
-            const { page, perPage, filterBy, sortBy, orderBy } = this.topics;
+            const { page, perPage, filterBy, sortBy, orderBy } = this.topic;
             const payload = {
                 page,
                 perPage,
@@ -86,9 +86,9 @@ export default {
                 sortBy,
                 orderBy,
             };
-            this.topics.loading = true;
-            this.topics.items = await this.$store.dispatch(GET_TOPICS, payload);
-            this.topics.loading = false;
+            this.topic.loading = true;
+            this.topic.items = await this.$store.dispatch(GET_TOPICS, payload);
+            this.topic.loading = false;
         },
     },
 
