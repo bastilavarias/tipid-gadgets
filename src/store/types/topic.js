@@ -14,3 +14,4 @@ export const COUNT_TOPIC_VIEW = 'topic/count-view';
 export const POST_TOPIC_COMMENT = 'topic/post-comment';
 export const GET_TOPIC_COMMENTS = 'topic/get-comments';
 export const COUNT_TOPIC_COMMENT = 'topic/count-comment';
+export const GET_TOPIC_BOOKMARKS = 'topic/get-bookmarks';

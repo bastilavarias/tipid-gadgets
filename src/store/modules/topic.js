@@ -8,6 +8,7 @@ import {
     DELETE_DRAFT_TOPIC,
     GET_DRAFT_TOPICS,
     GET_TOPIC,
+    GET_TOPIC_BOOKMARKS,
     GET_TOPIC_COMMENTS,
     GET_TOPICS,
     LIKE_TOPIC,
@@ -210,6 +211,31 @@ const topicModule = {
                 return response.data.data;
             } catch (error) {
                 return 0;
+            }
+        },
+
+        async [GET_TOPIC_BOOKMARKS](
+            _,
+            { page, perPage, sortBy, orderBy, userID }
+        ) {
+            try {
+                const route = `${apiService.baseURL()}/topic/bookmarks`;
+                const url = new URL(route);
+                const params = new URLSearchParams(url.search);
+                if (page) params.set('page', page);
+                if (perPage) params.set('per_page', perPage);
+                if (sortBy) params.set('sort_by', sortBy);
+                if (orderBy) params.set('order_by', orderBy);
+                if (userID) params.set('user_id', userID);
+                const response = await apiService.get(
+                    `/topic/bookmarks?${params}`,
+                    {
+                        useCache: true,
+                    }
+                );
+                return response.data.data;
+            } catch (error) {
+                return [];
             }
         },
     },

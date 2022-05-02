@@ -7,6 +7,7 @@ import {
     DELETE_DRAFT_ITEM,
     GET_DRAFT_ITEMS,
     GET_ITEM,
+    GET_ITEM_BOOKMARKS,
     GET_ITEM_IMAGES,
     GET_ITEMS,
     LIKE_ITEM,
@@ -185,6 +186,31 @@ const itemModule = {
                 return response.data.data;
             } catch (error) {
                 return 0;
+            }
+        },
+
+        async [GET_ITEM_BOOKMARKS](
+            _,
+            { page, perPage, sortBy, orderBy, userID }
+        ) {
+            try {
+                const route = `${apiService.baseURL()}/item/bookmarks`;
+                const url = new URL(route);
+                const params = new URLSearchParams(url.search);
+                if (page) params.set('page', page);
+                if (perPage) params.set('per_page', perPage);
+                if (sortBy) params.set('sort_by', sortBy);
+                if (orderBy) params.set('order_by', orderBy);
+                if (userID) params.set('user_id', userID);
+                const response = await apiService.get(
+                    `/item/bookmarks?${params}`,
+                    {
+                        useCache: true,
+                    }
+                );
+                return response.data.data;
+            } catch (error) {
+                return [];
             }
         },
     },
