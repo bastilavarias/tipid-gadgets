@@ -153,10 +153,6 @@ export default {
     },
 
     computed: {
-        isAuthenticated() {
-            return this.$store.state.authentication.isAuthenticated;
-        },
-
         isOwnAccount() {
             const name = 'my-account/information';
             return this.$route.name === name;
@@ -237,10 +233,6 @@ export default {
         }
         if (!user) return this.$router.go(-1);
         this.user = Object.assign({}, user);
-
-        const { name, location } = this.user;
-        this.information = Object.assign({}, { name, location });
-        this.locations = await this.$store.dispatch(GET_LOCATIONS);
 
         await this.getItemsForSale();
         await this.getWantToBuys();
