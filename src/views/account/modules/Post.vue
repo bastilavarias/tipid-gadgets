@@ -109,6 +109,8 @@ import ItemPreview from '@/components/custom/preview/Item';
 import TopicPreview from '@/components/custom/preview/Topic';
 import { GET_ITEMS } from '@/store/types/item';
 import { GET_TOPICS } from '@/store/types/topic';
+import { GET_USER_BY_USERNAME } from '@/store/types/user';
+import { GET_LOCATIONS } from '@/store/types/reference';
 export default {
     components: { TopicPreview, ItemPreview },
 
@@ -145,6 +147,8 @@ export default {
             },
 
             mode: 'classic',
+
+            user: null,
         };
     },
 
@@ -153,9 +157,15 @@ export default {
             return this.$store.state.authentication.isAuthenticated;
         },
 
+        isOwnAccount() {
+            const name = 'my-account/information';
+            return this.$route.name === name;
+        },
+
         userID() {
-            if (!this.isAuthenticated) return this.$route.params.userID;
-            return this.$store.state.authentication.user.id;
+            if (this.isOwnAccount)
+                return this.$store.state.authentication.user.id;
+            return this.user.id;
         },
     },
 
@@ -211,9 +221,27 @@ export default {
             this.topic.items = await this.$store.dispatch(GET_TOPICS, payload);
             this.topic.loading = false;
         },
+
+        async getUser() {
+            const username = this.$route.params.username;
+            return await this.$store.dispatch(GET_USER_BY_USERNAME, username);
+        },
     },
 
     async created() {
+        let user;
+        if (this.isOwnAccount) {
+            user = this.$store.state.authentication.user || null;
+        } else {
+            user = await this.getUser();
+        }
+        if (!user) return this.$router.go(-1);
+        this.user = Object.assign({}, user);
+
+        const { name, location } = this.user;
+        this.information = Object.assign({}, { name, location });
+        this.locations = await this.$store.dispatch(GET_LOCATIONS);
+
         await this.getItemsForSale();
         await this.getWantToBuys();
         await this.getTopics();
