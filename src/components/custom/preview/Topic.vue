@@ -14,7 +14,12 @@
                 <v-list-item-subtitle>
                     <span class="primary--text">{{ section.name }}</span
                     ><span class="grey--text"> - posted by</span>
-                    <span class="primary--text"> {{ user.username }}</span>
+                    <span
+                        class="primary--text pointer"
+                        @click="goToUser(user.username)"
+                    >
+                        {{ user.username }}</span
+                    >
                     <span class="grey--text">
                         on {{ toPostDate(createdAt) }} — 50 replies</span
                     >
@@ -27,11 +32,12 @@
 <script>
 import utilityMixin from '@/mixins/utility';
 import dateMixin from '@/mixins/date';
+import redirectionMixin from '@/mixins/redirection';
 
 export default {
     name: 'topic-preview',
 
-    mixins: [utilityMixin, dateMixin],
+    mixins: [utilityMixin, dateMixin, redirectionMixin],
 
     props: {
         index: Number,

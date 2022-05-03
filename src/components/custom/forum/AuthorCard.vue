@@ -5,7 +5,9 @@
                 <v-img :src="avatar"></v-img>
             </v-list-item-avatar>
             <v-list-item-content>
-                <v-list-item-title class="d-flex align-center"
+                <v-list-item-title
+                    class="d-flex align-center pointer"
+                    @click="goToUser(username)"
                     ><span class="primary--text font-weight-bold mr-1">{{
                         username
                     }}</span>
@@ -117,11 +119,12 @@ import {
 } from '@/store/types/topic';
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 import utilityMixin from '@/mixins/utility';
+import redirectionMixin from '@/mixins/redirection';
 
 export default {
     name: 'topic-author-card',
 
-    mixins: [dateMixin, utilityMixin],
+    mixins: [dateMixin, utilityMixin, redirectionMixin],
 
     props: {
         topicID: Number,

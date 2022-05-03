@@ -7,3 +7,9 @@ export default {
     name: 'App',
 };
 </script>
+
+<style lang="scss">
+.pointer {
+    cursor: pointer;
+}
+</style>

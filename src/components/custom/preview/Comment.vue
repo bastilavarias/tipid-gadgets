@@ -5,9 +5,11 @@
                 <v-img :src="user.avatar"></v-img>
             </v-list-item-avatar>
             <v-list-item-content>
-                <v-list-item-title class="primary--text font-weight-bold">{{
-                    user.username
-                }}</v-list-item-title>
+                <v-list-item-title
+                    class="primary--text font-weight-bold pointer"
+                    @click="goToUser(user.username)"
+                    >{{ user.username }}</v-list-item-title
+                >
                 <v-list-item-subtitle
                     >Commented {{ toPostDate(createdAt) }}</v-list-item-subtitle
                 >
@@ -35,7 +37,8 @@
                         </v-list-item-avatar>
                         <v-list-item-content>
                             <v-list-item-title
-                                class="primary--text font-weight-bold"
+                                class="primary--text font-weight-bold pointer"
+                                @click="goToUser(replyTo.comment.user.username)"
                                 >{{
                                     replyTo.comment.user.username
                                 }}</v-list-item-title
@@ -137,10 +140,11 @@ import dateMixin from '@/mixins/date';
 import { POST_TOPIC_COMMENT } from '@/store/types/topic';
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 import utilityMixin from '@/mixins/utility';
+import redirectionMixin from '@/mixins/redirection';
 export default {
     name: 'comment-preview',
 
-    mixins: [dateMixin, utilityMixin],
+    mixins: [dateMixin, utilityMixin, redirectionMixin],
 
     components: { BaseTextEditor },
 

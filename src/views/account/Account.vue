@@ -26,7 +26,9 @@
                             <v-icon>mdi-email-edit</v-icon>
                         </v-btn>
                     </v-list-item-action>
-                    <v-list-item-action v-else>
+                    <v-list-item-action
+                        v-else-if="!isOwnAccount && isAuthenticated"
+                    >
                         <v-btn icon color="primary">
                             <v-icon>mdi-message-text</v-icon>
                         </v-btn>
@@ -119,6 +121,10 @@ export default {
     },
 
     computed: {
+        isAuthenticated() {
+            return this.$store.state.authentication.isAuthenticated;
+        },
+
         isOwnAccount() {
             const name = 'my-account/information';
             return this.$route.name === name;
@@ -146,6 +152,10 @@ export default {
         }
         if (!user) return this.$router.go(-1);
         this.user = Object.assign({}, user);
+
+        this.$nextTick(() => {
+            this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
+        });
     },
 };
 </script>
