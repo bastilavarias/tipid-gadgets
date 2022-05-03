@@ -1,7 +1,7 @@
 <template>
     <v-row v-if="user">
         <v-col cols="12" lg="8" xl="9">
-            <v-row dense v-if="isOwnAccount">
+            <v-row dense v-if="isOwnAccount && isAuthenticated">
                 <v-col cols="12">
                     <div class="subtitle-1">General Information</div>
                 </v-col>
@@ -36,6 +36,18 @@
                                 v-model="information.location"
                             ></v-autocomplete>
                         </v-col>
+                        <v-col cols="12">
+                            <div class="caption grey--text mb-1">
+                                Mobile Number
+                            </div>
+                            <v-text-field
+                                outlined
+                                placeholder="Mobile Number"
+                                dense
+                                color="primary"
+                                v-model="information.contact_number"
+                            ></v-text-field>
+                        </v-col>
                     </v-row>
                 </v-col>
 
@@ -56,7 +68,7 @@
                 </v-col>
             </v-row>
 
-            <v-row dense v-if="isOwnAccount">
+            <v-row dense v-if="isOwnAccount && isAuthenticated">
                 <v-col cols="12">
                     <div class="subtitle-1">Password</div>
                 </v-col>
@@ -161,7 +173,9 @@
                                     <span class="font-weight-bold"
                                         >Location:
                                     </span>
-                                    <span>{{ user.location }}</span>
+                                    <span>{{
+                                        user.location || 'No Data'
+                                    }}</span>
                                 </v-col>
 
                                 <v-col cols="12">
@@ -212,6 +226,7 @@ export default {
             information: {
                 name: null,
                 location: null,
+                contact_number: null,
             },
 
             locations: [],
@@ -231,14 +246,18 @@ export default {
     },
 
     computed: {
+        isAuthenticated() {
+            return this.$store.state.authentication.isAuthenticated;
+        },
+
         isOwnAccount() {
             const name = 'my-account/information';
             return this.$route.name === name;
         },
 
         isInformationValid() {
-            const { name, location } = this.information;
-            return name && location;
+            const { name, location, contact_number } = this.information;
+            return name && location && contact_number;
         },
 
         isPasswordValid() {
@@ -331,8 +350,11 @@ export default {
         if (!user) return this.$router.go(-1);
         this.user = Object.assign({}, user);
 
-        const { name, location } = this.user;
-        this.information = Object.assign({}, { name, location });
+        const { name, location, contact_number } = this.user;
+        this.information = Object.assign(
+            {},
+            { name, location, contact_number }
+        );
         this.locations = await this.$store.dispatch(GET_LOCATIONS);
     },
 };

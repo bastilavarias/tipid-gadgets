@@ -50,6 +50,16 @@
                 </v-col>
 
                 <v-col cols="12">
+                    <div class="caption grey--text mb-1">Mobile Number</div>
+                    <v-text-field
+                        placeholder="Mobile Number"
+                        outlined
+                        dense
+                        v-model="form.contact_number"
+                    ></v-text-field>
+                </v-col>
+
+                <v-col cols="12">
                     <div class="caption grey--text mb-1">Location</div>
                     <v-autocomplete
                         outlined
@@ -143,6 +153,7 @@ const defaultForm = {
     email: null,
     location: null,
     password: null,
+    contact_number: null,
 };
 
 export default {
@@ -161,11 +172,15 @@ export default {
 
     computed: {
         isFormValid() {
-            const { email, password } = this.form;
+            const { email, password, contact_number } = this.form;
 
             return (
                 this.rules.email(email) === true &&
-                this.rules.sameAs(password, this.passwordConfirmation) === true
+                this.rules.sameAs(password, this.passwordConfirmation) ===
+                    true &&
+                contact_number &&
+                password &&
+                this.passwordConfirmation
             );
         },
     },

@@ -7,7 +7,7 @@
                     >{{ isOwnAccount ? 'My Account' : 'User' }}</v-card-title
                 >
 
-                <v-list-item two-line class="mb-5">
+                <v-list-item :two-line="user.email" class="mb-5">
                     <v-list-item-avatar v-if="user.avatar">
                         <v-img :src="user.avatar"></v-img>
                     </v-list-item-avatar>
