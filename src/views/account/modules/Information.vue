@@ -1,7 +1,7 @@
 <template>
-    <v-row>
+    <v-row v-if="user">
         <v-col cols="12" lg="8" xl="9">
-            <v-row dense>
+            <v-row dense v-if="isOwnAccount">
                 <v-col cols="12">
                     <div class="subtitle-1">General Information</div>
                 </v-col>
@@ -56,7 +56,7 @@
                 </v-col>
             </v-row>
 
-            <v-row dense>
+            <v-row dense v-if="isOwnAccount">
                 <v-col cols="12">
                     <div class="subtitle-1">Password</div>
                 </v-col>
@@ -146,6 +146,46 @@
                     </v-row>
                 </v-col>
             </v-row>
+
+            <v-row dense v-if="!isOwnAccount">
+                <v-col cols="12">
+                    <v-card color="#f0f0f0" flat outlined>
+                        <v-card-text>
+                            <v-row dense>
+                                <v-col cols="12">
+                                    <span class="font-weight-bold">Name: </span>
+                                    <span>{{ user.name }}</span>
+                                </v-col>
+
+                                <v-col cols="12">
+                                    <span class="font-weight-bold"
+                                        >Location:
+                                    </span>
+                                    <span>{{ user.location }}</span>
+                                </v-col>
+
+                                <v-col cols="12">
+                                    <span class="font-weight-bold"
+                                        >Contact Number:
+                                    </span>
+                                    <span>{{
+                                        user.contact_number || 'No Data'
+                                    }}</span>
+                                </v-col>
+
+                                <v-col cols="12">
+                                    <span class="font-weight-bold"
+                                        >Member Since:
+                                    </span>
+                                    <span>{{
+                                        toPostDate(user.created_at)
+                                    }}</span>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
         </v-col>
 
         <v-col cols="12" lg="4" xl="3"> </v-col>
@@ -155,16 +195,17 @@
 <script>
 import { GET_LOCATIONS } from '@/store/types/reference';
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
-import { UPDATE_USER } from '@/store/types/user';
+import { GET_USER_BY_USERNAME, UPDATE_USER } from '@/store/types/user';
 import {
     CHANGE_PASSWORD,
     SET_USER_INFORMATION,
 } from '@/store/types/authentication';
 import utilityMixin from '@/mixins/utility';
 import inputRuleMixin from '@/mixins/inputRule';
+import dateMixin from '@/mixins/date';
 
 export default {
-    mixins: [utilityMixin, inputRuleMixin],
+    mixins: [utilityMixin, inputRuleMixin, dateMixin],
 
     data() {
         return {
@@ -184,12 +225,15 @@ export default {
             },
             changePasswordError: null,
             isChangePasswordStart: false,
+
+            user: null,
         };
     },
 
     computed: {
-        user() {
-            return this.$store.state.authentication.user || null;
+        isOwnAccount() {
+            const name = 'my-account/information';
+            return this.$route.name === name;
         },
 
         isInformationValid() {
@@ -270,9 +314,23 @@ export default {
                 this.$vuetify.goTo(this.$refs.changePasswordError);
             });
         },
+
+        async getUser() {
+            const username = this.$route.params.username;
+            return await this.$store.dispatch(GET_USER_BY_USERNAME, username);
+        },
     },
 
     async created() {
+        let user;
+        if (this.isOwnAccount) {
+            user = this.$store.state.authentication.user || null;
+        } else {
+            user = await this.getUser();
+        }
+        if (!user) return this.$router.go(-1);
+        this.user = Object.assign({}, user);
+
         const { name, location } = this.user;
         this.information = Object.assign({}, { name, location });
         this.locations = await this.$store.dispatch(GET_LOCATIONS);

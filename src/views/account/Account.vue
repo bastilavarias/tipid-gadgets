@@ -1,10 +1,10 @@
 <template>
-    <v-row>
+    <v-row v-if="user">
         <v-col cols="12">
             <v-card flat>
                 <v-card-title
                     class="secondary--text font-weight-bold align-center"
-                    >My Account</v-card-title
+                    >{{ isOwnAccount ? 'My Account' : 'User' }}</v-card-title
                 >
 
                 <v-list-item two-line class="mb-5">
@@ -21,11 +21,16 @@
                             >{{ user.email }}</v-list-item-subtitle
                         >
                     </v-list-item-content>
-                    <!--                    <v-list-item-action>-->
-                    <!--                        <v-btn icon>-->
-                    <!--                            <v-icon>mdi-email-edit</v-icon>-->
-                    <!--                        </v-btn>-->
-                    <!--                    </v-list-item-action>-->
+                    <v-list-item-action v-if="isOwnAccount">
+                        <v-btn icon>
+                            <v-icon>mdi-email-edit</v-icon>
+                        </v-btn>
+                    </v-list-item-action>
+                    <v-list-item-action v-else>
+                        <v-btn icon color="primary">
+                            <v-icon>mdi-message-text</v-icon>
+                        </v-btn>
+                    </v-list-item-action>
                 </v-list-item>
 
                 <v-tabs color="primary" hide-slider v-model="tab">
@@ -51,7 +56,9 @@
 </template>
 
 <script>
-const tabs = [
+import { GET_USER_BY_USERNAME } from '@/store/types/user';
+
+const accountTabs = [
     {
         text: 'Information',
         to: { name: 'my-account/information' },
@@ -77,21 +84,68 @@ const tabs = [
     },
 ];
 
+const userTabs = [
+    {
+        text: 'Information',
+        to: { name: 'user/information' },
+        exact: true,
+    },
+
+    {
+        text: 'Posts', // Items for Sale,  Want to Buys, and Topics
+        to: { name: 'user/post' },
+        exact: true,
+    },
+
+    {
+        text: 'Bookmarks', // Items and Topics
+        to: { name: 'user/bookmark' },
+        exact: true,
+    },
+
+    {
+        text: 'Ratings', // Items and Topics
+        to: { name: 'user/rating' },
+        exact: true,
+    },
+];
+
 export default {
     data() {
         return {
             tab: null,
+            user: null,
         };
     },
 
     computed: {
-        tabs() {
-            return tabs;
+        isOwnAccount() {
+            const name = 'my-account/information';
+            return this.$route.name === name;
         },
 
-        user() {
-            return this.$store.state.authentication.user || null;
+        tabs() {
+            if (this.isOwnAccount) return accountTabs;
+            return userTabs;
         },
+    },
+
+    methods: {
+        async getUser() {
+            const username = this.$route.params.username;
+            return await this.$store.dispatch(GET_USER_BY_USERNAME, username);
+        },
+    },
+
+    async created() {
+        let user;
+        if (this.isOwnAccount) {
+            user = this.$store.state.authentication.user || null;
+        } else {
+            user = await this.getUser();
+        }
+        if (!user) return this.$router.go(-1);
+        this.user = Object.assign({}, user);
     },
 };
 </script>

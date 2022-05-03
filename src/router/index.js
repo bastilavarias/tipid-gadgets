@@ -119,6 +119,48 @@ const routes = [
             },
 
             {
+                path: 'user/:username',
+                component: () => import('@/layouts/Mirror'),
+                children: [
+                    {
+                        path: '',
+                        component: () => import('@/views/account/Account'),
+                        children: [
+                            {
+                                path: '',
+                                name: 'user/information',
+                                component: () =>
+                                    import(
+                                        '@/views/account/modules/Information'
+                                    ),
+                            },
+
+                            {
+                                path: 'posts',
+                                name: 'user/post',
+                                component: () =>
+                                    import('@/views/account/modules/Post'),
+                            },
+
+                            {
+                                path: 'bookmarks',
+                                name: 'user/bookmark',
+                                component: () =>
+                                    import('@/views/account/modules/Bookmark'),
+                            },
+
+                            {
+                                path: 'ratings',
+                                name: 'user/rating',
+                                component: () =>
+                                    import('@/views/account/modules/Rating'),
+                            },
+                        ],
+                    },
+                ],
+            },
+
+            {
                 path: 'messages',
                 name: 'message',
                 component: () => import('@/views/Message'),

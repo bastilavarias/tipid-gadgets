@@ -1,4 +1,8 @@
-import { GET_USERS, UPDATE_USER } from '@/store/types/user';
+import {
+    GET_USER_BY_USERNAME,
+    GET_USERS,
+    UPDATE_USER,
+} from '@/store/types/user';
 import apiService from '@/services/api';
 
 const userModule = {
@@ -31,6 +35,20 @@ const userModule = {
                 payload._method = 'PUT';
                 const response = await apiService.post('/user', payload);
                 return response.data;
+            } catch (error) {
+                return error.response.data;
+            }
+        },
+
+        async [GET_USER_BY_USERNAME](_, username) {
+            try {
+                const response = await apiService.get(
+                    `/user/username/${username}`,
+                    {
+                        useCache: true,
+                    }
+                );
+                return response.data.data;
             } catch (error) {
                 return error.response.data;
             }
