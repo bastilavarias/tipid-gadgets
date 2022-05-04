@@ -1,4 +1,5 @@
 import {
+    CREATE_CHAT,
     GET_ROOM,
     GET_ROOM_CHATS,
     GET_USER_ROOMS,
@@ -48,6 +49,18 @@ const messageModule = {
                 return response.data.data;
             } catch (error) {
                 return [];
+            }
+        },
+
+        async [CREATE_CHAT](_, payload) {
+            try {
+                const response = await apiService.post(
+                    '/message/chat',
+                    payload
+                );
+                return response.data;
+            } catch (error) {
+                return error.response.data;
             }
         },
     },

@@ -15,7 +15,10 @@
                 information.item.name
             }}</v-card-subtitle>
 
-            <v-card-text style="height: 40rem; overflow: auto">
+            <v-card-text
+                style="height: 30rem; overflow: auto"
+                ref="conversationMessagesDiv"
+            >
                 <v-row dense>
                     <template v-for="(room, index) in chat.items">
                         <v-col cols="12" :key="index">
@@ -28,15 +31,46 @@
                     </template>
                 </v-row>
             </v-card-text>
+
+            <v-card-text style="height: 20rem; overflow: auto">
+                <v-row dense>
+                    <v-col cols="12">
+                        <v-textarea
+                            color="primary"
+                            outlined
+                            hide-details
+                            no-resize
+                            autofocus
+                            v-model="content"
+                        ></v-textarea>
+                    </v-col>
+                    <v-col cols="12">
+                        <div class="d-flex justify-space-between">
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="secondary"
+                                depressed
+                                :disabled="!content"
+                                :loading="isCreateChatStart"
+                                @click="createChat"
+                                >Send</v-btn
+                            >
+                        </div>
+                    </v-col>
+                </v-row>
+            </v-card-text>
         </v-card>
     </div>
 </template>
 <script>
 import MessageChat from '@/components/custom/message/Chat';
-import { GET_ROOM, GET_ROOM_CHATS } from '@/store/types/message';
+import { CREATE_CHAT, GET_ROOM, GET_ROOM_CHATS } from '@/store/types/message';
+import utilityMixin from '@/mixins/utility';
 
 export default {
     name: 'message-conversation',
+
+    mixins: [utilityMixin],
 
     components: { MessageChat },
 
@@ -51,6 +85,9 @@ export default {
                 page: 1,
                 perPage: 10,
             },
+
+            content: null,
+            isCreateChatStart: false,
         };
     },
 
@@ -100,6 +137,7 @@ export default {
                 GET_ROOM_CHATS,
                 this.roomID
             );
+            this.scrollBottom();
         },
 
         chatsBroadcastListener() {
@@ -107,8 +145,38 @@ export default {
                 '.chat',
                 ({ data }) => {
                     this.chat.items = [...this.chat.items, data];
+                    this.scrollBottom();
                 }
             );
+        },
+
+        async createChat() {
+            if (this.content) {
+                const payload = {
+                    room_id: this.roomID,
+                    content: this.content.trim() || '',
+                };
+                this.isCreateChatStart = true;
+                const { code } = await this.$store.dispatch(
+                    CREATE_CHAT,
+                    payload
+                );
+                if (this.isHTTPRequestSuccess(code)) {
+                    this.content = null;
+                    this.isCreateChatStart = false;
+                    return;
+                }
+                this.isCreateChatStart = false;
+            }
+        },
+
+        scrollBottom() {
+            this.$nextTick(() => {
+                const { conversationMessagesDiv } = this.$refs;
+                conversationMessagesDiv.scrollTop =
+                    conversationMessagesDiv.scrollHeight ||
+                    conversationMessagesDiv.clientHeight;
+            });
         },
     },
 
