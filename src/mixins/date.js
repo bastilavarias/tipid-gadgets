@@ -7,7 +7,7 @@ const dateMixin = {
         },
 
         toChatDate(timestamp) {
-            return moment(new Date(timestamp)).startOf('hour').fromNow();
+            return moment(new Date(timestamp)).fromNow();
         },
     },
 };

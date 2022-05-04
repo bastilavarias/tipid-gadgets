@@ -17,7 +17,7 @@
 
             <v-card-text style="height: 40rem; overflow: auto">
                 <v-row dense>
-                    <template v-for="(room, index) in chats">
+                    <template v-for="(room, index) in chat.items">
                         <v-col cols="12" :key="index">
                             <message-chat
                                 :content="room.content"
@@ -45,7 +45,12 @@ export default {
             information: null,
             isGetRoomStart: false,
             isNoConversationMessageShow: false,
-            chats: [],
+            chat: {
+                loading: false,
+                items: [],
+                page: 1,
+                perPage: 10,
+            },
         };
     },
 
@@ -74,6 +79,7 @@ export default {
             if (val) {
                 await this.getRoom();
                 await this.getRoomChats();
+                this.chatsBroadcastListener();
             }
         },
     },
@@ -90,15 +96,25 @@ export default {
         },
 
         async getRoomChats() {
-            this.chats = await this.$store.dispatch(
+            this.chat.items = await this.$store.dispatch(
                 GET_ROOM_CHATS,
                 this.roomID
+            );
+        },
+
+        chatsBroadcastListener() {
+            window.Echo.private(`room.${this.roomID}`).listen(
+                '.chat',
+                ({ data }) => {
+                    this.chat.items = [...this.chat.items, data];
+                }
             );
         },
     },
 
     async created() {
         if (!this.roomID) return (this.isNoConversationMessageShow = true);
+        this.chatsBroadcastListener();
         await this.getRoom();
         await this.getRoomChats();
     },

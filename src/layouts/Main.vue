@@ -98,6 +98,7 @@ import MainLayoutNewItemSaleCard from '@/components/parts/main-layout/NewItemSal
 import MainLayoutNewItemBuyCard from '@/components/parts/main-layout/NewItemcBuyCard';
 import SystemSnackbar from '@/components/system/Snackbar';
 import { PURGE_AUTHENTICATION } from '@/store/types/authentication';
+import broadcastService from '@/services/broadcast';
 export default {
     name: 'main-layout',
 
@@ -127,6 +128,10 @@ export default {
         logout() {
             this.$store.commit(PURGE_AUTHENTICATION);
         },
+    },
+
+    created() {
+        if (this.isAuthenticated) broadcastService.initialize();
     },
 };
 </script>

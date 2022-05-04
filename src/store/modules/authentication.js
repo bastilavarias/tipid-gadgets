@@ -13,7 +13,7 @@ import tokenService from '@/services/token';
 
 const authenticationModule = {
     state: {
-        isAuthenticated: !!tokenService.get('access_token'),
+        isAuthenticated: !!tokenService.get('access_token') || false,
         user: JSON.parse(window.localStorage.getItem('user')) || null,
     },
 
