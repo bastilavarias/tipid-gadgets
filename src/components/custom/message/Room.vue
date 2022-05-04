@@ -3,7 +3,11 @@
         <v-list dense rounded>
             <v-list-item-group>
                 <template v-for="(room, index) in room.items">
-                    <v-list-item :three-line="!!room.recent_chat" :key="index">
+                    <v-list-item
+                        :three-line="!!room.recent_chat"
+                        @click="goToConversation(room)"
+                        :key="index"
+                    >
                         <v-list-item-content>
                             <v-list-item-title
                                 class="font-weight-bold primary--text"
@@ -35,11 +39,13 @@
 <script>
 import { GET_USER_ROOMS } from '@/store/types/message';
 import dateMixin from '@/mixins/date';
+import redirectionMixin from '@/mixins/redirection';
+import identifierMixin from '@/mixins/identifier';
 
 export default {
     name: 'message-rooms',
 
-    mixins: [dateMixin],
+    mixins: [dateMixin, redirectionMixin, identifierMixin],
 
     data() {
         return {
@@ -66,7 +72,6 @@ export default {
         async getRooms() {
             this.room.loading = true;
             this.room.items = await this.$store.dispatch(GET_USER_ROOMS);
-            console.log(this.room.items);
             this.room.loading = false;
         },
 
@@ -74,12 +79,6 @@ export default {
             if (!this.isAuthenticated) return false;
             const user = this.$store.state.authentication.user;
             return host.id === user.id;
-        },
-
-        isYou(_user) {
-            if (!this.isAuthenticated) return false;
-            const user = this.$store.state.authentication.user;
-            return user.id === _user.id;
         },
     },
 

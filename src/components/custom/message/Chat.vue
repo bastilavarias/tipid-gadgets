@@ -1,45 +1,35 @@
 <template>
     <div class="d-flex justify-space-between">
+        <div v-if="isYou(sender)"></div>
         <v-card
-            color="secondary"
+            :color="isYou(sender) ? 'primary' : 'secondary'"
             min-width="30%"
             max-width="80%"
             shaped
             dark
-            v-if="!self"
         >
-            <v-card-subtitle>bastilavar · 3 mins ago</v-card-subtitle>
-            <v-card-text class="white--text">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa
-                earum obcaecati ratione sapiente tenetur. Dolorum eius est
-                explicabo quibusdam reprehenderit!
-            </v-card-text>
-        </v-card>
-        <div></div>
-        <v-card
-            color="primary"
-            min-width="30%"
-            max-width="80%"
-            shaped
-            dark
-            v-if="self"
-        >
-            <v-card-subtitle>You · 3 mins ago</v-card-subtitle>
-            <v-card-text class="white--text">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa
-                earum obcaecati ratione sapiente tenetur. Dolorum eius est
-                explicabo quibusdam reprehenderit!
-            </v-card-text>
+            <v-card-subtitle
+                >{{ isYou(sender) ? 'You' : sender.username }} ·
+                {{ toChatDate(createdAt) }}</v-card-subtitle
+            >
+            <v-card-text class="white--text" v-html="content"> </v-card-text>
         </v-card>
     </div>
 </template>
 
 <script>
+import identifierMixin from '@/mixins/identifier';
+import dateMixin from '@/mixins/date';
+
 export default {
     name: 'message-chat',
 
+    mixins: [identifierMixin, dateMixin],
+
     props: {
-        self: Boolean,
+        content: String,
+        createdAt: String,
+        sender: Object,
     },
 };
 </script>

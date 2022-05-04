@@ -23,6 +23,15 @@ const redirectionMixin = {
                 });
             }
         },
+
+        goToConversation(room) {
+            const currentRoomID = this.$route.query.roomID || null;
+            if (currentRoomID !== room.id)
+                return this.$router.push({
+                    name: 'message',
+                    query: { roomID: room.id },
+                });
+        },
     },
 };
 
