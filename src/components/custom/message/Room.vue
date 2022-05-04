@@ -38,7 +38,11 @@
 </template>
 
 <script>
-import { GET_ROOM, GET_USER_ROOMS } from '@/store/types/message';
+import {
+    CHECK_ROOM_MEMBER,
+    GET_ROOM,
+    GET_USER_ROOMS,
+} from '@/store/types/message';
 import dateMixin from '@/mixins/date';
 import redirectionMixin from '@/mixins/redirection';
 import identifierMixin from '@/mixins/identifier';
@@ -114,9 +118,18 @@ export default {
                 }
             );
         },
+
+        async roomMemberCheck() {
+            const isRoomMember = await this.$store.dispatch(
+                CHECK_ROOM_MEMBER,
+                this.roomID
+            );
+            if (!isRoomMember) return this.$router.go(-1);
+        },
     },
 
     async created() {
+        await this.roomMemberCheck();
         this.roomsBroadcastListener();
 
         await this.getRooms();

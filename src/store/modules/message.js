@@ -1,4 +1,5 @@
 import {
+    CHECK_ROOM_MEMBER,
     CREATE_CHAT,
     GET_ROOM,
     GET_ROOM_CHATS,
@@ -61,6 +62,17 @@ const messageModule = {
                 return response.data;
             } catch (error) {
                 return error.response.data;
+            }
+        },
+
+        async [CHECK_ROOM_MEMBER](_, roomID) {
+            try {
+                const response = await apiService.get(
+                    `/message/room/check/member/${roomID}`
+                );
+                return response.data.data;
+            } catch (error) {
+                return false;
             }
         },
     },
