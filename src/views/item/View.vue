@@ -52,10 +52,12 @@
                         <v-col cols="12">
                             <item-seller-card
                                 :itemID="information.id"
+                                :userID="information.user.id"
                                 :avatar="information.user.avatar"
                                 :username="information.user.username"
                                 :created-at="information.created_at"
                                 :location="information.user.location"
+                                :section="information.section"
                             ></item-seller-card>
                         </v-col>
                     </v-row>

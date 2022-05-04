@@ -7,6 +7,7 @@ import itemModule from '@/store/modules/item';
 import insightModule from '@/store/modules/insight';
 import topicModule from '@/store/modules/topic';
 import userModule from '@/store/modules/user';
+import messageModule from '@/store/modules/message';
 
 Vue.use(Vuex);
 
@@ -19,5 +20,6 @@ export default new Vuex.Store({
         insight: insightModule,
         topic: topicModule,
         user: userModule,
+        message: messageModule,
     },
 });

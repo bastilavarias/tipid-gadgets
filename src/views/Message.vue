@@ -10,33 +10,7 @@
                 <v-card-text>
                     <v-row dense>
                         <v-col cols="12" md="3">
-                            <v-card rounded outlined height="50rem">
-                                <v-list dense rounded>
-                                    <v-list-item-group>
-                                        <template v-for="n in 5">
-                                            <v-list-item three-line :key="n">
-                                                <v-list-item-content>
-                                                    <v-list-item-title
-                                                        class="font-weight-bold primary--text"
-                                                        >bastilavar</v-list-item-title
-                                                    >
-                                                    <v-list-item-subtitle
-                                                        class="secondary--text"
-                                                        >Lenovo ideapad L3
-                                                        15.6inch i3-10110u Ram
-                                                        8gb Hdd
-                                                        1TB</v-list-item-subtitle
-                                                    >
-                                                    <v-list-item-subtitle
-                                                        >You: Otw! · 3
-                                                        mins</v-list-item-subtitle
-                                                    >
-                                                </v-list-item-content>
-                                            </v-list-item>
-                                        </template>
-                                    </v-list-item-group>
-                                </v-list>
-                            </v-card>
+                            <message-rooms></message-rooms>
                         </v-col>
 
                         <v-col cols="12" md="9">
@@ -73,7 +47,9 @@
 </template>
 <script>
 import MessageChat from '@/components/custom/message/Chat';
+import MessageRooms from '@/components/custom/message/Room';
+
 export default {
-    components: { MessageChat },
+    components: { MessageRooms, MessageChat },
 };
 </script>

@@ -11,7 +11,9 @@
                     ><span class="primary--text font-weight-bold mr-1">{{
                         username
                     }}</span>
-                    <v-chip small class="font-weight-bold">Seller</v-chip>
+                    <v-chip small class="font-weight-bold">{{
+                        section.slug === 'item_for_sale' ? 'Seller' : 'Buyer'
+                    }}</v-chip>
                 </v-list-item-title>
                 <v-list-item-subtitle
                     >on
@@ -29,10 +31,17 @@
                     </span></v-list-item-subtitle
                 >
             </v-list-item-content>
-            <v-list-item-action>
+            <v-list-item-action v-if="isAuthenticated && !isOwnAccount">
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-btn color="primary" icon v-bind="attrs" v-on="on">
+                        <v-btn
+                            color="primary"
+                            icon
+                            v-bind="attrs"
+                            v-on="on"
+                            :loading="isInquireStart"
+                            @click="inquire"
+                        >
                             <v-icon>mdi-message-text</v-icon>
                         </v-btn>
                     </template>
@@ -159,6 +168,8 @@ import {
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 import utilityMixin from '@/mixins/utility';
 import redirectionMixin from '@/mixins/redirection';
+import { DELETE_DRAFT_TOPIC } from '@/store/types/topic';
+import { INQUIRE_MESSAGE } from '@/store/types/message';
 
 export default {
     name: 'item-seller-card',
@@ -169,6 +180,7 @@ export default {
 
     props: {
         itemID: Number,
+        userID: Number,
         avatar: String,
         username: String,
         createdAt: String,
@@ -182,12 +194,19 @@ export default {
             isLiked: false,
             likesCount: 0,
             viewsCount: 0,
+            isInquireStart: false,
         };
     },
 
     computed: {
         isAuthenticated() {
             return this.$store.state.authentication.isAuthenticated;
+        },
+
+        isOwnAccount() {
+            if (!this.isAuthenticated) return false;
+            const user = this.$store.state.authentication.user;
+            return this.userID === user.id;
         },
     },
 
@@ -267,6 +286,27 @@ export default {
                 CHECK_ITEM_BOOKMARK,
                 this.itemID
             );
+        },
+
+        async inquire() {
+            const payload = {
+                item_id: this.itemID,
+                user_id: this.userID,
+            };
+            this.isInquireStart = true;
+            const { code, data } = await this.$store.dispatch(
+                INQUIRE_MESSAGE,
+                payload
+            );
+            if (this.isHTTPRequestSuccess(code)) {
+                await this.$router.push({
+                    name: 'message',
+                    query: { roomID: data.id },
+                });
+                this.isInquireStart = false;
+                return;
+            }
+            this.isInquireStart = false;
         },
     },
 
