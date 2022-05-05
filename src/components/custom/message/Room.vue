@@ -75,6 +75,12 @@ export default {
         },
     },
 
+    watch: {
+        roomID(val) {
+            if (this.roomID) this.roomMemberCheck();
+        },
+    },
+
     methods: {
         async getRooms() {
             this.room.loading = true;
@@ -90,33 +96,41 @@ export default {
 
         roomsBroadcastListener() {
             const user = this.$store.state.authentication.user;
-            window.Echo.private(`user.${user.id}`).listen(
-                '.room',
-                async ({ data }) => {
-                    const roomID = data.id;
-                    const room = await this.$store.dispatch(GET_ROOM, roomID);
-                    const roomIds =
-                        this.room.items.map((item) => item.id) || [];
-                    if (roomIds.includes(roomID)) {
-                        this.room.items = this.room.items
-                            .map((item) => {
-                                if (item.id === roomID)
-                                    item = Object.assign({}, room);
-                                return item;
-                            })
-                            .sort((previous, next) =>
-                                moment(
-                                    new Date(previous.recent_chat.created_at)
-                                ).isAfter(new Date(next.recent_chat.created_at))
-                                    ? -1
-                                    : 1
-                            );
+            if (window.Echo)
+                window.Echo.private(`user.${user.id}`).listen(
+                    '.room',
+                    async ({ data }) => {
+                        const roomID = data.id;
+                        const room = await this.$store.dispatch(
+                            GET_ROOM,
+                            roomID
+                        );
+                        const roomIds =
+                            this.room.items.map((item) => item.id) || [];
+                        if (roomIds.includes(roomID)) {
+                            this.room.items = this.room.items
+                                .map((item) => {
+                                    if (item.id === roomID)
+                                        item = Object.assign({}, room);
+                                    return item;
+                                })
+                                .sort((previous, next) =>
+                                    moment(
+                                        new Date(
+                                            previous.recent_chat.created_at
+                                        )
+                                    ).isAfter(
+                                        new Date(next.recent_chat.created_at)
+                                    )
+                                        ? -1
+                                        : 1
+                                );
 
-                        return;
+                            return;
+                        }
+                        this.room.items = [room, ...this.room.items];
                     }
-                    this.room.items = [room, ...this.room.items];
-                }
-            );
+                );
         },
 
         async roomMemberCheck() {
@@ -129,7 +143,7 @@ export default {
     },
 
     async created() {
-        await this.roomMemberCheck();
+        if (this.roomID) await this.roomMemberCheck();
         this.roomsBroadcastListener();
 
         await this.getRooms();
