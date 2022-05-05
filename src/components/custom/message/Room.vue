@@ -1,5 +1,5 @@
 <template>
-    <v-card rounded outlined height="50rem">
+    <v-card rounded outlined height="50rem" style="overflow: auto">
         <v-list dense rounded>
             <v-list-item-group>
                 <template v-for="(room, index) in room.items">

@@ -5,16 +5,45 @@
         </template>
 
         <template v-if="!isNoConversationMessageShow && information">
-            <v-card-title class="primary--text d-flex align-center">
-                <span class="mr-1">{{ currentUser.username }}</span>
-                <v-chip small>{{ userType }}</v-chip>
+            <v-card-title class="d-flex align-center">
+                <div>
+                    <router-link
+                        :to="{
+                            name: 'user/information',
+                            params: { username: currentUser.username },
+                        }"
+                        style="text-decoration: none"
+                    >
+                        <span class="mr-1 primary--text">{{
+                            currentUser.username
+                        }}</span>
+                    </router-link>
+                    <v-chip small>{{ userType }}</v-chip>
+                </div>
+                <v-spacer></v-spacer>
+                <v-btn icon>
+                    <v-icon>mdi-information</v-icon>
+                </v-btn>
             </v-card-title>
 
-            <v-card-subtitle class="secondary--text font-weight-bold"
-                >{{ information.item.name }} ·
-                <span class="text-capitalize">{{
-                    information.item.status
-                }}</span></v-card-subtitle
+            <v-card-subtitle>
+                <router-link
+                    :to="{
+                        name: 'view-item',
+                        params: { slug: information.item.slug },
+                    }"
+                    style="text-decoration: none"
+                >
+                    <span class="secondary--text font-weight-bold">{{
+                        information.item.name
+                    }}</span>
+                </router-link>
+                <span class="font-weight-bold"> · </span>
+                <span
+                    class="text-capitalize"
+                    :style="{ color: statusColors[information.item.status] }"
+                    >{{ information.item.status }}</span
+                ></v-card-subtitle
             >
 
             <v-card-text
@@ -119,6 +148,12 @@ export default {
             const sectionID = this.information.item.item_section_id;
             if (sectionID === 1) return this.isHost ? 'Buyer' : 'Seller';
             return this.isHost ? 'Seller' : 'Buyer';
+        },
+
+        statusColors() {
+            return {
+                available: '#4CAF50',
+            };
         },
     },
 
