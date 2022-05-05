@@ -1,19 +1,21 @@
 <template>
-    <div>
-        <v-card
-            outlined
-            rounded
-            height="50rem"
-            v-if="isNoConversationMessageShow"
-        >
+    <v-card outlined rounded height="50rem">
+        <template v-if="isNoConversationMessageShow">
             No Conversation here.
-        </v-card>
+        </template>
 
-        <v-card outlined rounded height="50rem" v-if="information">
-            <v-card-title class="primary--text">{{ title }}</v-card-title>
-            <v-card-subtitle class="secondary--text font-weight-bold">{{
-                information.item.name
-            }}</v-card-subtitle>
+        <template v-if="!isNoConversationMessageShow && information">
+            <v-card-title class="primary--text d-flex align-center">
+                <span class="mr-1">{{ currentUser.username }}</span>
+                <v-chip small>{{ userType }}</v-chip>
+            </v-card-title>
+
+            <v-card-subtitle class="secondary--text font-weight-bold"
+                >{{ information.item.name }} ·
+                <span class="text-capitalize">{{
+                    information.item.status
+                }}</span></v-card-subtitle
+            >
 
             <v-card-text
                 style="height: 30rem; overflow: auto"
@@ -59,8 +61,8 @@
                     </v-col>
                 </v-row>
             </v-card-text>
-        </v-card>
-    </div>
+        </template>
+    </v-card>
 </template>
 <script>
 import MessageChat from '@/components/custom/message/Chat';
@@ -104,10 +106,19 @@ export default {
             return this.$route.query.roomID || null;
         },
 
-        title() {
-            if (this.user.id === this.information.host.id)
-                return this.information.customer.username;
-            return this.information.host.username;
+        isHost() {
+            return this.user.id === this.information.host.id;
+        },
+
+        currentUser() {
+            if (this.isHost) return this.information.customer;
+            return this.information.host;
+        },
+
+        userType() {
+            const sectionID = this.information.item.item_section_id;
+            if (sectionID === 1) return this.isHost ? 'Buyer' : 'Seller';
+            return this.isHost ? 'Seller' : 'Buyer';
         },
     },
 
