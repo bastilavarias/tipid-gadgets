@@ -154,8 +154,13 @@ export default {
 
     computed: {
         isOwnAccount() {
-            const name = 'my-account/information';
-            return this.$route.name === name;
+            const myAccountRoutes = [
+                'my-account/information',
+                'my-account/post',
+                'my-account/bookmark',
+                'my-account/rating',
+            ];
+            return myAccountRoutes.includes(this.$route.name);
         },
 
         userID() {

@@ -56,6 +56,7 @@
                         <template v-if="!componentFlag">
                             <span
                                 class="text-decoration-underline caption pointer"
+                                @click="isOpenReviewDialogOpen = true"
                                 v-if="
                                     isTransactionStatusReceived &&
                                     isValidToReview
@@ -123,6 +124,13 @@
             </v-card-text>
         </template>
 
+        <message-conversation-review-editor-dialog
+            :is-open.sync="isOpenReviewDialogOpen"
+            :reviewee="currentUser"
+            :transactionID="information.transaction.id"
+            v-if="isTransactionStatusReceived && isValidToReview"
+        ></message-conversation-review-editor-dialog>
+
         <base-alert-dialog
             :is-open.sync="isMarkAsReceiveDialogOpen"
             :title="markAsReceiveDialog.title"
@@ -142,13 +150,18 @@ import BaseAlertDialog from '@/components/base/AlertDialog';
 import { TRANSACTION_RECEIVE } from '@/store/types/transaction';
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 import { CHECK_REVIEWER_VALIDITY } from '@/store/types/user';
+import MessageConversationReviewEditorDialog from '@/components/custom/message/conversation/ReviewEditorDialog';
 
 export default {
     name: 'message-conversation',
 
     mixins: [utilityMixin],
 
-    components: { BaseAlertDialog, MessageChat },
+    components: {
+        MessageConversationReviewEditorDialog,
+        BaseAlertDialog,
+        MessageChat,
+    },
 
     data() {
         return {
@@ -176,6 +189,8 @@ export default {
 
             isValidToReview: false,
             isCheckReviewerValidityStart: false,
+
+            isOpenReviewDialogOpen: false,
         };
     },
 
@@ -228,12 +243,12 @@ export default {
     watch: {
         async roomID(val) {
             if (val) {
-                this.chatBroadcastListener();
-                this.transactionBroadcastListener();
-                this.reviewBroadcastListener();
                 await this.getRoom();
                 await this.getRoomChats();
                 await this.checkReviewerValidity();
+                this.chatBroadcastListener();
+                this.transactionBroadcastListener();
+                this.reviewBroadcastListener();
             }
         },
     },
@@ -384,11 +399,11 @@ export default {
     async created() {
         if (!this.roomID) return (this.isNoConversationMessageShow = true);
         this.componentFlag = true;
+        await this.getRoom();
+        await this.getRoomChats();
         this.chatBroadcastListener();
         this.transactionBroadcastListener();
         this.reviewBroadcastListener();
-        await this.getRoom();
-        await this.getRoomChats();
 
         if (this.isTransactionStatusReceived)
             await this.checkReviewerValidity();

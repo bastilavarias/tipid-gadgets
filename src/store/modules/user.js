@@ -3,6 +3,7 @@ import {
     GET_USER_BY_USERNAME,
     GET_USERS,
     UPDATE_USER,
+    WRITE_REVIEW,
 } from '@/store/types/user';
 import apiService from '@/services/api';
 
@@ -63,6 +64,15 @@ const userModule = {
                 return response.data.data;
             } catch (error) {
                 return false;
+            }
+        },
+
+        async [WRITE_REVIEW](_, payload) {
+            try {
+                const response = await apiService.post('/user/review', payload);
+                return response.data;
+            } catch (error) {
+                return error.response.data;
             }
         },
     },
