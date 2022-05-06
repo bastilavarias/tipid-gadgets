@@ -24,7 +24,7 @@
 </template>
 <script>
 import MessageRooms from '@/components/custom/message/Room';
-import MessageConversation from '@/components/custom/message/Conversation';
+import MessageConversation from '@/components/custom/message/conversation/Conversation';
 
 export default {
     components: { MessageConversation, MessageRooms },

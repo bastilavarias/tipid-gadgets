@@ -5,46 +5,57 @@
         </template>
 
         <template v-if="!isNoConversationMessageShow && information">
-            <v-card-title class="d-flex align-center">
-                <div>
-                    <router-link
-                        :to="{
-                            name: 'user/information',
-                            params: { username: currentUser.username },
-                        }"
-                        style="text-decoration: none"
-                    >
-                        <span class="mr-1 primary--text">{{
-                            currentUser.username
-                        }}</span>
-                    </router-link>
-                    <v-chip small>{{ userType }}</v-chip>
-                </div>
-                <v-spacer></v-spacer>
-                <v-btn icon>
-                    <v-icon>mdi-information</v-icon>
-                </v-btn>
-            </v-card-title>
+            <v-list-item three-line>
+                <v-list-item-content>
+                    <v-list-item-title class="d-flex align-center">
+                        <router-link
+                            :to="{
+                                name: 'user/information',
+                                params: { username: currentUser.username },
+                            }"
+                            style="text-decoration: none"
+                        >
+                            <span class="mr-1 primary--text title">{{
+                                currentUser.username
+                            }}</span>
+                        </router-link>
+                        <v-chip small>{{ userType }}</v-chip>
+                    </v-list-item-title>
 
-            <v-card-subtitle>
-                <router-link
-                    :to="{
-                        name: 'view-item',
-                        params: { slug: information.item.slug },
-                    }"
-                    style="text-decoration: none"
-                >
-                    <span class="secondary--text font-weight-bold">{{
-                        information.item.name
-                    }}</span>
-                </router-link>
-                <span class="font-weight-bold"> · </span>
-                <span
-                    class="text-capitalize"
-                    :style="{ color: statusColors[information.item.status] }"
-                    >{{ information.item.status }}</span
-                ></v-card-subtitle
-            >
+                    <v-list-item-subtitle>
+                        <router-link
+                            :to="{
+                                name: 'view-item',
+                                params: { slug: information.item.slug },
+                            }"
+                            style="text-decoration: none"
+                        >
+                            <span class="secondary--text font-weight-bold">{{
+                                information.item.name
+                            }}</span>
+                        </router-link>
+                        <span class="font-weight-bold"> · </span>
+                        <span
+                            class="text-capitalize"
+                            :style="{
+                                color: statusColors[
+                                    information.transaction.status
+                                ],
+                            }"
+                            >{{ information.transaction.status }}</span
+                        >
+                    </v-list-item-subtitle>
+
+                    <v-list-item-subtitle>
+                        <span
+                            class="text-decoration-underline caption pointer"
+                            v-if="isHost && isStatusAvailable"
+                            @click="openMarkAsReceiveDialog"
+                            >Mark as Receive</span
+                        >
+                    </v-list-item-subtitle>
+                </v-list-item-content>
+            </v-list-item>
 
             <v-card-text
                 style="height: 30rem; overflow: auto"
@@ -91,19 +102,32 @@
                 </v-row>
             </v-card-text>
         </template>
+
+        <base-alert-dialog
+            :is-open.sync="isMarkAsReceiveDialogOpen"
+            :title="markAsReceiveDialog.title"
+            :description="markAsReceiveDialog.description"
+            :theme="markAsReceiveDialog.theme"
+            :loading="isMarkAsReceiveStart"
+            @onCancel="isMarkAsReceiveDialogOpen = false"
+            @onProceed="markAsReceive"
+        ></base-alert-dialog>
     </v-card>
 </template>
 <script>
 import MessageChat from '@/components/custom/message/Chat';
 import { CREATE_CHAT, GET_ROOM, GET_ROOM_CHATS } from '@/store/types/message';
 import utilityMixin from '@/mixins/utility';
+import BaseAlertDialog from '@/components/base/AlertDialog';
+import { TRANSACTION_RECEIVE } from '@/store/types/transaction';
+import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 
 export default {
     name: 'message-conversation',
 
     mixins: [utilityMixin],
 
-    components: { MessageChat },
+    components: { BaseAlertDialog, MessageChat },
 
     data() {
         return {
@@ -119,6 +143,14 @@ export default {
 
             content: null,
             isCreateChatStart: false,
+
+            isMarkAsReceiveStart: false,
+            isMarkAsReceiveDialogOpen: false,
+            markAsReceiveDialog: {
+                theme: 'success',
+                title: null,
+                description: null,
+            },
         };
     },
 
@@ -154,6 +186,11 @@ export default {
             return {
                 available: '#4CAF50',
             };
+        },
+
+        isStatusAvailable() {
+            if (!this.information) return false;
+            return this.information.transaction.status === 'available';
         },
     },
 
@@ -196,6 +233,24 @@ export default {
             );
         },
 
+        transactionBroadcastListener() {
+            window.Echo.private(`room.${this.roomID}`).listen(
+                '.transaction',
+                ({ data }) => {
+                    this.information.transaction = Object.assign({}, data);
+                    const { host } = this.information;
+                    const message = this.isHost
+                        ? 'You marked this transaction as received.'
+                        : `${host.username} marked this transaction as received.`;
+                    this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                        open: true,
+                        message: message,
+                        color: 'success',
+                    });
+                }
+            );
+        },
+
         async createChat() {
             if (this.content) {
                 const payload = {
@@ -224,11 +279,43 @@ export default {
                     conversationMessagesDiv.clientHeight;
             });
         },
+
+        async markAsReceive() {
+            const payload = {
+                item_id: this.information.item.id,
+                room_id: this.information.id,
+            };
+            this.isMarkAsReceiveStart = true;
+            const { code } = await this.$store.dispatch(
+                TRANSACTION_RECEIVE,
+                payload
+            );
+            if (this.isHTTPRequestSuccess(code)) {
+                this.isMarkAsReceiveDialogOpen = false;
+                this.isMarkAsReceiveStart = false;
+                return;
+            }
+            this.isMarkAsReceiveStart = false;
+        },
+
+        openMarkAsReceiveDialog() {
+            this.markAsReceiveDialog = Object.assign(
+                {},
+                {
+                    theme: 'success',
+                    title: 'Mark as Receive',
+                    description:
+                        'Marking this transaction as receive is no turning back. Please proceed if you are sure.',
+                }
+            );
+            this.isMarkAsReceiveDialogOpen = true;
+        },
     },
 
     async created() {
         if (!this.roomID) return (this.isNoConversationMessageShow = true);
         this.chatsBroadcastListener();
+        this.transactionBroadcastListener();
         await this.getRoom();
         await this.getRoomChats();
     },
