@@ -59,7 +59,13 @@
                                 rating="positive"
                             ></rating-status-chip>
                         </span>
-                        <span> 100% (678 feedbacks) </span>
+                        <span>
+                            {{ positiveRatingsPercentage }}% ({{
+                                positiveRatingsCount
+                            }}
+                            review<span v-if="positiveRatingsCount > 1">s</span
+                            >)
+                        </span>
                     </div>
                 </v-col>
                 <v-col cols="12" md="6">
@@ -69,7 +75,13 @@
                                 rating="negative"
                             ></rating-status-chip>
                         </span>
-                        <span> 0% (0 feedbacks) </span>
+                        <span>
+                            {{ negativeRatingsPercentage }}% ({{
+                                negativeRatingsCount
+                            }}
+                            review<span v-if="negativeRatingsCount > 1">s</span
+                            >)
+                        </span>
                     </div>
                 </v-col>
             </v-row>
@@ -186,6 +198,10 @@ export default {
         createdAt: String,
         location: String,
         section: Object,
+        positiveRatingsCount: Number,
+        negativeRatingsCount: Number,
+        positiveRatingsPercentage: Number,
+        negativeRatingsPercentage: Number,
     },
 
     data() {

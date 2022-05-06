@@ -58,6 +58,18 @@
                                 :created-at="information.created_at"
                                 :location="information.user.location"
                                 :section="information.section"
+                                :positive-ratings-count="
+                                    information.user.positive_ratings_count
+                                "
+                                :positive-ratings-percentage="
+                                    information.user.positive_ratings_percentage
+                                "
+                                :negative-ratings-count="
+                                    information.user.negative_ratings_count
+                                "
+                                :negative-ratings-percentage="
+                                    information.user.negative_ratings_percentage
+                                "
                             ></item-seller-card>
                         </v-col>
                     </v-row>
