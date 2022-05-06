@@ -36,7 +36,7 @@
                         </router-link>
                         <span class="font-weight-bold"> · </span>
                         <span
-                            class="text-capitalize"
+                            class="text-capitalize font-weight-bold"
                             :style="{
                                 color: statusColors[
                                     information.transaction.status
@@ -49,10 +49,29 @@
                     <v-list-item-subtitle>
                         <span
                             class="text-decoration-underline caption pointer"
-                            v-if="isHost && isStatusAvailable"
+                            v-if="isHost && isTransactionStatusAvailable"
                             @click="openMarkAsReceiveDialog"
                             >Mark as Receive</span
                         >
+                        <template v-if="!componentFlag">
+                            <span
+                                class="text-decoration-underline caption pointer"
+                                v-if="
+                                    isTransactionStatusReceived &&
+                                    isValidToReview
+                                "
+                                >Write {{ currentUser.username }} a review</span
+                            >
+                            <span
+                                class="caption font-italic"
+                                v-else-if="
+                                    isTransactionStatusReceived &&
+                                    !isValidToReview
+                                "
+                                >You already gave {{ currentUser.username }} a
+                                review.
+                            </span>
+                        </template>
                     </v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
@@ -83,6 +102,7 @@
                             hide-details
                             no-resize
                             autofocus
+                            :disabled="componentFlag"
                             v-model="content"
                         ></v-textarea>
                     </v-col>
@@ -92,7 +112,7 @@
                             <v-btn
                                 color="secondary"
                                 depressed
-                                :disabled="!content"
+                                :disabled="!content || componentFlag"
                                 :loading="isCreateChatStart"
                                 @click="createChat"
                                 >Send</v-btn
@@ -121,6 +141,7 @@ import utilityMixin from '@/mixins/utility';
 import BaseAlertDialog from '@/components/base/AlertDialog';
 import { TRANSACTION_RECEIVE } from '@/store/types/transaction';
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
+import { CHECK_REVIEWER_VALIDITY } from '@/store/types/user';
 
 export default {
     name: 'message-conversation',
@@ -131,6 +152,7 @@ export default {
 
     data() {
         return {
+            componentFlag: false,
             information: null,
             isGetRoomStart: false,
             isNoConversationMessageShow: false,
@@ -151,6 +173,9 @@ export default {
                 title: null,
                 description: null,
             },
+
+            isValidToReview: false,
+            isCheckReviewerValidityStart: false,
         };
     },
 
@@ -185,22 +210,30 @@ export default {
         statusColors() {
             return {
                 available: '#4CAF50',
+                received: '#EE8800',
             };
         },
 
-        isStatusAvailable() {
+        isTransactionStatusAvailable() {
             if (!this.information) return false;
             return this.information.transaction.status === 'available';
+        },
+
+        isTransactionStatusReceived() {
+            if (!this.information) return false;
+            return this.information.transaction.status === 'received';
         },
     },
 
     watch: {
         async roomID(val) {
             if (val) {
+                this.chatBroadcastListener();
+                this.transactionBroadcastListener();
+                this.reviewBroadcastListener();
                 await this.getRoom();
                 await this.getRoomChats();
-                this.chatsBroadcastListener();
-                this.transactionBroadcastListener();
+                await this.checkReviewerValidity();
             }
         },
     },
@@ -224,7 +257,7 @@ export default {
             this.scrollBottom();
         },
 
-        chatsBroadcastListener() {
+        chatBroadcastListener() {
             window.Echo.private(`room.${this.roomID}`).listen(
                 '.chat',
                 ({ data }) => {
@@ -239,6 +272,7 @@ export default {
                 '.transaction',
                 ({ data }) => {
                     this.information.transaction = Object.assign({}, data);
+                    this.isValidToReview = true;
                     const { host } = this.information;
                     const message = this.isHost
                         ? 'You marked this transaction as received.'
@@ -306,19 +340,60 @@ export default {
                     theme: 'success',
                     title: 'Mark as Receive',
                     description:
-                        'Marking this transaction as receive is no turning back. Please proceed if you are sure.',
+                        'Marking this transaction as receive has no turning back. Please proceed if you are sure.',
                 }
             );
             this.isMarkAsReceiveDialogOpen = true;
+        },
+
+        async checkReviewerValidity() {
+            const { host, customer, transaction } = this.information;
+            const payload = {
+                userID: this.isHost ? customer.id : host.id, // reviewee
+                transactionID: transaction.id,
+            };
+            this.isCheckReviewerValidityStart = true;
+            this.isValidToReview = await this.$store.dispatch(
+                CHECK_REVIEWER_VALIDITY,
+                payload
+            );
+            this.isCheckReviewerValidityStart = false;
+        },
+
+        reviewBroadcastListener() {
+            window.Echo.private(`room.${this.roomID}`).listen(
+                '.review',
+                ({ data }) => {
+                    const { reviewee_id, reviewer_id, reviewer } = data;
+                    if (this.user.id === reviewer_id)
+                        this.isValidToReview = false;
+
+                    if (this.user.id === reviewee_id) {
+                        const message = `${reviewer.username} gave you a rating.`;
+                        this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                            open: true,
+                            message: message,
+                            color: 'success',
+                        });
+                    }
+                }
+            );
         },
     },
 
     async created() {
         if (!this.roomID) return (this.isNoConversationMessageShow = true);
-        this.chatsBroadcastListener();
+        this.componentFlag = true;
+        this.chatBroadcastListener();
         this.transactionBroadcastListener();
+        this.reviewBroadcastListener();
         await this.getRoom();
         await this.getRoomChats();
+
+        if (this.isTransactionStatusReceived)
+            await this.checkReviewerValidity();
+
+        this.componentFlag = false;
     },
 };
 </script>

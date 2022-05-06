@@ -1,4 +1,5 @@
 import {
+    CHECK_REVIEWER_VALIDITY,
     GET_USER_BY_USERNAME,
     GET_USERS,
     UPDATE_USER,
@@ -51,6 +52,17 @@ const userModule = {
                 return response.data.data;
             } catch (error) {
                 return error.response.data;
+            }
+        },
+
+        async [CHECK_REVIEWER_VALIDITY](_, payload) {
+            try {
+                const response = await apiService.get(
+                    `user/${payload.userID}/review/${payload.transactionID}/check`
+                );
+                return response.data.data;
+            } catch (error) {
+                return false;
             }
         },
     },
