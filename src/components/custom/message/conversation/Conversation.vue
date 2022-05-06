@@ -200,6 +200,7 @@ export default {
                 await this.getRoom();
                 await this.getRoomChats();
                 this.chatsBroadcastListener();
+                this.transactionBroadcastListener();
             }
         },
     },
