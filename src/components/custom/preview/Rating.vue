@@ -29,6 +29,7 @@
             <v-row>
                 <v-col cols="12">
                     <item-preview
+                        :section="item.section"
                         :itemID="item.id"
                         :name="item.name"
                         :price="item.price"

@@ -13,8 +13,8 @@
                 </v-card-title>
 
                 <v-card-subtitle class="primary--text"
-                    ><span class="font-weight-bold">{{ title }}</span>
-                    <span v-if="query"> : {{ options.keywords }} </span>
+                    ><span class="font-weight-bold">{{ title }} :</span>
+                    <span v-if="query"> {{ options.keywords }} </span>
                 </v-card-subtitle>
 
                 <v-card-text>
@@ -35,6 +35,7 @@
                             >
                                 <v-col cols="12" :key="index">
                                     <item-preview
+                                        :section="item.section"
                                         :itemID="item.id"
                                         :name="item.name"
                                         :price="item.price"
@@ -64,6 +65,7 @@
                             <template v-for="(item, index) in wantToBuy.items">
                                 <v-col cols="12" :key="index">
                                     <item-preview
+                                        :section="item.section"
                                         :itemID="item.id"
                                         :name="item.name"
                                         :price="item.price"

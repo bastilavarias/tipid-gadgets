@@ -20,7 +20,11 @@
                     <span class="secondary--text font-weight-bold">{{
                         formatCurrency('PHP', price)
                     }}</span>
-                    - <span class="primary--text">{{ category.name }}</span
+                    -
+                    <span
+                        class="primary--text pointer"
+                        @click="goToCatalogBrowser(section.slug, category.slug)"
+                        >{{ category.name }}</span
                     ><span class="grey--text"
                         >({{ user.location || 'No location included' }})</span
                     >
@@ -53,6 +57,7 @@
 <script>
 import utilityMixin from '@/mixins/utility';
 import { GET_ITEM_IMAGES } from '@/store/types/item';
+import redirectionMixin from '@/mixins/redirection';
 
 export default {
     name: 'item-preview',
@@ -66,9 +71,10 @@ export default {
         user: Object,
         slug: String,
         component: String,
+        section: Object,
     },
 
-    mixins: [utilityMixin],
+    mixins: [utilityMixin, redirectionMixin],
 
     data() {
         return {

@@ -9,7 +9,11 @@
                         hide-details
                         outlined
                         dense
-                        placeholder="All Categories"
+                        placeholder="Type"
+                        :items="sections"
+                        item-text="name"
+                        item-value="slug"
+                        v-model="selectedSection"
                     ></v-select>
                 </v-col>
 
@@ -18,7 +22,11 @@
                         hide-details
                         outlined
                         dense
-                        placeholder="Type"
+                        placeholder="Category"
+                        :items="categories"
+                        item-text="name"
+                        item-value="slug"
+                        v-model="selectedCategory"
                     ></v-select>
                 </v-col>
 
@@ -28,6 +36,8 @@
                         depressed
                         block
                         class="text-capitalize"
+                        :disabled="!isFormValid"
+                        @click="browse"
                     >
                         Show Items
                     </v-btn>
@@ -38,13 +48,44 @@
 </template>
 
 <script>
-import { GET_SEARCH_TYPES } from '@/store/types/reference';
+import {
+    GET_ITEM_CATEGORIES,
+    GET_ITEM_SECTIONS,
+} from '@/store/types/reference';
 
 export default {
     name: 'main-layout-catalog-browser-card',
 
+    data() {
+        return {
+            sections: [],
+            categories: [],
+            selectedSection: null,
+            selectedCategory: null,
+        };
+    },
+
+    computed: {
+        isFormValid() {
+            return this.selectedSection && this.selectedCategory;
+        },
+    },
+
+    methods: {
+        browse() {
+            this.$router.push({
+                name: 'catalog-browser',
+                params: {
+                    sectionSlug: this.selectedSection,
+                    categorySlug: this.selectedCategory,
+                },
+            });
+        },
+    },
+
     async created() {
-        this.types = await this.$store.dispatch(GET_SEARCH_TYPES);
+        this.sections = await this.$store.dispatch(GET_ITEM_SECTIONS);
+        this.categories = await this.$store.dispatch(GET_ITEM_CATEGORIES);
     },
 };
 </script>

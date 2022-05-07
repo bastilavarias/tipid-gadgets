@@ -35,6 +35,12 @@ const routes = [
             },
 
             {
+                path: 'catalog/:sectionSlug/:categorySlug',
+                name: 'catalog-browser',
+                component: () => import('@/views/CatalogBrowser'),
+            },
+
+            {
                 path: 'item/:slug',
                 name: 'view-item',
                 component: () => import('@/views/item/View'),

@@ -19,6 +19,7 @@
                         <template v-for="(item, index) in item.items">
                             <v-col cols="12" :key="index">
                                 <item-preview
+                                    :section="item.section"
                                     :itemID="item.id"
                                     :name="item.name"
                                     :price="item.price"

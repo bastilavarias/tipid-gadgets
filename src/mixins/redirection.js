@@ -33,6 +33,33 @@ const redirectionMixin = {
                 });
             }
         },
+
+        goToCatalogBrowser(_sectionSlug, _categorySlug) {
+            const route = this.$route.name;
+            if (route === 'catalog-browser') {
+                const sectionSlug = this.$route.params.sectionSlug || null;
+                const categorySlug = this.$route.params.categorySlug || null;
+                if (
+                    _sectionSlug === sectionSlug &&
+                    _categorySlug === categorySlug
+                )
+                    return false;
+                return this.$router.push({
+                    name: 'catalog-browser',
+                    params: {
+                        sectionSlug: sectionSlug,
+                        categorySlug: categorySlug,
+                    },
+                });
+            }
+            return this.$router.push({
+                name: 'catalog-browser',
+                params: {
+                    sectionSlug: _sectionSlug,
+                    categorySlug: _categorySlug,
+                },
+            });
+        },
     },
 };
 
