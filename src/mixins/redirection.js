@@ -4,7 +4,7 @@ const redirectionMixin = {
             const isAuthenticated =
                 this.$store.state.authentication.isAuthenticated;
             let route;
-            if (this.isAuthenticated) {
+            if (isAuthenticated) {
                 const user = this.$store.state.authentication.user;
                 if (username === user.username)
                     return this.$router.push({

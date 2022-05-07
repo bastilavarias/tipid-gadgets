@@ -39,7 +39,9 @@
                                     :section="topic.section"
                                     :user="topic.user"
                                     :created-at="topic.created_at"
+                                    :comments-count="topic.comments_count"
                                     :slug="topic.slug"
+                                    :updated-at="topic.updated_at"
                                     :index="index"
                                 ></topic-preview>
                             </v-col>
@@ -70,7 +72,7 @@ export default {
                 page: 1,
                 perPage: 20,
                 filterBy: 'item_for_sale',
-                sortBy: 'created_at',
+                sortBy: 'updated_at',
                 orderBy: 'desc',
             },
         };

@@ -21,7 +21,8 @@
                         {{ user.username }}</span
                     >
                     <span class="grey--text">
-                        on {{ toPostDate(createdAt) }} — 50 replies</span
+                        last updated {{ toPostDate(updatedAt) }} —
+                        {{ commentsCount }} comments</span
                     >
                 </v-list-item-subtitle>
             </v-list-item-content>
@@ -47,6 +48,8 @@ export default {
         user: Object,
         createdAt: String,
         slug: String,
+        commentsCount: Number,
+        updatedAt: String,
     },
 };
 </script>
