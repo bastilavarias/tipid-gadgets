@@ -3,6 +3,15 @@
         <v-col cols="12">
             <v-row dense>
                 <v-col cols="12">
+                    <v-row dense v-if="review.loading">
+                        <template v-for="i in 10">
+                            <v-col cols="12" :key="i">
+                                <v-skeleton-loader type="list-item-two-line">
+                                </v-skeleton-loader>
+                            </v-col>
+                        </template>
+                    </v-row>
+
                     <v-row dense>
                         <template v-for="(review, index) in review.items">
                             <v-col cols="12" :key="index">
@@ -37,7 +46,7 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 20,
+                perPage: 10,
                 sortBy: 'created_at',
                 orderBy: 'desc',
             },
