@@ -141,6 +141,23 @@ export default {
         },
     },
 
+    watch: {
+        async isOwnAccount(val) {
+            this.user = null;
+            if (val) {
+                this.user = this.$store.state.authentication.user || null;
+            } else {
+                this.user = await this.getUser();
+            }
+            if (!this.user) return this.$router.go(-1);
+            this.user = Object.assign({}, this.user);
+
+            this.$nextTick(() => {
+                this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
+            });
+        },
+    },
+
     methods: {
         async getUser() {
             const username = this.$route.params.username;

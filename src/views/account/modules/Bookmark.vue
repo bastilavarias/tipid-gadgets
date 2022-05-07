@@ -98,6 +98,8 @@ export default {
                 sortBy: 'created_at',
                 orderBy: 'desc',
             },
+
+            user: null,
         };
     },
 
