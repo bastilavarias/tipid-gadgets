@@ -33,7 +33,7 @@
 <script>
 import RatingPreview from '@/components/custom/preview/Rating';
 import utilityMixin from '@/mixins/utility';
-import { GET_REVIEWS, GET_USER_BY_USERNAME } from '@/store/types/user';
+import { GET_USER_REVIEWS, GET_USER_BY_USERNAME } from '@/store/types/user';
 
 export default {
     components: { RatingPreview },
@@ -85,7 +85,7 @@ export default {
             };
             this.review.loading = true;
             this.review.items = await this.$store.dispatch(
-                GET_REVIEWS,
+                GET_USER_REVIEWS,
                 payload
             );
             this.review.loading = false;

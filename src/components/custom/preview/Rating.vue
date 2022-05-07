@@ -41,7 +41,9 @@
                 </v-col>
 
                 <v-col cols="12">
-                    {{ content }}
+                    <div class="black--text">
+                        {{ content }}
+                    </div>
                 </v-col>
             </v-row>
         </v-card-text>

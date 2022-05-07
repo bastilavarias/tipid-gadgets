@@ -52,7 +52,7 @@
 
 <script>
 import utilityMixin from '@/mixins/utility';
-import { WRITE_REVIEW } from '@/store/types/user';
+import { WRITE_USER_REVIEW } from '@/store/types/user';
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 
 const defaultForm = {
@@ -105,7 +105,7 @@ export default {
             };
             this.isCreateStart = true;
             const { code, message } = await this.$store.dispatch(
-                WRITE_REVIEW,
+                WRITE_USER_REVIEW,
                 payload
             );
             if (this.isHTTPRequestSuccess(code)) {

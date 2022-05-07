@@ -1,10 +1,12 @@
 import {
     CHECK_REVIEWER_VALIDITY,
-    GET_REVIEWS,
+    GET_USER_REVIEWS,
     GET_USER_BY_USERNAME,
     GET_USERS,
     UPDATE_USER,
-    WRITE_REVIEW,
+    WRITE_USER_REVIEW,
+    CHECK_USER_FOLLOW,
+    FOLLOW_USER,
 } from '@/store/types/user';
 import apiService from '@/services/api';
 
@@ -60,7 +62,7 @@ const userModule = {
         async [CHECK_REVIEWER_VALIDITY](_, payload) {
             try {
                 const response = await apiService.get(
-                    `user/${payload.userID}/review/${payload.transactionID}/check`
+                    `user/review/${payload.userID}/${payload.transactionID}/check`
                 );
                 return response.data.data;
             } catch (error) {
@@ -68,7 +70,7 @@ const userModule = {
             }
         },
 
-        async [WRITE_REVIEW](_, payload) {
+        async [WRITE_USER_REVIEW](_, payload) {
             try {
                 const response = await apiService.post('/user/review', payload);
                 return response.data;
@@ -77,7 +79,7 @@ const userModule = {
             }
         },
 
-        async [GET_REVIEWS](_, { page, perPage, userID }) {
+        async [GET_USER_REVIEWS](_, { page, perPage, userID }) {
             try {
                 const route = `${apiService.baseURL()}/user/reviews`;
                 const url = new URL(route);
@@ -94,6 +96,26 @@ const userModule = {
                 return response.data.data;
             } catch (error) {
                 return [];
+            }
+        },
+
+        async [CHECK_USER_FOLLOW](_, userID) {
+            try {
+                const response = await apiService.get(
+                    `/user/follow/check/${userID}`
+                );
+                return response.data.data;
+            } catch (error) {
+                return false;
+            }
+        },
+
+        async [FOLLOW_USER](_, payload) {
+            try {
+                const response = await apiService.post('/user/follow', payload);
+                return response.data;
+            } catch (error) {
+                return error.response.data;
             }
         },
     },

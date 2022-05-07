@@ -1,5 +1,5 @@
 <template>
-    <v-row v-if="user">
+    <v-row v-if="componentFlag">
         <v-col cols="12">
             <v-card flat>
                 <v-card-title
@@ -21,17 +21,30 @@
                             >{{ user.email }}</v-list-item-subtitle
                         >
                     </v-list-item-content>
-                    <v-list-item-action v-if="isOwnAccount">
-                        <v-btn icon>
-                            <v-icon>mdi-email-edit</v-icon>
-                        </v-btn>
-                    </v-list-item-action>
                     <v-list-item-action
-                        v-else-if="!isOwnAccount && isAuthenticated"
+                        v-if="user && !isOwnAccount && isAuthenticated"
                     >
-                        <v-btn icon color="primary">
-                            <v-icon>mdi-message-text</v-icon>
-                        </v-btn>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    color="primary"
+                                    @click="follow"
+                                    :outlined="!isFollowed"
+                                    rounded
+                                    small
+                                    depressed
+                                >
+                                    {{ isFollowed ? 'Following' : 'Follow' }}
+                                </v-btn>
+                            </template>
+                            <span>{{
+                                isFollowed
+                                    ? `Unfollow ${user.username}`
+                                    : `Follow ${user.username}`
+                            }}</span>
+                        </v-tooltip>
                     </v-list-item-action>
                 </v-list-item>
 
@@ -58,7 +71,13 @@
 </template>
 
 <script>
-import { GET_USER_BY_USERNAME } from '@/store/types/user';
+import {
+    CHECK_USER_FOLLOW,
+    FOLLOW_USER,
+    GET_USER_BY_USERNAME,
+} from '@/store/types/user';
+import utilityMixin from '@/mixins/utility';
+import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 
 const accountTabs = [
     {
@@ -113,10 +132,15 @@ const userTabs = [
 ];
 
 export default {
+    mixins: [utilityMixin],
+
     data() {
         return {
+            componentFlag: false,
             tab: null,
             user: null,
+
+            isFollowed: false,
         };
     },
 
@@ -132,7 +156,10 @@ export default {
                 'my-account/bookmark',
                 'my-account/reviews',
             ];
-            return myAccountRoutes.includes(this.$route.name);
+            return (
+                this.isAuthenticated &&
+                myAccountRoutes.includes(this.$route.name)
+            );
         },
 
         tabs() {
@@ -142,19 +169,8 @@ export default {
     },
 
     watch: {
-        async isOwnAccount(val) {
-            this.user = null;
-            if (val) {
-                this.user = this.$store.state.authentication.user || null;
-            } else {
-                this.user = await this.getUser();
-            }
-            if (!this.user) return this.$router.go(-1);
-            this.user = Object.assign({}, this.user);
-
-            this.$nextTick(() => {
-                this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
-            });
+        async isOwnAccount() {
+            await this.loadData();
         },
     },
 
@@ -163,21 +179,52 @@ export default {
             const username = this.$route.params.username;
             return await this.$store.dispatch(GET_USER_BY_USERNAME, username);
         },
+
+        async setUserInformation() {
+            if (this.isOwnAccount) {
+                this.user = this.$store.state.authentication.user || null;
+            } else {
+                this.user = await this.getUser();
+            }
+            if (!this.user) return this.$router.go(-1);
+        },
+
+        async checkFollow() {
+            this.isFollowed = await this.$store.dispatch(
+                CHECK_USER_FOLLOW,
+                this.user.id
+            );
+        },
+
+        async loadData() {
+            await this.setUserInformation();
+            if (this.user && !this.isOwnAccount && this.isAuthenticated)
+                await this.checkFollow();
+            this.componentFlag = true;
+            this.$nextTick(() => {
+                this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
+            });
+        },
+
+        async follow() {
+            const payload = { user_id: this.user.id };
+            const { code, message } = await this.$store.dispatch(
+                FOLLOW_USER,
+                payload
+            );
+            if (this.isHTTPRequestSuccess(code)) {
+                this.isFollowed = !this.isFollowed;
+                this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                    open: true,
+                    message,
+                    color: 'success',
+                });
+            }
+        },
     },
 
     async created() {
-        let user;
-        if (this.isOwnAccount) {
-            user = this.$store.state.authentication.user || null;
-        } else {
-            user = await this.getUser();
-        }
-        if (!user) return this.$router.go(-1);
-        this.user = Object.assign({}, user);
-
-        this.$nextTick(() => {
-            this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
-        });
+        await this.loadData();
     },
 };
 </script>
