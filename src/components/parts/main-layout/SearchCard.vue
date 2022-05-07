@@ -98,6 +98,27 @@ export default {
         },
     },
 
+    watch: {
+        '$route.query': {
+            async handler(val) {
+                if (val) {
+                    Object.keys(val).forEach((key) => {
+                        if (val[key] === null) {
+                            delete val[key];
+                        }
+                    });
+                    this.options = Object.assign(
+                        {},
+                        {
+                            ...val,
+                        }
+                    );
+                }
+            },
+            deep: true,
+        },
+    },
+
     methods: {
         async search() {
             await this.$router.push({

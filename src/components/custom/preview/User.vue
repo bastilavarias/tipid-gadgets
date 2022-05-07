@@ -16,8 +16,8 @@
                     >@{{ username }}
                 </v-list-item-subtitle>
                 <v-list-item-subtitle
-                    ><span v-if="location">
-                        Location:
+                    ><span v-if="location"
+                        >Location:
                         <span class="font-weight-bold secondary--text">{{
                             location
                         }}</span>

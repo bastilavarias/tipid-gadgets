@@ -38,7 +38,13 @@
 </template>
 
 <script>
+import { GET_SEARCH_TYPES } from '@/store/types/reference';
+
 export default {
     name: 'main-layout-catalog-browser-card',
+
+    async created() {
+        this.types = await this.$store.dispatch(GET_SEARCH_TYPES);
+    },
 };
 </script>

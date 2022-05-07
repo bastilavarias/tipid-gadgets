@@ -4,7 +4,7 @@
             <v-card flat>
                 <v-card-title>
                     <span class="secondary--text font-weight-bold align-center"
-                        >Search TipidGadgets</span
+                        >Catalog</span
                     >
                     <v-spacer></v-spacer>
                     <v-btn icon @click="isOptionDialogOpen = true">
@@ -242,24 +242,8 @@ export default {
     },
 
     watch: {
-        '$route.query': {
-            async handler(val) {
-                if (val) {
-                    Object.keys(val).forEach((key) => {
-                        if (val[key] === null) {
-                            delete val[key];
-                        }
-                    });
-                    this.options = Object.assign(
-                        {},
-                        {
-                            ...val,
-                        }
-                    );
-                    await this.search();
-                }
-            },
-            deep: true,
+        async '$route.query'(val) {
+            if (val) await this.search();
         },
     },
 
@@ -278,7 +262,6 @@ export default {
                 orderBy,
                 location,
             } = this.options;
-            console.log(type);
             if (type === 'items_for_sale') {
                 const payload = {
                     page: 1,
