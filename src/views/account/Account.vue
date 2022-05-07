@@ -80,8 +80,8 @@ const accountTabs = [
     },
 
     {
-        text: 'Ratings', // Items and Topics
-        to: { name: 'my-account/rating' },
+        text: 'Reviews', // Items and Topics
+        to: { name: 'my-account/reviews' },
         exact: true,
     },
 ];
@@ -106,8 +106,8 @@ const userTabs = [
     },
 
     {
-        text: 'Ratings', // Items and Topics
-        to: { name: 'user/rating' },
+        text: 'Reviews', // Items and Topics
+        to: { name: 'user/reviews' },
         exact: true,
     },
 ];
@@ -130,7 +130,7 @@ export default {
                 'my-account/information',
                 'my-account/post',
                 'my-account/bookmark',
-                'my-account/rating',
+                'my-account/reviews',
             ];
             return myAccountRoutes.includes(this.$route.name);
         },

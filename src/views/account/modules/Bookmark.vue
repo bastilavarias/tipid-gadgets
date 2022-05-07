@@ -107,7 +107,7 @@ export default {
                 'my-account/information',
                 'my-account/post',
                 'my-account/bookmark',
-                'my-account/rating',
+                'my-account/reviews',
             ];
             return myAccountRoutes.includes(this.$route.name);
         },

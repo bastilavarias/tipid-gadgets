@@ -108,10 +108,10 @@ const routes = [
                             },
 
                             {
-                                path: 'ratings',
-                                name: 'my-account/rating',
+                                path: 'reviews',
+                                name: 'my-account/reviews',
                                 component: () =>
-                                    import('@/views/account/modules/Rating'),
+                                    import('@/views/account/modules/Reviews'),
                             },
                         ],
                     },
@@ -153,10 +153,10 @@ const routes = [
                             },
 
                             {
-                                path: 'ratings',
-                                name: 'user/rating',
+                                path: 'reviews',
+                                name: 'user/reviews',
                                 component: () =>
-                                    import('@/views/account/modules/Rating'),
+                                    import('@/views/account/modules/Reviews'),
                             },
                         ],
                     },
