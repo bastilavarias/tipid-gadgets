@@ -43,25 +43,52 @@
         </v-card-text>
 
         <v-card-actions>
-            <v-btn color="primary" text block :to="{ name: 'search' }">
+            <v-btn
+                color="primary"
+                text
+                block
+                @click="isOptionDialogOpen = true"
+            >
                 <span class="text-capitalize">Use Advance Search</span>
                 <v-icon class="ml-1">mdi-magnify</v-icon>
             </v-btn>
         </v-card-actions>
+
+        <search-option-dialog
+            :is-open.sync="isOptionDialogOpen"
+            :options="options"
+            @search="setSearchOptions"
+        ></search-option-dialog>
     </v-card>
 </template>
 
 <script>
 import { GET_SEARCH_TYPES } from '@/store/types/reference';
+import SearchOptionDialog from '@/components/custom/search/OptionDialog';
 
 export default {
     name: 'main-layout-search-card',
-
+    components: { SearchOptionDialog },
     data() {
         return {
             types: [],
             query: null,
             selectedType: null,
+
+            options: {
+                type: null,
+                keywords: null,
+                sectionID: null,
+                categoryID: null,
+                conditionID: null,
+                warrantyID: null,
+                minimumPrice: null,
+                maximumPrice: null,
+                location: null,
+                sortBy: 'created_at',
+                orderBy: 'desc',
+            },
+            isOptionDialogOpen: false,
         };
     },
 
@@ -76,6 +103,24 @@ export default {
             await this.$router.push({
                 name: 'search',
                 query: { query: this.query, type: this.selectedType },
+            });
+        },
+
+        async setSearchOptions(options) {
+            Object.keys(options).forEach((key) => {
+                if (options[key] === null) {
+                    delete options[key];
+                }
+            });
+            this.options = Object.assign(
+                {},
+                {
+                    ...options,
+                }
+            );
+            await this.$router.push({
+                name: 'search',
+                query: { ...options, query: options.keywords },
             });
         },
     },
