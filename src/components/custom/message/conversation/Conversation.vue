@@ -4,7 +4,7 @@
             No Conversation here.
         </template>
 
-        <template v-if="!isNoConversationMessageShow && information">
+        <template v-if="!isNoConversationMessageShow && shouldBootComponent">
             <v-list-item three-line>
                 <v-list-item-content>
                     <v-list-item-title class="d-flex align-center">
@@ -38,7 +38,7 @@
                         <span
                             class="text-capitalize font-weight-bold"
                             :style="{
-                                color: statusColors[
+                                color: this.statusColors[
                                     information.transaction.status
                                 ],
                             }"
@@ -53,26 +53,22 @@
                             @click="openMarkAsReceiveDialog"
                             >Mark as Receive</span
                         >
-                        <template v-if="!componentFlag">
-                            <span
-                                class="text-decoration-underline caption pointer"
-                                @click="isOpenReviewDialogOpen = true"
-                                v-if="
-                                    isTransactionStatusReceived &&
-                                    isValidToReview
-                                "
-                                >Write {{ currentUser.username }} a review</span
-                            >
-                            <span
-                                class="caption font-italic"
-                                v-else-if="
-                                    isTransactionStatusReceived &&
-                                    !isValidToReview
-                                "
-                                >You already gave {{ currentUser.username }} a
-                                review.
-                            </span>
-                        </template>
+                        <span
+                            class="text-decoration-underline caption pointer"
+                            @click="isOpenReviewDialogOpen = true"
+                            v-if="
+                                isTransactionStatusReceived && isValidToReview
+                            "
+                            >Write {{ currentUser.username }} a review</span
+                        >
+                        <span
+                            class="caption font-italic"
+                            v-else-if="
+                                isTransactionStatusReceived && !isValidToReview
+                            "
+                            >You already gave {{ currentUser.username }} a
+                            review.
+                        </span>
                     </v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
@@ -103,7 +99,6 @@
                             hide-details
                             no-resize
                             autofocus
-                            :disabled="componentFlag"
                             v-model="content"
                         ></v-textarea>
                     </v-col>
@@ -113,7 +108,7 @@
                             <v-btn
                                 color="secondary"
                                 depressed
-                                :disabled="!content || componentFlag"
+                                :disabled="!content"
                                 :loading="isCreateChatStart"
                                 @click="createChat"
                                 >Send</v-btn
@@ -165,7 +160,7 @@ export default {
 
     data() {
         return {
-            componentFlag: false,
+            shouldBootComponent: false,
             information: null,
             isGetRoomStart: false,
             isNoConversationMessageShow: false,
@@ -243,12 +238,10 @@ export default {
     watch: {
         async roomID(val) {
             if (val) {
-                await this.getRoom();
-                await this.getRoomChats();
-                await this.checkReviewerValidity();
-                this.chatBroadcastListener();
-                this.transactionBroadcastListener();
-                this.reviewBroadcastListener();
+                await this.loadData();
+                this.loadBroadcastListeners();
+                this.shouldBootComponent = true;
+                this.scrollBottom();
             }
         },
     },
@@ -269,36 +262,37 @@ export default {
                 GET_ROOM_CHATS,
                 this.roomID
             );
-            this.scrollBottom();
         },
 
         chatBroadcastListener() {
-            window.Echo.private(`room.${this.roomID}`).listen(
-                '.chat',
-                ({ data }) => {
-                    this.chat.items = [...this.chat.items, data];
-                    this.scrollBottom();
-                }
-            );
+            if (window.Echo)
+                window.Echo.private(`room.${this.roomID}`).listen(
+                    '.chat',
+                    ({ data }) => {
+                        this.chat.items = [...this.chat.items, data];
+                        this.scrollBottom();
+                    }
+                );
         },
 
         transactionBroadcastListener() {
-            window.Echo.private(`room.${this.roomID}`).listen(
-                '.transaction',
-                ({ data }) => {
-                    this.information.transaction = Object.assign({}, data);
-                    this.isValidToReview = true;
-                    const { host } = this.information;
-                    const message = this.isHost
-                        ? 'You marked this transaction as received.'
-                        : `${host.username} marked this transaction as received.`;
-                    this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
-                        open: true,
-                        message: message,
-                        color: 'success',
-                    });
-                }
-            );
+            if (window.Echo)
+                window.Echo.private(`room.${this.roomID}`).listen(
+                    '.transaction',
+                    ({ data }) => {
+                        this.information.transaction = Object.assign({}, data);
+                        this.isValidToReview = true;
+                        const { host } = this.information;
+                        const message = this.isHost
+                            ? 'You marked this transaction as received.'
+                            : `${host.username} marked this transaction as received.`;
+                        this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                            open: true,
+                            message: message,
+                            color: 'success',
+                        });
+                    }
+                );
         },
 
         async createChat() {
@@ -376,39 +370,47 @@ export default {
         },
 
         reviewBroadcastListener() {
-            window.Echo.private(`room.${this.roomID}`).listen(
-                '.review',
-                ({ data }) => {
-                    const { reviewee_id, reviewer_id, reviewer } = data;
-                    if (this.user.id === reviewer_id)
-                        this.isValidToReview = false;
+            if (window.Echo)
+                window.Echo.private(`room.${this.roomID}`).listen(
+                    '.review',
+                    ({ data }) => {
+                        const { reviewee_id, reviewer_id, reviewer } = data;
+                        if (this.user.id === reviewer_id)
+                            this.isValidToReview = false;
 
-                    if (this.user.id === reviewee_id) {
-                        const message = `${reviewer.username} gave you a rating.`;
-                        this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
-                            open: true,
-                            message: message,
-                            color: 'success',
-                        });
+                        if (this.user.id === reviewee_id) {
+                            const message = `${reviewer.username} gave you a rating.`;
+                            this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                                open: true,
+                                message: message,
+                                color: 'success',
+                            });
+                        }
                     }
-                }
-            );
+                );
+        },
+
+        async loadData() {
+            await this.getRoom();
+            await this.getRoomChats();
+
+            if (this.isTransactionStatusReceived)
+                await this.checkReviewerValidity();
+        },
+
+        loadBroadcastListeners() {
+            this.chatBroadcastListener();
+            this.transactionBroadcastListener();
+            this.reviewBroadcastListener();
         },
     },
 
     async created() {
         if (!this.roomID) return (this.isNoConversationMessageShow = true);
-        this.componentFlag = true;
-        await this.getRoom();
-        await this.getRoomChats();
-        this.chatBroadcastListener();
-        this.transactionBroadcastListener();
-        this.reviewBroadcastListener();
-
-        if (this.isTransactionStatusReceived)
-            await this.checkReviewerValidity();
-
-        this.componentFlag = false;
+        await this.loadData();
+        this.loadBroadcastListeners();
+        this.shouldBootComponent = true;
+        this.scrollBottom();
     },
 };
 </script>

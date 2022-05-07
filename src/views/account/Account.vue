@@ -1,5 +1,5 @@
 <template>
-    <v-row v-if="componentFlag">
+    <v-row v-if="shouldBootComponent">
         <v-col cols="12">
             <v-card flat>
                 <v-card-title
@@ -136,7 +136,7 @@ export default {
 
     data() {
         return {
-            componentFlag: false,
+            shouldBootComponent: false,
             tab: null,
             user: null,
 
@@ -200,7 +200,7 @@ export default {
             await this.setUserInformation();
             if (this.user && !this.isOwnAccount && this.isAuthenticated)
                 await this.checkFollow();
-            this.componentFlag = true;
+            this.shouldBootComponent = true;
             this.$nextTick(() => {
                 this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
             });

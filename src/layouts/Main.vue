@@ -124,6 +124,12 @@ export default {
         },
     },
 
+    watch: {
+        isAuthenticated(val) {
+            if (val) broadcastService.initialize();
+        },
+    },
+
     methods: {
         logout() {
             this.$store.commit(PURGE_AUTHENTICATION);
