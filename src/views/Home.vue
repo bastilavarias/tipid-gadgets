@@ -7,31 +7,26 @@
                         New Items for Sale
                     </span>
                     <v-spacer></v-spacer>
-                    <v-tooltip bottom v-if="isClassicMode">
+                    <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
                                 icon
                                 v-bind="attrs"
                                 v-on="on"
-                                @click="mode = 'card'"
+                                @click="saveViewMode"
                             >
-                                <v-icon>mdi-card-multiple</v-icon>
+                                <v-icon>{{
+                                    mode === 'classic'
+                                        ? 'mdi-view-list'
+                                        : 'mdi-card-multiple'
+                                }}</v-icon>
                             </v-btn>
                         </template>
-                        <span>Switch to Card Mode</span>
-                    </v-tooltip>
-                    <v-tooltip bottom v-if="isCardMode">
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                icon
-                                v-bind="attrs"
-                                v-on="on"
-                                @click="mode = 'classic'"
-                            >
-                                <v-icon>mdi-view-list</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Switch to Classic Mode</span>
+                        <span
+                            >Switch to
+                            {{ mode === 'classic' ? 'Classic' : 'Card' }}
+                            Mode</span
+                        >
                     </v-tooltip>
                 </v-card-title>
 
@@ -209,7 +204,7 @@ export default {
                 orderBy: 'desc',
             },
 
-            mode: 'classic',
+            mode: window.localStorage.getItem('view_mode') || 'classic',
         };
     },
 
@@ -257,6 +252,17 @@ export default {
                 payload
             );
             this.wantToBuy.loading = false;
+        },
+
+        saveViewMode() {
+            const mode = window.localStorage.getItem('view_mode') || 'classic';
+            if (mode === 'classic') {
+                window.localStorage.setItem('view_mode', 'card');
+                this.mode = 'card';
+                return;
+            }
+            window.localStorage.setItem('view_mode', 'classic');
+            this.mode = 'classic';
         },
     },
 
