@@ -7,8 +7,27 @@
                     >Item Details</v-card-title
                 >
                 <v-card-subtitle class="primary--text"
-                    >{{ information.section.name }}:
-                    {{ information.category.name }}</v-card-subtitle
+                    ><router-link
+                        style="text-decoration: none"
+                        :to="{
+                            name: 'search',
+                            query: { type: 'items_for_sale' },
+                        }"
+                    >
+                        {{ information.section.name }} </router-link
+                    >:
+                    <router-link
+                        style="text-decoration: none"
+                        :to="{
+                            name: 'search',
+                            query: {
+                                type: 'items_for_sale',
+                                categoryID: information.category.id,
+                            },
+                        }"
+                    >
+                        {{ information.category.name }}
+                    </router-link></v-card-subtitle
                 >
                 <v-list-item three-line>
                     <v-list-item-content>
@@ -23,13 +42,35 @@
                             }}</v-list-item-subtitle
                         >
                         <v-list-item-subtitle>
-                            <span class="font-weight-bold success--text">{{
-                                information.condition.name
-                            }}</span>
+                            <router-link
+                                style="text-decoration: none"
+                                :to="{
+                                    name: 'search',
+                                    query: {
+                                        type: 'items_for_sale',
+                                        conditionID: information.condition.id,
+                                    },
+                                }"
+                            >
+                                <span class="font-weight-bold success--text">{{
+                                    information.condition.name
+                                }}</span>
+                            </router-link>
                             <span class="mx-1">with</span>
-                            <span class="font-weight-bold success--text">{{
-                                information.warranty.name
-                            }}</span>
+                            <router-link
+                                style="text-decoration: none"
+                                :to="{
+                                    name: 'search',
+                                    query: {
+                                        type: 'items_for_sale',
+                                        warrantyID: information.warranty.id,
+                                    },
+                                }"
+                            >
+                                <span class="font-weight-bold success--text">{{
+                                    information.warranty.name
+                                }}</span>
+                            </router-link>
                         </v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>

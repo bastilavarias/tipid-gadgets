@@ -14,16 +14,19 @@
 
                 <v-card-subtitle>
                     <div class="primary--text">
-                        <span class="font-weight-bold">{{ title }} :</span>
+                        <span class="font-weight-bold">{{ title }} </span>
                         <span>
                             <span v-if="query">
-                                {{ ` ${options.keywords} ` }}
+                                <span class="font-weight-bold">:</span
+                                >{{ ` ${options.keywords} ` }}
                                 <span v-if="mode.forumTopics && topicSection"
                                     >-</span
                                 >
                             </span>
                             <span v-if="mode.forumTopics && topicSection">
-                                {{ topicSection.name }}</span
+                                <span class="font-weight-bold" v-if="!query"
+                                    >: </span
+                                >{{ topicSection.name }}</span
                             >
                         </span>
                     </div>
