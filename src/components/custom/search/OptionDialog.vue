@@ -37,6 +37,21 @@
                         ></v-text-field>
                     </v-col>
 
+                    <v-col cols="12" v-if="isForumTopics">
+                        <v-select
+                            outlined
+                            dense
+                            hide-details
+                            label="Section"
+                            item-value="id"
+                            item-text="name"
+                            :items="sections"
+                            clearable
+                            @click:clear="optionsLocal.sectionID = null"
+                            v-model="optionsLocal.sectionID"
+                        ></v-select>
+                    </v-col>
+
                     <v-col cols="12" v-if="isItemsForSale || isWantToBuys">
                         <v-row>
                             <v-col cols="12">
@@ -187,6 +202,7 @@ import {
     GET_ITEM_CONDITIONS,
     GET_ITEM_WARRANTIES,
     GET_SEARCH_TYPES,
+    GET_TOPIC_SECTIONS,
 } from '@/store/types/reference';
 
 export default {
@@ -205,6 +221,7 @@ export default {
             categories: [],
             conditions: [],
             warranties: [],
+            sections: [], // forum sections
         };
     },
 
@@ -341,6 +358,7 @@ export default {
         this.categories = await this.$store.dispatch(GET_ITEM_CATEGORIES);
         this.conditions = await this.$store.dispatch(GET_ITEM_CONDITIONS);
         this.warranties = await this.$store.dispatch(GET_ITEM_WARRANTIES);
+        this.sections = await this.$store.dispatch(GET_TOPIC_SECTIONS);
     },
 };
 </script>

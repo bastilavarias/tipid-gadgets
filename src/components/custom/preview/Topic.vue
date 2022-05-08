@@ -12,8 +12,19 @@
                 </v-list-item-title>
 
                 <v-list-item-subtitle>
-                    <span class="primary--text">{{ section.name }}</span
-                    ><span class="grey--text"> - posted by</span>
+                    <router-link
+                        style="text-decoration: none"
+                        :to="{
+                            name: 'search',
+                            query: {
+                                type: 'forum_topics',
+                                sectionID: section.id,
+                            },
+                        }"
+                    >
+                        <span class="primary--text">{{ section.name }}</span>
+                    </router-link>
+                    <span class="grey--text"> - posted by</span>
                     <span
                         class="primary--text pointer"
                         @click="goToUser(user.username)"

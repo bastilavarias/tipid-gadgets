@@ -12,9 +12,21 @@
                     </v-btn>
                 </v-card-title>
 
-                <v-card-subtitle class="primary--text"
-                    ><span class="font-weight-bold">{{ title }} :</span>
-                    <span v-if="query"> {{ options.keywords }} </span>
+                <v-card-subtitle>
+                    <div class="primary--text">
+                        <span class="font-weight-bold">{{ title }} :</span>
+                        <span>
+                            <span v-if="query">
+                                {{ ` ${options.keywords} ` }}
+                                <span v-if="mode.forumTopics && topicSection"
+                                    >-</span
+                                >
+                            </span>
+                            <span v-if="mode.forumTopics && topicSection">
+                                {{ topicSection.name }}</span
+                            >
+                        </span>
+                    </div>
                 </v-card-subtitle>
 
                 <v-card-text>
@@ -103,6 +115,7 @@
                                         :user="topic.user"
                                         :created-at="topic.created_at"
                                         :slug="topic.slug"
+                                        :updated-at="topic.updated_at"
                                         :index="index"
                                     ></topic-preview>
                                 </v-col>
@@ -151,7 +164,7 @@
 import SearchOptionDialog from '@/components/custom/search/OptionDialog';
 import { GET_ITEMS } from '@/store/types/item';
 import ItemPreview from '@/components/custom/preview/Item';
-import { GET_SEARCH_TYPES } from '@/store/types/reference';
+import { GET_SEARCH_TYPES, GET_TOPIC_SECTIONS } from '@/store/types/reference';
 import { GET_TOPICS } from '@/store/types/topic';
 import TopicPreview from '@/components/custom/preview/Topic';
 import { GET_USERS } from '@/store/types/user';
@@ -211,6 +224,7 @@ export default {
                 sortBy: 'created_at',
                 orderBy: 'desc',
             },
+            sections: [], // topic sections
         };
     },
 
@@ -240,6 +254,12 @@ export default {
                 forumTopics: type === 'forum_topics',
                 members: type === 'members',
             };
+        },
+
+        topicSection() {
+            const sectionID = parseInt(this.options.sectionID) || null;
+            if (!sectionID) return null;
+            return this.sections.find((section) => section.id === sectionID);
         },
     },
 
@@ -378,6 +398,7 @@ export default {
     async created() {
         const { type } = this.$route.query;
         this.types = await this.$store.dispatch(GET_SEARCH_TYPES);
+        this.sections = await this.$store.dispatch(GET_TOPIC_SECTIONS);
         if (!type) return this.$router.go(-1);
         this.options = Object.assign(
             {},

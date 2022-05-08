@@ -96,6 +96,7 @@
                                     :user="topic.user"
                                     :created-at="topic.created_at"
                                     :slug="topic.slug"
+                                    :updated-at="topic.updated_at"
                                     :index="index"
                                 ></topic-preview>
                             </v-col>
