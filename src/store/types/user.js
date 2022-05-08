@@ -6,3 +6,4 @@ export const WRITE_USER_REVIEW = 'user/write-review';
 export const GET_USER_REVIEWS = 'user/get-reviews';
 export const CHECK_USER_FOLLOW = 'user/check-follow';
 export const FOLLOW_USER = 'user/follow';
+export const GET_USER_FOLLOWS = 'user/get-follows';

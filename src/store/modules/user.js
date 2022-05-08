@@ -7,6 +7,7 @@ import {
     WRITE_USER_REVIEW,
     CHECK_USER_FOLLOW,
     FOLLOW_USER,
+    GET_USER_FOLLOWS,
 } from '@/store/types/user';
 import apiService from '@/services/api';
 
@@ -116,6 +117,27 @@ const userModule = {
                 return response.data;
             } catch (error) {
                 return error.response.data;
+            }
+        },
+
+        async [GET_USER_FOLLOWS](_, { page, perPage, filterBy, userID }) {
+            try {
+                const route = `${apiService.baseURL()}/user/follow`;
+                const url = new URL(route);
+                const params = new URLSearchParams(url.search);
+                if (page) params.set('page', page);
+                if (perPage) params.set('per_page', perPage);
+                if (filterBy) params.set('filter_by', filterBy);
+                if (userID) params.set('user_id', userID);
+                const response = await apiService.get(
+                    `/user/follow?${params}`,
+                    {
+                        useCache: true,
+                    }
+                );
+                return response.data.data;
+            } catch (error) {
+                return [];
             }
         },
     },
