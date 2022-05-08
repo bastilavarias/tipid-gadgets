@@ -118,6 +118,10 @@ export default {
                 await this.$store.dispatch(VIEW_TOPIC, payload);
             }
         },
+
+        async '$route.params.slug'(val) {
+            if (val) await this.getInformation();
+        },
     },
 
     methods: {

@@ -125,6 +125,10 @@ export default {
                 await this.$store.dispatch(VIEW_ITEM, payload);
             }
         },
+
+        async '$route.params.slug'(val) {
+            if (val) await this.getInformation();
+        },
     },
 
     methods: {
