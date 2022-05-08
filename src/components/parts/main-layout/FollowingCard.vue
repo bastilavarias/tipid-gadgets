@@ -5,7 +5,7 @@
         </v-card-title>
 
         <v-card outlined tile>
-            <v-card-text style="max-height: 12rem">
+            <v-card-text style="max-height: 12rem; overflow: auto">
                 <div
                     class="fill-height d-flex justify-center align-center"
                     v-if="!isGetUserFollowsStart && users.length === 0"
@@ -16,12 +16,17 @@
                 <v-row dense v-else>
                     <template v-for="(user, index) in users">
                         <v-col cols="12" :key="index">
-                            <div
-                                class="subtitle-2 primary--text text-decoration-underline pointer"
-                                @click="goToUser(user.user.username)"
+                            <router-link
+                                :to="{
+                                    name: 'user/information',
+                                    params: { username: user.user.username },
+                                }"
                             >
-                                {{ user.user.username }}
-                            </div>
+                                <span
+                                    class="subtitle-2 primary--text text-decoration-underline pointer"
+                                    >{{ user.user.username }}</span
+                                >
+                            </router-link>
                         </v-col>
                     </template>
                 </v-row>

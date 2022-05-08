@@ -133,7 +133,7 @@ const routes = [
                 children: [
                     {
                         path: '',
-                        component: () => import('@/views/account/Account'),
+                        component: () => import('@/views/account/User'),
                         children: [
                             {
                                 path: '',
