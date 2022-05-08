@@ -7,7 +7,19 @@
                     >Forum Topic</v-card-title
                 >
                 <v-card-subtitle class="primary--text"
-                    >Section: {{ information.section.name }}</v-card-subtitle
+                    >Section:
+                    <router-link
+                        style="text-decoration: none"
+                        :to="{
+                            name: 'search',
+                            query: {
+                                type: 'forum_topics',
+                                sectionID: information.section.id,
+                            },
+                        }"
+                    >
+                        {{ information.section.name }}
+                    </router-link></v-card-subtitle
                 >
 
                 <v-list-item two-line>
@@ -19,7 +31,8 @@
                         <v-list-item-subtitle
                             >Posted by
                             <span
-                                class="text-decoration-underline primary--text"
+                                class="text-decoration-underline primary--text pointer"
+                                @click="goToUser(information.user.username)"
                                 >{{ information.user.username }}</span
                             >
                             {{
@@ -72,6 +85,7 @@ import dateMixin from '@/mixins/date';
 import TopicAuthorCard from '@/components/custom/forum/AuthorCard';
 import PostInsightCard from '@/components/custom/PostInsightCard';
 import ForumCommentCard from '@/components/custom/forum/CommentCard';
+import redirectionMixin from '@/mixins/redirection';
 
 export default {
     components: {
@@ -81,7 +95,7 @@ export default {
         RatingStatusChip,
     },
 
-    mixins: [utilityMixin, dateMixin],
+    mixins: [utilityMixin, dateMixin, redirectionMixin],
 
     data() {
         return {
