@@ -280,7 +280,6 @@ export default {
                 orderBy,
                 location,
             } = this.options;
-            console.log(type);
             if (type === 'items_for_sale') {
                 const payload = {
                     page: 1,
