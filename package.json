@@ -16,6 +16,7 @@
     "moment": "^2.29.3",
     "pusher-js": "^7.1.0-beta",
     "vue": "^2.6.11",
+    "vue-infinite-loading": "^2.4.5",
     "vue-masonry-css": "^1.0.3",
     "vue-router": "^3.2.0",
     "vuetify": "^2.6.0",

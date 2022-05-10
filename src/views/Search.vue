@@ -34,17 +34,7 @@
 
                 <v-card-text>
                     <template v-if="mode.itemsForSale">
-                        <v-row dense v-if="itemForSale.loading">
-                            <template v-for="i in 10">
-                                <v-col cols="12" :key="i">
-                                    <v-skeleton-loader
-                                        type="list-item-two-line"
-                                    >
-                                    </v-skeleton-loader>
-                                </v-col>
-                            </template>
-                        </v-row>
-                        <v-row dense v-else>
+                        <v-row dense>
                             <template
                                 v-for="(item, index) in itemForSale.items"
                             >
@@ -63,11 +53,8 @@
                                 </v-col>
                             </template>
                         </v-row>
-                    </template>
-
-                    <template v-if="mode.wantToBuys">
-                        <v-row dense v-if="wantToBuy.loading">
-                            <template v-for="i in 10">
+                        <v-row dense v-if="itemForSale.loading">
+                            <template v-for="i in itemForSale.perPage">
                                 <v-col cols="12" :key="i">
                                     <v-skeleton-loader
                                         type="list-item-two-line"
@@ -76,7 +63,14 @@
                                 </v-col>
                             </template>
                         </v-row>
-                        <v-row dense v-else>
+                        <base-infinite-scroll
+                            :action="getItemsForSale"
+                            :identifier="infiniteId"
+                        ></base-infinite-scroll>
+                    </template>
+
+                    <template v-if="mode.wantToBuys">
+                        <v-row dense>
                             <template v-for="(item, index) in wantToBuy.items">
                                 <v-col cols="12" :key="index">
                                     <item-preview
@@ -93,11 +87,8 @@
                                 </v-col>
                             </template>
                         </v-row>
-                    </template>
-
-                    <template v-if="mode.forumTopics">
-                        <v-row dense v-if="forumTopic.loading">
-                            <template v-for="i in 20">
+                        <v-row dense v-if="wantToBuy.loading">
+                            <template v-for="i in wantToBuy.perPage">
                                 <v-col cols="12" :key="i">
                                     <v-skeleton-loader
                                         type="list-item-two-line"
@@ -106,6 +97,13 @@
                                 </v-col>
                             </template>
                         </v-row>
+                        <base-infinite-scroll
+                            :action="getWantToBuys"
+                            :identifier="infiniteId"
+                        ></base-infinite-scroll>
+                    </template>
+
+                    <template v-if="mode.forumTopics">
                         <v-row dense>
                             <template
                                 v-for="(topic, index) in forumTopic.items"
@@ -124,11 +122,8 @@
                                 </v-col>
                             </template>
                         </v-row>
-                    </template>
-
-                    <template v-if="mode.members">
-                        <v-row dense v-if="member.loading">
-                            <template v-for="i in 20">
+                        <v-row dense v-if="forumTopic.loading">
+                            <template v-for="i in forumTopic.perPage">
                                 <v-col cols="12" :key="i">
                                     <v-skeleton-loader
                                         type="list-item-two-line"
@@ -137,6 +132,13 @@
                                 </v-col>
                             </template>
                         </v-row>
+                        <base-infinite-scroll
+                            :action="getForumTopics"
+                            :identifier="infiniteId"
+                        ></base-infinite-scroll>
+                    </template>
+
+                    <template v-if="mode.members">
                         <v-row dense>
                             <template v-for="(user, index) in member.items">
                                 <v-col cols="12" :key="index">
@@ -150,6 +152,20 @@
                                 </v-col>
                             </template>
                         </v-row>
+                        <v-row dense v-if="member.loading">
+                            <template v-for="i in member.perPage">
+                                <v-col cols="12" :key="i">
+                                    <v-skeleton-loader
+                                        type="list-item-two-line"
+                                    >
+                                    </v-skeleton-loader>
+                                </v-col>
+                            </template>
+                        </v-row>
+                        <base-infinite-scroll
+                            :action="getMembers"
+                            :identifier="infiniteId"
+                        ></base-infinite-scroll>
                     </template>
                 </v-card-text>
             </v-card>
@@ -172,9 +188,16 @@ import { GET_TOPICS } from '@/store/types/topic';
 import TopicPreview from '@/components/custom/preview/Topic';
 import { GET_USERS } from '@/store/types/user';
 import UserPreview from '@/components/custom/preview/User';
+import BaseInfiniteScroll from '@/components/base/InfiniteScroll';
 
 export default {
-    components: { UserPreview, TopicPreview, ItemPreview, SearchOptionDialog },
+    components: {
+        BaseInfiniteScroll,
+        UserPreview,
+        TopicPreview,
+        ItemPreview,
+        SearchOptionDialog,
+    },
 
     data() {
         return {
@@ -197,7 +220,7 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 20,
+                perPage: 10,
                 filterBy: 'item_for_sale',
                 sortBy: 'created_at',
                 orderBy: 'desc',
@@ -206,16 +229,15 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 20,
+                perPage: 10,
                 filterBy: 'want_to_buy',
                 sortBy: 'created_at',
-                orderBy: 'desc',
             },
             forumTopic: {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 20,
+                perPage: 10,
                 sortBy: 'created_at',
                 orderBy: 'desc',
             },
@@ -223,11 +245,12 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 20,
+                perPage: 10,
                 sortBy: 'created_at',
                 orderBy: 'desc',
             },
             sections: [], // topic sections
+            infiniteId: +new Date(),
         };
     },
 
@@ -281,7 +304,17 @@ export default {
                             ...val,
                         }
                     );
-                    await this.search();
+
+                    const { type } = this.options;
+                    let dataName;
+                    if (type === 'items_for_sale') dataName = 'itemForSale';
+                    if (type === 'want_to_buys') dataName = 'wantToBuy';
+                    if (type === 'forum_topics') dataName = 'forumTopic';
+                    if (type === 'members') dataName = 'member';
+
+                    this[dataName].page = 1;
+                    this[dataName].items = [];
+                    this.infiniteId += 1;
                 }
             },
             deep: true,
@@ -289,11 +322,10 @@ export default {
     },
 
     methods: {
-        async search() {
+        async getItemsForSale($state) {
             const {
                 type,
                 keywords,
-                sectionID,
                 categoryID,
                 conditionID,
                 warrantyID,
@@ -301,82 +333,125 @@ export default {
                 maximumPrice,
                 sortBy,
                 orderBy,
-                location,
             } = this.options;
-            if (type === 'items_for_sale') {
-                const payload = {
-                    page: 1,
-                    perPage: 20,
-                    filterBy: type,
-                    sortBy,
-                    orderBy: orderBy,
-                    search: keywords,
-                    categoryID,
-                    conditionID,
-                    warrantyID,
-                    minimumPrice,
-                    maximumPrice,
-                };
-                this.itemForSale.loading = true;
-                this.itemForSale.items = await this.$store.dispatch(
-                    GET_ITEMS,
-                    payload
-                );
+            const { page, perPage } = this.itemForSale;
+            const payload = {
+                page,
+                perPage,
+                filterBy: type,
+                sortBy,
+                orderBy: orderBy,
+                search: keywords,
+                categoryID,
+                conditionID,
+                warrantyID,
+                minimumPrice,
+                maximumPrice,
+            };
+            this.itemForSale.loading = true;
+            const items = await this.$store.dispatch(GET_ITEMS, payload);
+            if (items.length === perPage) {
+                this.itemForSale.page += 1;
                 this.itemForSale.loading = false;
+                this.itemForSale.items = [...this.itemForSale.items, ...items];
+                $state.loaded();
+                return;
             }
-            if (type === 'want_to_buys') {
-                const payload = {
-                    page: 1,
-                    perPage: 20,
-                    filterBy: type,
-                    sortBy,
-                    orderBy: orderBy,
-                    search: keywords,
-                    categoryID,
-                    conditionID,
-                    warrantyID,
-                    minimumPrice,
-                    maximumPrice,
-                };
-                this.wantToBuy.loading = true;
-                this.wantToBuy.items = await this.$store.dispatch(
-                    GET_ITEMS,
-                    payload
-                );
-                this.wantToBuy.loading = false;
-            } else if (type === 'forum_topics') {
-                const payload = {
-                    page: 1,
-                    perPage: 20,
-                    sectionID,
-                    sortBy,
-                    orderBy: orderBy,
-                    search: keywords,
-                };
-                this.forumTopic.loading = true;
-                this.forumTopic.items = await this.$store.dispatch(
-                    GET_TOPICS,
-                    payload
-                );
-                this.forumTopic.loading = false;
-            } else if (type === 'members') {
-                const payload = {
-                    page: 1,
-                    perPage: 20,
-                    location,
-                    sortBy,
-                    orderBy: orderBy,
-                    search: keywords,
-                };
-                this.member.loading = true;
-                this.member.items = await this.$store.dispatch(
-                    GET_USERS,
-                    payload
-                );
-                this.member.loading = false;
-            }
+            this.itemForSale.items = [...this.itemForSale.items, ...items];
+            this.itemForSale.loading = false;
+            $state.complete();
+        },
 
-            await this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
+        async getWantToBuys($state) {
+            const {
+                type,
+                keywords,
+                categoryID,
+                conditionID,
+                warrantyID,
+                minimumPrice,
+                maximumPrice,
+                sortBy,
+                orderBy,
+            } = this.options;
+            const { page, perPage } = this.wantToBuy;
+            const payload = {
+                page,
+                perPage,
+                filterBy: type,
+                sortBy,
+                orderBy: orderBy,
+                search: keywords,
+                categoryID,
+                conditionID,
+                warrantyID,
+                minimumPrice,
+                maximumPrice,
+            };
+            this.wantToBuy.loading = true;
+            const items = await this.$store.dispatch(GET_ITEMS, payload);
+            if (items.length === perPage) {
+                this.wantToBuy.page += 1;
+                this.wantToBuy.loading = false;
+                this.wantToBuy.items = [...this.wantToBuy.items, ...items];
+                $state.loaded();
+                return;
+            }
+            this.wantToBuy.items = [...this.wantToBuy.items, ...items];
+            this.wantToBuy.loading = false;
+            $state.complete();
+        },
+
+        async getForumTopics($state) {
+            const { type, sectionID, sortBy, orderBy, keywords } = this.options;
+            const { page, perPage } = this.forumTopic;
+            const payload = {
+                page,
+                perPage,
+                filterBy: type,
+                sortBy,
+                orderBy: orderBy,
+                search: keywords,
+                sectionID,
+            };
+            this.forumTopic.loading = true;
+            const topics = await this.$store.dispatch(GET_TOPICS, payload);
+            if (topics.length === perPage) {
+                this.forumTopic.page += 1;
+                this.forumTopic.loading = false;
+                this.forumTopic.items = [...this.forumTopic.items, ...topics];
+                $state.loaded();
+                return;
+            }
+            this.forumTopic.items = [...this.forumTopic.items, ...topics];
+            this.forumTopic.loading = false;
+            $state.complete();
+        },
+
+        async getMembers($state) {
+            const { type, location, sortBy, orderBy, keywords } = this.options;
+            const { page, perPage } = this.member;
+            const payload = {
+                page,
+                perPage,
+                filterBy: type,
+                location,
+                sortBy,
+                orderBy: orderBy,
+                search: keywords,
+            };
+            this.member.loading = true;
+            const members = await this.$store.dispatch(GET_TOPICS, payload);
+            if (members.length === perPage) {
+                this.member.page += 1;
+                this.member.loading = false;
+                this.member.items = [...this.member.items, ...members];
+                $state.loaded();
+                return;
+            }
+            this.member.items = [...this.member.items, ...members];
+            this.member.loading = false;
+            $state.complete();
         },
 
         async setSearchOptions(options) {
@@ -411,7 +486,6 @@ export default {
                 keywords: this.$route.query.query,
             }
         );
-        await this.search();
     },
 };
 </script>
