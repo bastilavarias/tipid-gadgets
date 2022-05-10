@@ -133,6 +133,7 @@ export default {
 
     data() {
         return {
+            shouldBootComponent: false,
             information: null,
         };
     },
@@ -174,10 +175,12 @@ export default {
 
     methods: {
         async getInformation() {
+            this.shouldBootComponent = false;
             this.information = await this.$store.dispatch(GET_ITEM, this.slug);
             this.$nextTick(() => {
                 this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
             });
+            this.shouldBootComponent = false;
         },
     },
 

@@ -1,6 +1,6 @@
 <template>
     <v-row dense>
-        <v-col cols="12" v-if="information">
+        <v-col cols="12" v-if="shouldBootComponent">
             <v-card flat>
                 <v-card-title
                     class="secondary--text font-weight-bold align-center"
@@ -71,7 +71,7 @@
             </v-card>
         </v-col>
 
-        <v-col cols="12" v-if="information">
+        <v-col cols="12" v-if="shouldBootComponent">
             <forum-comment-card :topicID="information.id"></forum-comment-card>
         </v-col>
     </v-row>
@@ -99,6 +99,7 @@ export default {
 
     data() {
         return {
+            shouldBootComponent: false,
             information: null,
         };
     },
@@ -140,10 +141,12 @@ export default {
 
     methods: {
         async getInformation() {
+            this.shouldBootComponent = false;
             this.information = await this.$store.dispatch(GET_TOPIC, this.slug);
             this.$nextTick(() => {
                 this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
             });
+            this.shouldBootComponent = true;
         },
     },
 

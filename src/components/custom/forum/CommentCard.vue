@@ -62,7 +62,8 @@
                         :key="index"
                     >
                         <v-list-item-title
-                            @click="comments.orderBy = order.slug"
+                            class="pointer"
+                            @click="sortComments(order)"
                             >{{ order.name }}</v-list-item-title
                         >
                     </v-list-item>
@@ -71,15 +72,7 @@
         >
 
         <v-card-text>
-            <v-row dense v-if="comments.loading">
-                <template v-for="i in 5">
-                    <v-col cols="12" :key="i">
-                        <v-skeleton-loader type="list-item-three-line">
-                        </v-skeleton-loader>
-                    </v-col>
-                </template>
-            </v-row>
-            <v-row dense v-else>
+            <v-row dense>
                 <template v-for="(comment, index) in comments.items">
                     <v-col cols="12" :key="index" :id="`comment_${comment.id}`">
                         <comment-preview
@@ -94,6 +87,19 @@
                     </v-col>
                 </template>
             </v-row>
+            <v-row dense v-if="comments.loading">
+                <template v-for="i in comments.perPage">
+                    <v-col cols="12" :key="i">
+                        <v-skeleton-loader type="list-item-three-line">
+                        </v-skeleton-loader>
+                    </v-col>
+                </template>
+            </v-row>
+
+            <base-infinite-scroll
+                :action="getComments"
+                :identifier="infiniteId"
+            ></base-infinite-scroll>
         </v-card-text>
     </v-card>
 </template>
@@ -109,10 +115,11 @@ import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 import utilityMixin from '@/mixins/utility';
 import dateMixin from '@/mixins/date';
 import CommentPreview from '@/components/custom/preview/Comment';
+import BaseInfiniteScroll from '@/components/base/InfiniteScroll';
 export default {
     name: 'forum-comment-card',
 
-    components: { CommentPreview, BaseTextEditor },
+    components: { BaseInfiniteScroll, CommentPreview, BaseTextEditor },
 
     mixins: [utilityMixin, dateMixin],
 
@@ -129,13 +136,14 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 10,
+                perPage: 5,
                 sortBy: 'created_at',
                 orderBy: 'desc',
             },
             commentsCount: 0,
             shouldShowReplyEditor: false,
             replyContent: '',
+            infiniteId: +new Date(),
         };
     },
 
@@ -160,11 +168,19 @@ export default {
     },
 
     watch: {
+        async topicID(val) {
+            if (val) {
+                this.comments.page = 1;
+                this.comments.items = [];
+                this.infiniteId += 1;
+            }
+        },
+
         async 'comments.orderBy'(val) {
             if (val) {
                 this.comments.page = 1;
-                this.comments.orderBy = val;
-                await this.getComments();
+                this.comments.items = [];
+                this.infiniteId += 1;
             }
         },
     },
@@ -203,7 +219,7 @@ export default {
             });
         },
 
-        async getComments() {
+        async getComments($state) {
             const { page, perPage, sortBy, orderBy } = this.comments;
             const payload = {
                 page,
@@ -213,11 +229,20 @@ export default {
                 orderBy,
             };
             this.comments.loading = true;
-            this.comments.items = await this.$store.dispatch(
+            const comments = await this.$store.dispatch(
                 GET_TOPIC_COMMENTS,
                 payload
             );
+            if (comments.length === perPage) {
+                this.comments.page += 1;
+                this.comments.loading = false;
+                this.comments.items = [...this.comments.items, ...comments];
+                $state.loaded();
+                return;
+            }
+            this.comments.items = [...this.comments.items, ...comments];
             this.comments.loading = false;
+            $state.complete();
         },
 
         async getCommentsCount() {
@@ -226,10 +251,13 @@ export default {
                 this.topicID
             );
         },
+
+        sortComments(type) {
+            this.comments.orderBy = type.slug;
+        },
     },
 
     async created() {
-        await this.getComments();
         await this.getCommentsCount();
     },
 };
