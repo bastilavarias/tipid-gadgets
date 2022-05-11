@@ -6,16 +6,7 @@
                     <div class="subtitle-1">Saved Items</div>
                 </v-col>
                 <v-col cols="12">
-                    <v-row dense v-if="item.loading">
-                        <template v-for="i in 10">
-                            <v-col cols="12" :key="i">
-                                <v-skeleton-loader type="list-item-two-line">
-                                </v-skeleton-loader>
-                            </v-col>
-                        </template>
-                    </v-row>
-
-                    <v-row dense v-else>
+                    <v-row dense>
                         <template v-for="(item, index) in item.items">
                             <v-col cols="12" :key="index">
                                 <item-preview
@@ -32,6 +23,25 @@
                             </v-col>
                         </template>
                     </v-row>
+                    <v-row dense v-if="item.loading">
+                        <template v-for="i in item.perPage">
+                            <v-col cols="12" :key="i">
+                                <v-skeleton-loader type="list-item-two-line">
+                                </v-skeleton-loader>
+                            </v-col>
+                        </template>
+                    </v-row>
+                    <div class="d-flex justify-space-between mt-5">
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="secondary"
+                            class="text-capitalize"
+                            depressed
+                            @click="getItems"
+                            v-if="item.shouldShowNext && !item.loading"
+                            >Next</v-btn
+                        >
+                    </div>
                 </v-col>
             </v-row>
         </v-col>
@@ -42,14 +52,6 @@
                     <div class="subtitle-1">Bookmarked Topics</div>
                 </v-col>
                 <v-col cols="12">
-                    <v-row dense v-if="topic.loading">
-                        <template v-for="i in 20">
-                            <v-col cols="12" :key="i">
-                                <v-skeleton-loader type="list-item-two-line">
-                                </v-skeleton-loader>
-                            </v-col>
-                        </template>
-                    </v-row>
                     <v-row dense>
                         <template v-for="(topic, index) in topic.items">
                             <v-col cols="12" :key="index">
@@ -66,6 +68,25 @@
                             </v-col>
                         </template>
                     </v-row>
+                    <v-row dense v-if="topic.loading">
+                        <template v-for="i in 20">
+                            <v-col cols="12" :key="i">
+                                <v-skeleton-loader type="list-item-two-line">
+                                </v-skeleton-loader>
+                            </v-col>
+                        </template>
+                    </v-row>
+                    <div class="d-flex justify-space-between mt-5">
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="secondary"
+                            class="text-capitalize"
+                            depressed
+                            @click="getTopics"
+                            v-if="topic.shouldShowNext && !topic.loading"
+                            >Next</v-btn
+                        >
+                    </div>
                 </v-col>
             </v-row>
         </v-col>
@@ -86,19 +107,21 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 20,
+                perPage: 5,
                 sortBy: 'created_at',
                 orderBy: 'desc',
+                shouldShowNext: true,
             },
 
             topic: {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 20,
+                perPage: 5,
                 filterBy: 'item_for_sale',
                 sortBy: 'created_at',
                 orderBy: 'desc',
+                shouldShowNext: true,
             },
 
             user: null,
@@ -134,11 +157,19 @@ export default {
                 userID: this.userID,
             };
             this.item.loading = true;
-            const bookmarks = await this.$store.dispatch(
+            let bookmarks = await this.$store.dispatch(
                 GET_ITEM_BOOKMARKS,
                 payload
             );
-            this.item.items = bookmarks.map((bookmark) => bookmark.item);
+            bookmarks = bookmarks.map((bookmark) => bookmark.item);
+            if (bookmarks.length === perPage) {
+                this.item.items = [...this.item.items, ...bookmarks];
+                this.item.loading = false;
+                this.item.page += 1;
+                return;
+            }
+            this.item.items = [...this.item.items, ...bookmarks];
+            this.item.shouldShowNext = false;
             this.item.loading = false;
         },
 
@@ -153,11 +184,19 @@ export default {
                 userID: this.userID,
             };
             this.topic.loading = true;
-            const bookmarks = await this.$store.dispatch(
+            let bookmarks = await this.$store.dispatch(
                 GET_TOPIC_BOOKMARKS,
                 payload
             );
-            this.topic.items = bookmarks.map((bookmark) => bookmark.topic);
+            bookmarks = bookmarks.map((bookmark) => bookmark.topic);
+            if (bookmarks.length === perPage) {
+                this.topic.items = [...this.topic.items, ...bookmarks];
+                this.topic.loading = false;
+                this.topic.page += 1;
+                return;
+            }
+            this.topic.items = [...this.topic.items, ...bookmarks];
+            this.topic.shouldShowNext = false;
             this.topic.loading = false;
         },
 
