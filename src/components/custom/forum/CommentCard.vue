@@ -1,6 +1,6 @@
 <template>
     <v-card flat color="transparent">
-        <v-card-subtitle v-if="isAuthenticated">Comment</v-card-subtitle>
+        <v-card-subtitle>Comment</v-card-subtitle>
 
         <v-card-text>
             <v-row>
@@ -10,7 +10,7 @@
                     </v-alert></v-col
                 >
 
-                <v-col cols="12" v-if="isAuthenticated">
+                <v-col cols="12">
                     <base-text-editor v-model="content"></base-text-editor>
                 </v-col>
 
@@ -160,10 +160,6 @@ export default {
                     slug: 'asc',
                 },
             ];
-        },
-
-        isAuthenticated() {
-            return this.$store.state.authentication.isAuthenticated;
         },
     },
 

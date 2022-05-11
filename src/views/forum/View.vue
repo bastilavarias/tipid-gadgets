@@ -71,7 +71,7 @@
             </v-card>
         </v-col>
 
-        <v-col cols="12" v-if="shouldBootComponent">
+        <v-col cols="12" v-if="shouldBootComponent && isAuthenticated">
             <forum-comment-card :topicID="information.id"></forum-comment-card>
         </v-col>
     </v-row>
