@@ -6,16 +6,7 @@
                     <div class="subtitle-1">Items for Sale</div>
                 </v-col>
                 <v-col cols="12">
-                    <v-row dense v-if="itemForSale.loading">
-                        <template v-for="i in 10">
-                            <v-col cols="12" :key="i">
-                                <v-skeleton-loader type="list-item-two-line">
-                                </v-skeleton-loader>
-                            </v-col>
-                        </template>
-                    </v-row>
-
-                    <v-row dense v-else>
+                    <v-row dense>
                         <template v-for="(item, index) in itemForSale.items">
                             <v-col cols="12" :key="index">
                                 <item-preview
@@ -32,17 +23,7 @@
                             </v-col>
                         </template>
                     </v-row>
-                </v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12">
-            <v-row dense>
-                <v-col cols="12">
-                    <div class="subtitle-1">Items to Buys</div>
-                </v-col>
-                <v-col cols="12">
-                    <v-row dense v-if="wantToBuy.loading">
+                    <v-row dense v-if="itemForSale.loading">
                         <template v-for="i in 10">
                             <v-col cols="12" :key="i">
                                 <v-skeleton-loader type="list-item-two-line">
@@ -50,8 +31,31 @@
                             </v-col>
                         </template>
                     </v-row>
+                    <div class="d-flex justify-space-between mt-5">
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="secondary"
+                            class="text-capitalize"
+                            depressed
+                            @click="getItemsForSale"
+                            v-if="
+                                itemForSale.shouldShowNext &&
+                                !itemForSale.loading
+                            "
+                            >Next</v-btn
+                        >
+                    </div>
+                </v-col>
+            </v-row>
+        </v-col>
 
-                    <v-row dense v-else>
+        <v-col cols="12">
+            <v-row dense>
+                <v-col cols="12">
+                    <div class="subtitle-1">Want to Buys</div>
+                </v-col>
+                <v-col cols="12">
+                    <v-row dense>
                         <template v-for="(item, index) in wantToBuy.items">
                             <v-col cols="12" :key="index">
                                 <item-preview
@@ -68,6 +72,27 @@
                             </v-col>
                         </template>
                     </v-row>
+                    <v-row dense v-if="wantToBuy.loading">
+                        <template v-for="i in wantToBuy.perPage">
+                            <v-col cols="12" :key="i">
+                                <v-skeleton-loader type="list-item-two-line">
+                                </v-skeleton-loader>
+                            </v-col>
+                        </template>
+                    </v-row>
+                    <div class="d-flex justify-space-between mt-5">
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="secondary"
+                            class="text-capitalize"
+                            depressed
+                            @click="getWantToBuys"
+                            v-if="
+                                wantToBuy.shouldShowNext && !wantToBuy.loading
+                            "
+                            >Next</v-btn
+                        >
+                    </div>
                 </v-col>
             </v-row>
         </v-col>
@@ -78,14 +103,6 @@
                     <div class="subtitle-1">Forum Topics</div>
                 </v-col>
                 <v-col cols="12">
-                    <v-row dense v-if="topic.loading">
-                        <template v-for="i in 20">
-                            <v-col cols="12" :key="i">
-                                <v-skeleton-loader type="list-item-two-line">
-                                </v-skeleton-loader>
-                            </v-col>
-                        </template>
-                    </v-row>
                     <v-row dense>
                         <template v-for="(topic, index) in topic.items">
                             <v-col cols="12" :key="index">
@@ -102,6 +119,25 @@
                             </v-col>
                         </template>
                     </v-row>
+                    <v-row dense v-if="topic.loading">
+                        <template v-for="i in topic.perPage">
+                            <v-col cols="12" :key="i">
+                                <v-skeleton-loader type="list-item-two-line">
+                                </v-skeleton-loader>
+                            </v-col>
+                        </template>
+                    </v-row>
+                    <div class="d-flex justify-space-between mt-5">
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="secondary"
+                            class="text-capitalize"
+                            depressed
+                            @click="getTopics"
+                            v-if="topic.shouldShowNext && !topic.loading"
+                            >Next</v-btn
+                        >
+                    </div>
                 </v-col>
             </v-row>
         </v-col>
@@ -123,30 +159,33 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 20,
+                perPage: 5,
                 filterBy: 'items_for_sale',
                 sortBy: 'created_at',
                 orderBy: 'desc',
+                shouldShowNext: true,
             },
 
             wantToBuy: {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 20,
+                perPage: 5,
                 filterBy: 'want_to_buys',
                 sortBy: 'created_at',
                 orderBy: 'desc',
+                shouldShowNext: true,
             },
 
             topic: {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 20,
+                perPage: 5,
                 filterBy: 'item_for_sale',
                 sortBy: 'created_at',
                 orderBy: 'desc',
+                shouldShowNext: true,
             },
 
             mode: 'classic',
@@ -186,10 +225,15 @@ export default {
                 userID: this.userID,
             };
             this.itemForSale.loading = true;
-            this.itemForSale.items = await this.$store.dispatch(
-                GET_ITEMS,
-                payload
-            );
+            const items = await this.$store.dispatch(GET_ITEMS, payload);
+            if (items.length === perPage) {
+                this.itemForSale.items = [...this.itemForSale.items, ...items];
+                this.itemForSale.loading = false;
+                this.itemForSale.page += 1;
+                return;
+            }
+            this.itemForSale.items = [...this.itemForSale.items, ...items];
+            this.itemForSale.shouldShowNext = false;
             this.itemForSale.loading = false;
         },
 
@@ -204,10 +248,15 @@ export default {
                 userID: this.userID,
             };
             this.wantToBuy.loading = true;
-            this.wantToBuy.items = await this.$store.dispatch(
-                GET_ITEMS,
-                payload
-            );
+            const items = await this.$store.dispatch(GET_ITEMS, payload);
+            if (items.length === perPage) {
+                this.wantToBuy.items = [...this.wantToBuy.items, ...items];
+                this.wantToBuy.loading = false;
+                this.wantToBuy.page += 1;
+                return;
+            }
+            this.wantToBuy.items = [...this.wantToBuy.items, ...items];
+            this.wantToBuy.shouldShowNext = false;
             this.wantToBuy.loading = false;
         },
 
@@ -222,7 +271,15 @@ export default {
                 userID: this.userID,
             };
             this.topic.loading = true;
-            this.topic.items = await this.$store.dispatch(GET_TOPICS, payload);
+            const topics = await this.$store.dispatch(GET_TOPICS, payload);
+            if (topics.length === perPage) {
+                this.topic.items = [...this.topic.items, ...topics];
+                this.topic.loading = false;
+                this.topic.page += 1;
+                return;
+            }
+            this.topic.items = [...this.topic.items, ...topics];
+            this.topic.shouldShowNext = false;
             this.topic.loading = false;
         },
 
