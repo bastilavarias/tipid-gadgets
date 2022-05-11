@@ -40,7 +40,7 @@
                     </div>
 
                     <v-row dense v-if="item.loading">
-                        <template v-for="i in 10">
+                        <template v-for="i in item.perPage">
                             <v-col cols="12" :key="i">
                                 <v-skeleton-loader type="list-item-two-line">
                                 </v-skeleton-loader>
@@ -92,7 +92,7 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 5,
+                perPage: 10,
             },
             sections: [],
             categories: [],
