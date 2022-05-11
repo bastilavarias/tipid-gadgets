@@ -22,14 +22,6 @@
                 </v-card-title>
 
                 <v-card-text>
-                    <v-row dense v-if="topic.loading">
-                        <template v-for="i in 20">
-                            <v-col cols="12" :key="i">
-                                <v-skeleton-loader type="list-item-two-line">
-                                </v-skeleton-loader>
-                            </v-col>
-                        </template>
-                    </v-row>
                     <v-row dense>
                         <template v-for="(topic, index) in topic.items">
                             <v-col cols="12" :key="index">
@@ -47,6 +39,18 @@
                             </v-col>
                         </template>
                     </v-row>
+                    <v-row dense v-if="topic.loading">
+                        <template v-for="i in 20">
+                            <v-col cols="12" :key="i">
+                                <v-skeleton-loader type="list-item-two-line">
+                                </v-skeleton-loader>
+                            </v-col>
+                        </template>
+                    </v-row>
+                    <base-infinite-scroll
+                        :action="getTopics"
+                        :identifier="infiniteId"
+                    ></base-infinite-scroll>
                 </v-card-text>
             </v-card>
         </v-col>
@@ -57,12 +61,13 @@
 import TopicPreview from '@/components/custom/preview/Topic';
 import { GET_TOPICS } from '@/store/types/topic';
 import pageMixin from '@/mixins/page';
+import BaseInfiniteScroll from '@/components/base/InfiniteScroll';
 export default {
     name: 'Home',
 
     mixins: [pageMixin],
 
-    components: { TopicPreview },
+    components: { BaseInfiniteScroll, TopicPreview },
 
     data() {
         return {
@@ -70,16 +75,17 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 20,
+                perPage: 10,
                 filterBy: 'item_for_sale',
                 sortBy: 'updated_at',
                 orderBy: 'desc',
             },
+            infiniteId: +new Date(),
         };
     },
 
     methods: {
-        async getTopics() {
+        async getTopics($state) {
             const { page, perPage, filterBy, sortBy, orderBy } = this.topic;
             const payload = {
                 page,
@@ -89,13 +95,18 @@ export default {
                 orderBy,
             };
             this.topic.loading = true;
-            this.topic.items = await this.$store.dispatch(GET_TOPICS, payload);
+            const topics = await this.$store.dispatch(GET_TOPICS, payload);
+            if (topics.length === perPage) {
+                this.topic.page += 1;
+                this.topic.loading = false;
+                this.topic.items = [...this.topic.items, ...topics];
+                $state.loaded();
+                return;
+            }
+            this.topic.items = [...this.topic.items, ...topics];
             this.topic.loading = false;
+            $state.complete();
         },
-    },
-
-    async created() {
-        await this.getTopics();
     },
 };
 </script>

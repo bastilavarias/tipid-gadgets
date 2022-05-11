@@ -1,5 +1,5 @@
 <template>
-    <v-row v-if="componentFlag">
+    <v-row v-if="shouldBootComponent">
         <v-col cols="12">
             <v-card flat>
                 <v-card-title
@@ -14,15 +14,7 @@
                 </v-card-subtitle>
 
                 <v-card-text>
-                    <v-row dense v-if="item.loading">
-                        <template v-for="i in 10">
-                            <v-col cols="12" :key="i">
-                                <v-skeleton-loader type="list-item-two-line">
-                                </v-skeleton-loader>
-                            </v-col>
-                        </template>
-                    </v-row>
-                    <v-row dense v-else>
+                    <v-row dense>
                         <template v-for="(item, index) in item.items">
                             <v-col cols="12" :key="index">
                                 <item-preview
@@ -39,6 +31,27 @@
                             </v-col>
                         </template>
                     </v-row>
+
+                    <div
+                        class="fill-height d-flex justify-center align-center"
+                        v-if="!item.loading && item.items.length === 0"
+                    >
+                        <span class="caption font-italic">No items.</span>
+                    </div>
+
+                    <v-row dense v-if="item.loading">
+                        <template v-for="i in 10">
+                            <v-col cols="12" :key="i">
+                                <v-skeleton-loader type="list-item-two-line">
+                                </v-skeleton-loader>
+                            </v-col>
+                        </template>
+                    </v-row>
+
+                    <base-infinite-scroll
+                        :action="browse"
+                        :identifier="infiniteId"
+                    ></base-infinite-scroll>
                 </v-card-text>
             </v-card>
         </v-col>
@@ -52,19 +65,23 @@ import ItemPreview from '@/components/custom/preview/Item';
 import {
     GET_ITEM_CATEGORIES,
     GET_ITEM_SECTIONS,
-    GET_SEARCH_TYPES,
 } from '@/store/types/reference';
-import { GET_TOPICS } from '@/store/types/topic';
 import TopicPreview from '@/components/custom/preview/Topic';
-import { GET_USERS } from '@/store/types/user';
 import UserPreview from '@/components/custom/preview/User';
+import BaseInfiniteScroll from '@/components/base/InfiniteScroll';
 
 export default {
-    components: { UserPreview, TopicPreview, ItemPreview, SearchOptionDialog },
+    components: {
+        BaseInfiniteScroll,
+        UserPreview,
+        TopicPreview,
+        ItemPreview,
+        SearchOptionDialog,
+    },
 
     data() {
         return {
-            componentFlag: false,
+            shouldBootComponent: false,
             options: {
                 sortBy: 'created_at',
                 orderBy: 'desc',
@@ -75,10 +92,11 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 20,
+                perPage: 5,
             },
             sections: [],
             categories: [],
+            infiniteId: +new Date(),
         };
     },
 
@@ -109,23 +127,34 @@ export default {
                         category: val.categorySlug,
                     }
                 );
-                await this.browse();
+                this.item.page = 1;
+                this.item.items = [];
+                this.infiniteId += 1;
             }
         },
     },
 
     methods: {
-        async browse() {
+        async browse($state) {
+            const { page, perPage } = this.item;
             const payload = {
-                page: 1,
-                perPage: 20,
+                page,
+                perPage,
                 filterBy: this.section.slug,
                 categoryID: this.category.id,
             };
             this.item.loading = true;
-            this.item.items = await this.$store.dispatch(GET_ITEMS, payload);
+            const items = await this.$store.dispatch(GET_ITEMS, payload);
+            if (items.length === perPage) {
+                this.item.page += 1;
+                this.item.loading = false;
+                this.item.items = [...this.item.items, ...items];
+                $state.loaded();
+                return;
+            }
+            this.item.items = [...this.item.items, ...items];
             this.item.loading = false;
-            await this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
+            $state.complete();
         },
     },
 
@@ -142,8 +171,7 @@ export default {
                 category: categorySlug,
             }
         );
-        this.componentFlag = true;
-        await this.browse();
+        this.shouldBootComponent = true;
     },
 };
 </script>

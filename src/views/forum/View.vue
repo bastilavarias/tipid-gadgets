@@ -43,7 +43,7 @@
                 </v-list-item>
 
                 <v-card-text
-                    class="secondary--text"
+                    class="secondary--text content-holder"
                     v-html="information.description.content"
                 >
                 </v-card-text>
@@ -156,3 +156,11 @@ export default {
     },
 };
 </script>
+
+<style lang="scss">
+.content-holder .image img {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+}
+</style>
