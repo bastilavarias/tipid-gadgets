@@ -18,6 +18,12 @@
                                     :user="item.user"
                                     component="list-item"
                                     :slug="item.slug"
+                                    :can-delete="
+                                        isAuthenticated &&
+                                        isOwnAccount &&
+                                        userID === item.user.id
+                                    "
+                                    @onDelete="removeItemForSale"
                                     :index="index"
                                 ></item-preview>
                             </v-col>
@@ -222,6 +228,10 @@ export default {
     },
 
     computed: {
+        isAuthenticated() {
+            return this.$store.state.authentication.isAuthenticated;
+        },
+
         isOwnAccount() {
             const myAccountRoutes = [
                 'my-account/information',
@@ -313,6 +323,12 @@ export default {
         async getUser() {
             const username = this.$route.params.username;
             return await this.$store.dispatch(GET_USER_BY_USERNAME, username);
+        },
+
+        removeItemForSale(itemID) {
+            this.itemForSale.items = this.itemForSale.items.filter(
+                (item) => item.id !== itemID
+            );
         },
     },
 

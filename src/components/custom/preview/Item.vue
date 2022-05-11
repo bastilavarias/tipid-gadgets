@@ -5,7 +5,7 @@
         :flat="!isCardComponent"
         class="d-block"
     >
-        <v-list-item two-line>
+        <v-list-item :three-line="canDelete" :two-line="!canDelete">
             <v-list-item-content>
                 <v-list-item-title>
                     <router-link
@@ -27,6 +27,20 @@
                         >{{ category.name }}</span
                     ><span class="grey--text"
                         >({{ user.location || 'No location included' }})</span
+                    >
+                </v-list-item-subtitle>
+
+                <v-list-item-subtitle
+                    class="d-flex justify-space-around"
+                    v-if="canDelete"
+                >
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        small
+                        text
+                        class="text-capitalize text-decoration-underline"
+                        @click="openDeleteDialog"
+                        >Delete</v-btn
                     >
                 </v-list-item-subtitle>
             </v-list-item-content>
@@ -51,17 +65,29 @@
                 </div>
             </masonry>
         </template>
+
+        <base-alert-dialog
+            :is-open.sync="isDeleteDialogOpen"
+            :title="deleteDialog.title"
+            :description="deleteDialog.description"
+            :theme="deleteDialog.theme"
+            :loading="isDeleteStart"
+            @onCancel="isDeleteDialogOpen = false"
+            @onProceed="deleteItem"
+        ></base-alert-dialog>
     </v-card>
 </template>
 
 <script>
 import utilityMixin from '@/mixins/utility';
-import { GET_ITEM_IMAGES } from '@/store/types/item';
+import { DELETE_ITEM, GET_ITEM_IMAGES } from '@/store/types/item';
 import redirectionMixin from '@/mixins/redirection';
+import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
+import BaseAlertDialog from '@/components/base/AlertDialog';
 
 export default {
     name: 'item-preview',
-
+    components: { BaseAlertDialog },
     props: {
         index: Number,
         itemID: Number,
@@ -72,6 +98,10 @@ export default {
         slug: String,
         component: String,
         section: Object,
+        canDelete: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     mixins: [utilityMixin, redirectionMixin],
@@ -88,6 +118,14 @@ export default {
             ],
             isGetImagesStart: false,
             images: [],
+
+            isDeleteStart: false,
+            isDeleteDialogOpen: false,
+            deleteDialog: {
+                theme: 'success',
+                title: null,
+                description: null,
+            },
         };
     },
 
@@ -111,6 +149,43 @@ export default {
                 this.itemID
             );
             this.isGetImagesStart = false;
+        },
+
+        async deleteItem() {
+            this.isDeleteStart = true;
+            const { code, message } = await this.$store.dispatch(
+                DELETE_ITEM,
+                this.itemID
+            );
+            if (this.isHTTPRequestSuccess(code)) {
+                this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                    open: true,
+                    message,
+                    color: 'success',
+                });
+                this.isDeleteStart = false;
+                this.$emit('onDelete', this.itemID);
+                return;
+            }
+            this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                open: true,
+                message,
+                color: 'success',
+            });
+            this.isDeleteStart = false;
+        },
+
+        openDeleteDialog() {
+            this.deleteDialog = Object.assign(
+                {},
+                {
+                    theme: 'success',
+                    title: 'Delete',
+                    description:
+                        'Deleting this item has no turning back. Please proceed if you are sure.',
+                }
+            );
+            this.isDeleteDialogOpen = true;
         },
     },
 

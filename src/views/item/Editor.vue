@@ -205,7 +205,7 @@ import {
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 import utilityMixin from '@/mixins/utility';
 import {
-    DELETE_DRAFT_ITEM,
+    DELETE_ITEM,
     GET_DRAFT_ITEMS,
     SAVE_DRAFT_ITEM,
     SAVE_POST_ITEM,
@@ -355,7 +355,7 @@ export default {
         async deleteDraft() {
             this.isDeleteDraftStart = true;
             const { code, message } = await this.$store.dispatch(
-                DELETE_DRAFT_ITEM,
+                DELETE_ITEM,
                 this.selectedDraft.id
             );
             if (this.isHTTPRequestSuccess(code)) {

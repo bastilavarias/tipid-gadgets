@@ -4,7 +4,7 @@ import {
     CHECK_ITEM_LIKE,
     COUNT_ITEM_LIKE,
     COUNT_ITEM_VIEW,
-    DELETE_DRAFT_ITEM,
+    DELETE_ITEM,
     GET_DRAFT_ITEMS,
     GET_ITEM,
     GET_ITEM_BOOKMARKS,
@@ -46,9 +46,9 @@ const itemModule = {
             }
         },
 
-        async [DELETE_DRAFT_ITEM](_, id) {
+        async [DELETE_ITEM](_, id) {
             try {
-                const response = await apiService.delete(`/item/drafts/${id}`);
+                const response = await apiService.delete(`/item/${id}`);
                 return response.data;
             } catch (error) {
                 return error.response.data;
