@@ -1,5 +1,9 @@
 <template>
-    <infinite-loading @infinite="action" :identifier="identifierLocal">
+    <infinite-loading
+        @infinite="action"
+        :identifier="identifierLocal"
+        :direction="direction"
+    >
         <div slot="spinner">
             <slot name="loading"></slot>
         </div>
@@ -19,6 +23,7 @@ export default {
     props: {
         action: Function,
         identifier: [Number, null],
+        direction: [String, null],
     },
 
     data() {

@@ -77,6 +77,12 @@
                 style="height: 30rem; overflow: auto"
                 ref="conversationMessagesDiv"
             >
+                <base-infinite-scroll
+                    :action="getRoomChats"
+                    :identifier="infiniteId"
+                    direction="top"
+                    v-if="shouldBootComponent"
+                ></base-infinite-scroll>
                 <v-row dense>
                     <template v-for="(room, index) in chat.items">
                         <v-col cols="12" :key="index">
@@ -139,13 +145,19 @@
 </template>
 <script>
 import MessageChat from '@/components/custom/message/Chat';
-import { CREATE_CHAT, GET_ROOM, GET_ROOM_CHATS } from '@/store/types/message';
+import {
+    CREATE_CHAT,
+    GET_ROOM,
+    GET_ROOM_CHATS,
+    GET_USER_ROOMS,
+} from '@/store/types/message';
 import utilityMixin from '@/mixins/utility';
 import BaseAlertDialog from '@/components/base/AlertDialog';
 import { TRANSACTION_RECEIVE } from '@/store/types/transaction';
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 import { CHECK_REVIEWER_VALIDITY } from '@/store/types/user';
 import MessageConversationReviewEditorDialog from '@/components/custom/message/conversation/ReviewEditorDialog';
+import BaseInfiniteScroll from '@/components/base/InfiniteScroll';
 
 export default {
     name: 'message-conversation',
@@ -153,6 +165,7 @@ export default {
     mixins: [utilityMixin],
 
     components: {
+        BaseInfiniteScroll,
         MessageConversationReviewEditorDialog,
         BaseAlertDialog,
         MessageChat,
@@ -168,7 +181,7 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 10,
+                perPage: 5,
             },
 
             content: null,
@@ -186,6 +199,8 @@ export default {
             isCheckReviewerValidityStart: false,
 
             isOpenReviewDialogOpen: false,
+
+            infiniteId: +new Date(),
         };
     },
 
@@ -239,9 +254,11 @@ export default {
         async roomID(val) {
             if (val) {
                 await this.loadData();
+                this.chat.page = 1;
+                this.chat.items = [];
+                this.infiniteId += 1; // load chats again.
                 this.loadBroadcastListeners();
                 this.shouldBootComponent = true;
-                this.scrollBottom();
             }
         },
     },
@@ -257,11 +274,25 @@ export default {
             this.isNoConversationMessageShow = false;
         },
 
-        async getRoomChats() {
-            this.chat.items = await this.$store.dispatch(
-                GET_ROOM_CHATS,
-                this.roomID
-            );
+        async getRoomChats($state) {
+            const { page, perPage } = this.chat;
+            const payload = {
+                roomID: this.roomID,
+                page,
+                perPage,
+            };
+            this.chat.loading = true;
+            const chats = await this.$store.dispatch(GET_ROOM_CHATS, payload);
+            if (chats.length === this.chat.perPage) {
+                this.chat.page += 1;
+                this.chat.loading = false;
+                this.chat.items = [...chats, ...this.chat.items];
+                $state.loaded();
+                return;
+            }
+            this.chat.items = [...chats, ...this.chat.items];
+            this.chat.loading = false;
+            $state.complete();
         },
 
         chatBroadcastListener() {
@@ -392,7 +423,6 @@ export default {
 
         async loadData() {
             await this.getRoom();
-            await this.getRoomChats();
 
             if (this.isTransactionStatusReceived)
                 await this.checkReviewerValidity();

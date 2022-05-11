@@ -42,10 +42,15 @@ const messageModule = {
             }
         },
 
-        async [GET_ROOM_CHATS](_, roomID) {
+        async [GET_ROOM_CHATS](_, { roomID, page, perPage }) {
             try {
+                const route = `${apiService.baseURL()}/message/chat/${roomID}`;
+                const url = new URL(route);
+                const params = new URLSearchParams(url.search);
+                if (page) params.set('page', page);
+                if (perPage) params.set('per_page', perPage);
                 const response = await apiService.get(
-                    `/message/chat/${roomID}`
+                    `/message/chat/${roomID}?${params}`
                 );
                 return response.data.data;
             } catch (error) {

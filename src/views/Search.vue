@@ -63,6 +63,7 @@
                                 </v-col>
                             </template>
                         </v-row>
+
                         <base-infinite-scroll
                             :action="getItemsForSale"
                             :identifier="infiniteId"

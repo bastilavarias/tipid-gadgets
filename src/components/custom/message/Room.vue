@@ -32,6 +32,20 @@
                         </v-list-item-content>
                     </v-list-item>
                 </template>
+
+                <v-row dense v-if="room.loading">
+                    <template v-for="i in room.perPage">
+                        <v-col cols="12" :key="i">
+                            <v-skeleton-loader type="list-item-three-line">
+                            </v-skeleton-loader>
+                        </v-col>
+                    </template>
+                </v-row>
+
+                <base-infinite-scroll
+                    :action="getRooms"
+                    :identifier="infiniteId"
+                ></base-infinite-scroll>
             </v-list-item-group>
         </v-list>
     </v-card>
@@ -47,10 +61,12 @@ import dateMixin from '@/mixins/date';
 import redirectionMixin from '@/mixins/redirection';
 import identifierMixin from '@/mixins/identifier';
 import moment from 'moment';
+import BaseInfiniteScroll from '@/components/base/InfiniteScroll';
+import { GET_TOPICS } from '@/store/types/topic';
 
 export default {
     name: 'message-rooms',
-
+    components: { BaseInfiniteScroll },
     mixins: [dateMixin, redirectionMixin, identifierMixin],
 
     data() {
@@ -59,9 +75,10 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 10,
+                perPage: 5,
             },
             currentRoomID: null,
+            infiniteId: +new Date(),
         };
     },
 
@@ -82,10 +99,24 @@ export default {
     },
 
     methods: {
-        async getRooms() {
+        async getRooms($state) {
+            const { page, perPage } = this.room;
+            const payload = {
+                page,
+                perPage,
+            };
             this.room.loading = true;
-            this.room.items = await this.$store.dispatch(GET_USER_ROOMS);
+            const rooms = await this.$store.dispatch(GET_USER_ROOMS, payload);
+            if (rooms.length === this.room.perPage) {
+                this.room.page += 1;
+                this.room.loading = false;
+                this.room.items = [...this.room.items, ...rooms];
+                $state.loaded();
+                return;
+            }
+            this.room.items = [...this.room.items, ...rooms];
             this.room.loading = false;
+            $state.complete();
         },
 
         isHost(host) {
@@ -145,8 +176,6 @@ export default {
     async created() {
         if (this.roomID) await this.roomMemberCheck();
         this.roomsBroadcastListener();
-
-        await this.getRooms();
     },
 };
 </script>
