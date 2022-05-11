@@ -23,6 +23,12 @@
                             </v-col>
                         </template>
                     </v-row>
+                    <div
+                        class="fill-height d-flex justify-center align-center"
+                        v-if="!item.loading && item.items.length === 0"
+                    >
+                        <span class="caption font-italic">No saved items.</span>
+                    </div>
                     <v-row dense v-if="item.loading">
                         <template v-for="i in item.perPage">
                             <v-col cols="12" :key="i">
@@ -68,6 +74,14 @@
                             </v-col>
                         </template>
                     </v-row>
+                    <div
+                        class="fill-height d-flex justify-center align-center"
+                        v-if="!topic.loading && topic.items.length === 0"
+                    >
+                        <span class="caption font-italic"
+                            >No saved topics.</span
+                        >
+                    </div>
                     <v-row dense v-if="topic.loading">
                         <template v-for="i in 20">
                             <v-col cols="12" :key="i">

@@ -1,8 +1,16 @@
 <template>
     <v-card outlined rounded height="50rem">
-        <template v-if="isNoConversationMessageShow">
-            No Conversation here.
-        </template>
+        <div
+            v-if="isNoConversationMessageShow"
+            class="d-flex fill-height justify-center align-center"
+        >
+            <div>
+                <h1 class="title primary--text">Welcome to Messages</h1>
+                <h2 class="subtitle-2 secondary--text">
+                    Please select a chat room to start.
+                </h2>
+            </div>
+        </div>
 
         <template v-if="!isNoConversationMessageShow && shouldBootComponent">
             <v-list-item three-line>

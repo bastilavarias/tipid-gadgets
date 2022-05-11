@@ -4,14 +4,14 @@
             <v-row dense>
                 <v-col cols="12">
                     <v-row>
-                        <template v-for="(review, index) in review.items">
+                        <template v-for="(_review, index) in review.items">
                             <v-col cols="12" :key="index">
                                 <rating-preview
-                                    :rating="review.rating"
-                                    :reviewer="review.reviewer"
-                                    :item="review.transaction.item"
-                                    :content="review.content"
-                                    :createdAt="review.created_at"
+                                    :rating="_review.rating"
+                                    :reviewer="_review.reviewer"
+                                    :item="_review.transaction.item"
+                                    :content="_review.content"
+                                    :createdAt="_review.created_at"
                                 ></rating-preview>
                             </v-col>
                         </template>
@@ -30,6 +30,12 @@
                     ></base-infinite-scroll>
                 </v-col>
             </v-row>
+            <div
+                class="fill-height d-flex justify-center align-center"
+                v-if="!review.loading && review.items.length === 0"
+            >
+                <span class="caption font-italic">No reviews.</span>
+            </div>
         </v-col>
     </v-row>
 </template>

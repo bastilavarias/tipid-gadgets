@@ -32,7 +32,12 @@
                         </v-list-item-content>
                     </v-list-item>
                 </template>
-
+                <div
+                    class="mt-10 d-flex justify-center align-center"
+                    v-if="!room.loading && room.items.length === 0"
+                >
+                    <span class="caption font-italic">No chat rooms.</span>
+                </div>
                 <v-row dense v-if="room.loading">
                     <template v-for="i in room.perPage">
                         <v-col cols="12" :key="i">

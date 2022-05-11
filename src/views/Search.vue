@@ -53,6 +53,17 @@
                                 </v-col>
                             </template>
                         </v-row>
+                        <div
+                            class="fill-height d-flex justify-center align-center"
+                            v-if="
+                                !itemForSale.loading &&
+                                itemForSale.items.length === 0
+                            "
+                        >
+                            <span class="caption font-italic"
+                                >No items for sale.</span
+                            >
+                        </div>
                         <v-row dense v-if="itemForSale.loading">
                             <template v-for="i in itemForSale.perPage">
                                 <v-col cols="12" :key="i">
@@ -88,6 +99,17 @@
                                 </v-col>
                             </template>
                         </v-row>
+                        <div
+                            class="fill-height d-flex justify-center align-center"
+                            v-if="
+                                !wantToBuy.loading &&
+                                wantToBuy.items.length === 0
+                            "
+                        >
+                            <span class="caption font-italic"
+                                >No want to buys.</span
+                            >
+                        </div>
                         <v-row dense v-if="wantToBuy.loading">
                             <template v-for="i in wantToBuy.perPage">
                                 <v-col cols="12" :key="i">
@@ -123,6 +145,17 @@
                                 </v-col>
                             </template>
                         </v-row>
+                        <div
+                            class="fill-height d-flex justify-center align-center"
+                            v-if="
+                                !forumTopic.loading &&
+                                forumTopic.items.length === 0
+                            "
+                        >
+                            <span class="caption font-italic"
+                                >No forum topics.</span
+                            >
+                        </div>
                         <v-row dense v-if="forumTopic.loading">
                             <template v-for="i in forumTopic.perPage">
                                 <v-col cols="12" :key="i">
@@ -153,6 +186,12 @@
                                 </v-col>
                             </template>
                         </v-row>
+                        <div
+                            class="fill-height d-flex justify-center align-center"
+                            v-if="!member.loading && member.items.length === 0"
+                        >
+                            <span class="caption font-italic">No members.</span>
+                        </div>
                         <v-row dense v-if="member.loading">
                             <template v-for="i in member.perPage">
                                 <v-col cols="12" :key="i">
@@ -303,6 +342,7 @@ export default {
                         {},
                         {
                             ...val,
+                            keywords: val.query,
                         }
                     );
 
@@ -442,7 +482,7 @@ export default {
                 search: keywords,
             };
             this.member.loading = true;
-            const members = await this.$store.dispatch(GET_TOPICS, payload);
+            const members = await this.$store.dispatch(GET_USERS, payload);
             if (members.length === perPage) {
                 this.member.page += 1;
                 this.member.loading = false;
