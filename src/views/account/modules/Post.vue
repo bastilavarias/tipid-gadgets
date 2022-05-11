@@ -84,6 +84,12 @@
                                     :user="item.user"
                                     component="list-item"
                                     :slug="item.slug"
+                                    :can-delete="
+                                        isAuthenticated &&
+                                        isOwnAccount &&
+                                        userID === item.user.id
+                                    "
+                                    @onDelete="removeWantToBuy"
                                     :index="index"
                                 ></item-preview>
                             </v-col>
@@ -327,6 +333,12 @@ export default {
 
         removeItemForSale(itemID) {
             this.itemForSale.items = this.itemForSale.items.filter(
+                (item) => item.id !== itemID
+            );
+        },
+
+        removeWantToBuy(itemID) {
+            this.wantToBuy.items = this.wantToBuy.items.filter(
                 (item) => item.id !== itemID
             );
         },
