@@ -3,16 +3,7 @@
         <v-col cols="12">
             <v-row dense>
                 <v-col cols="12">
-                    <v-row dense v-if="review.loading">
-                        <template v-for="i in 10">
-                            <v-col cols="12" :key="i">
-                                <v-skeleton-loader type="list-item-two-line">
-                                </v-skeleton-loader>
-                            </v-col>
-                        </template>
-                    </v-row>
-
-                    <v-row dense>
+                    <v-row>
                         <template v-for="(review, index) in review.items">
                             <v-col cols="12" :key="index">
                                 <rating-preview
@@ -25,6 +16,18 @@
                             </v-col>
                         </template>
                     </v-row>
+                    <v-row dense v-if="review.loading">
+                        <template v-for="i in review.perPage">
+                            <v-col cols="12" :key="i">
+                                <v-skeleton-loader type="list-item-two-line">
+                                </v-skeleton-loader>
+                            </v-col>
+                        </template>
+                    </v-row>
+                    <base-infinite-scroll
+                        :action="getReviews"
+                        :identifier="infiniteId"
+                    ></base-infinite-scroll>
                 </v-col>
             </v-row>
         </v-col>
@@ -34,9 +37,10 @@
 import RatingPreview from '@/components/custom/preview/Rating';
 import utilityMixin from '@/mixins/utility';
 import { GET_USER_REVIEWS, GET_USER_BY_USERNAME } from '@/store/types/user';
+import BaseInfiniteScroll from '@/components/base/InfiniteScroll';
 
 export default {
-    components: { RatingPreview },
+    components: { BaseInfiniteScroll, RatingPreview },
 
     mixins: [utilityMixin],
 
@@ -46,12 +50,13 @@ export default {
                 loading: false,
                 items: [],
                 page: 1,
-                perPage: 10,
+                perPage: 5,
                 sortBy: 'created_at',
                 orderBy: 'desc',
             },
 
             user: null,
+            infiniteId: +new Date(),
         };
     },
 
@@ -74,7 +79,7 @@ export default {
     },
 
     methods: {
-        async getReviews() {
+        async getReviews($state) {
             const { page, perPage, sortBy, orderBy } = this.review;
             const payload = {
                 page,
@@ -84,10 +89,18 @@ export default {
                 userID: this.userID,
             };
             this.review.loading = true;
-            this.review.items = await this.$store.dispatch(
+            const reviews = await this.$store.dispatch(
                 GET_USER_REVIEWS,
                 payload
             );
+            if (reviews.length === perPage) {
+                this.review.page += 1;
+                this.review.loading = false;
+                this.review.items = [...this.review.items, ...reviews];
+                $state.loaded();
+                return;
+            }
+            this.review.items = [...this.review.items, ...reviews];
             this.review.loading = false;
         },
 
@@ -106,8 +119,6 @@ export default {
         }
         if (!user) return this.$router.go(-1);
         this.user = Object.assign({}, user);
-
-        await this.getReviews();
     },
 
     beforeRouteEnter(to, from, next) {
