@@ -147,6 +147,12 @@
                                     :created-at="topic.created_at"
                                     :slug="topic.slug"
                                     :updated-at="topic.updated_at"
+                                    :can-delete="
+                                        isAuthenticated &&
+                                        isOwnAccount &&
+                                        userID === topic.user.id
+                                    "
+                                    @onDelete="removeTopic"
                                     :index="index"
                                 ></topic-preview>
                             </v-col>
@@ -340,6 +346,12 @@ export default {
         removeWantToBuy(itemID) {
             this.wantToBuy.items = this.wantToBuy.items.filter(
                 (item) => item.id !== itemID
+            );
+        },
+
+        removeTopic(topicID) {
+            this.topic.items = this.topic.items.filter(
+                (topic) => topic.id !== topicID
             );
         },
     },

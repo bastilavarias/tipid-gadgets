@@ -165,6 +165,7 @@ export default {
                 });
                 this.isDeleteStart = false;
                 this.$emit('onDelete', this.itemID);
+                this.isDeleteDialogOpen = false;
                 return;
             }
             this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {

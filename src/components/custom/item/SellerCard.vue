@@ -180,7 +180,7 @@ import {
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 import utilityMixin from '@/mixins/utility';
 import redirectionMixin from '@/mixins/redirection';
-import { DELETE_DRAFT_TOPIC } from '@/store/types/topic';
+import { DELETE_TOPIC } from '@/store/types/topic';
 import { INQUIRE_MESSAGE } from '@/store/types/message';
 
 export default {

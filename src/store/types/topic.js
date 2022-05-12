@@ -1,7 +1,7 @@
 export const SAVE_POST_TOPIC = 'topic/save-post';
 export const SAVE_DRAFT_TOPIC = 'topic/save-draft';
 export const GET_DRAFT_TOPICS = 'topic/get-drafts';
-export const DELETE_DRAFT_TOPIC = 'topic/delete-draft';
+export const DELETE_TOPIC = 'topic/delete';
 export const GET_TOPICS = 'topic/get-posts';
 export const GET_TOPIC = 'topic/get-post';
 export const VIEW_TOPIC = 'topic/view';

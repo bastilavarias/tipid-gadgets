@@ -5,7 +5,7 @@ import {
     COUNT_TOPIC_COMMENT,
     COUNT_TOPIC_LIKE,
     COUNT_TOPIC_VIEW,
-    DELETE_DRAFT_TOPIC,
+    DELETE_TOPIC,
     GET_DRAFT_TOPICS,
     GET_TOPIC,
     GET_TOPIC_BOOKMARKS,
@@ -51,9 +51,9 @@ const topicModule = {
             }
         },
 
-        async [DELETE_DRAFT_TOPIC](_, id) {
+        async [DELETE_TOPIC](_, id) {
             try {
-                const response = await apiService.delete(`/topic/drafts/${id}`);
+                const response = await apiService.delete(`/topic/${id}`);
                 return response.data;
             } catch (error) {
                 return error.response.data;

@@ -137,7 +137,7 @@ import { GET_TOPIC_SECTIONS } from '@/store/types/reference';
 import { CONFIGURE_SYSTEM_SNACKBAR } from '@/store/types/system';
 import utilityMixin from '@/mixins/utility';
 import {
-    DELETE_DRAFT_TOPIC,
+    DELETE_TOPIC,
     GET_DRAFT_TOPICS,
     SAVE_DRAFT_TOPIC,
     SAVE_POST_TOPIC,
@@ -267,7 +267,7 @@ export default {
         async deleteDraft() {
             this.isDeleteDraftStart = true;
             const { code, message } = await this.$store.dispatch(
-                DELETE_DRAFT_TOPIC,
+                DELETE_TOPIC,
                 this.selectedDraft.id
             );
             if (this.isHTTPRequestSuccess(code)) {
