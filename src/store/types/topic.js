@@ -15,3 +15,4 @@ export const POST_TOPIC_COMMENT = 'topic/post-comment';
 export const GET_TOPIC_COMMENTS = 'topic/get-comments';
 export const COUNT_TOPIC_COMMENT = 'topic/count-comment';
 export const GET_TOPIC_BOOKMARKS = 'topic/get-bookmarks';
+export const UPDATE_POST_TOPIC = 'topic/update-post';

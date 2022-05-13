@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+    <v-row v-if="shouldBootComponent">
         <v-col cols="12" md="9">
             <v-card flat>
                 <v-card-title>
@@ -75,13 +75,16 @@
                                 class="text-capitalize"
                                 color="error"
                                 depressed
-                                :loading="isDeleteDraftStart"
-                                :disabled="isSavePostStart || isSaveDraftStart"
-                                @click="deleteDraft"
-                                v-if="isDraftMode"
-                                >Delete Draft</v-btn
+                                :loading="isDeleteTopicStart"
+                                :disabled="
+                                    isSavePostStart ||
+                                    isSaveDraftStart ||
+                                    isUpdatePostStart
+                                "
+                                @click="deleteTopic"
+                                v-if="isDraftMode || isEditMode"
+                                >Delete</v-btn
                             >
-
                             <v-spacer></v-spacer>
                             <div>
                                 <v-btn
@@ -90,9 +93,10 @@
                                     depressed
                                     :loading="isSaveDraftStart"
                                     :disabled="
-                                        isSavePostStart || isDeleteDraftStart
+                                        isSavePostStart || isDeleteTopicStart
                                     "
                                     @click="saveDraft"
+                                    v-if="!isEditMode"
                                     >Save
                                     <span class="mx-1 text-lowercase">as</span>
                                     Draft</v-btn
@@ -104,10 +108,24 @@
                                     depressed
                                     :loading="isSavePostStart"
                                     :disabled="
-                                        isSaveDraftStart || isDeleteDraftStart
+                                        isSaveDraftStart || isDeleteTopicStart
                                     "
                                     @click="savePost"
+                                    v-if="!isEditMode"
                                     >Post Item</v-btn
+                                >
+
+                                <v-btn
+                                    color="primary"
+                                    class="text-capitalize"
+                                    depressed
+                                    :loading="isUpdatePostStart"
+                                    :disabled="
+                                        isSaveDraftStart || isDeleteTopicStart
+                                    "
+                                    v-if="isEditMode"
+                                    @click="updatePost"
+                                    >Update</v-btn
                                 >
                             </div>
                         </v-col>
@@ -139,8 +157,10 @@ import utilityMixin from '@/mixins/utility';
 import {
     DELETE_TOPIC,
     GET_DRAFT_TOPICS,
+    GET_TOPIC,
     SAVE_DRAFT_TOPIC,
     SAVE_POST_TOPIC,
+    UPDATE_POST_TOPIC,
 } from '@/store/types/topic';
 
 const defaultForm = {
@@ -157,6 +177,7 @@ export default {
 
     data() {
         return {
+            shouldBootComponent: false,
             form: Object.assign({}, defaultForm),
 
             sections: [],
@@ -164,8 +185,9 @@ export default {
 
             isSavePostStart: false,
             isSaveDraftStart: false,
+            isUpdatePostStart: false,
             isGetDraftsStart: false,
-            isDeleteDraftStart: false,
+            isDeleteTopicStart: false,
 
             drafts: [],
             selectedDraft: null,
@@ -177,20 +199,29 @@ export default {
             return this.$route.params.operation === 'create';
         },
 
+        isEditMode() {
+            return this.$route.params.operation === 'edit';
+        },
+
         title() {
-            return this.isCreateMode ? 'Post an Topic' : 'Edit an Topic';
+            return this.isCreateMode ? 'Post a Topic' : 'Edit a Topic';
         },
 
         isDraftMode() {
             return !!this.selectedDraft;
         },
+
+        slug() {
+            if (this.isCreateMode) return null;
+            return this.$route.query.slug || null;
+        },
     },
 
     watch: {
-        selectedDraft(val) {
+        async selectedDraft(val) {
             this.error = null;
             if (val) {
-                const { topic_section_id, name, price, description, id } = val;
+                const { topic_section_id, name, description, id } = val;
                 this.form = Object.assign(
                     {},
                     {
@@ -200,10 +231,20 @@ export default {
                         id,
                     }
                 );
-
+                await this.$router.push({
+                    name: 'forum/topic-editor',
+                    params: { operation: 'create' },
+                });
                 return;
             }
             this.form = Object.assign({}, defaultForm);
+        },
+
+        async '$route.params.operation'(val) {
+            if (val === 'create' && !this.isDraftMode) {
+                this.form = Object.assign({}, defaultForm);
+                await this.getDrafts();
+            }
         },
     },
 
@@ -229,6 +270,32 @@ export default {
             }
             this.error = message;
             this.isSavePostStart = false;
+            this.$nextTick(() => {
+                this.$vuetify.goTo(this.$refs.error);
+            });
+        },
+
+        async updatePost() {
+            this.isUpdatePostStart = true;
+            const { code, message, data } = await this.$store.dispatch(
+                UPDATE_POST_TOPIC,
+                this.form
+            );
+            if (this.isHTTPRequestSuccess(code)) {
+                this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                    open: true,
+                    message,
+                    color: 'success',
+                });
+                await this.getDrafts();
+                this.selectedDraft = null;
+                return await this.$router.push({
+                    name: 'view-topic',
+                    params: { slug: data.slug },
+                });
+            }
+            this.error = message;
+            this.isUpdatePostStart = false;
             this.$nextTick(() => {
                 this.$vuetify.goTo(this.$refs.error);
             });
@@ -264,11 +331,11 @@ export default {
             });
         },
 
-        async deleteDraft() {
-            this.isDeleteDraftStart = true;
+        async deleteTopic() {
+            this.isDeleteTopicStart = true;
             const { code, message } = await this.$store.dispatch(
                 DELETE_TOPIC,
-                this.selectedDraft.id
+                this.isDraftMode ? this.selectedDraft.id : this.form.id
             );
             if (this.isHTTPRequestSuccess(code)) {
                 this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
@@ -281,14 +348,18 @@ export default {
                 this.selectedDraft = null;
                 this.form = Object.assign({}, defaultForm);
                 this.error = null;
-                this.isDeleteDraftStart = false;
+                if (this.isEditMode)
+                    return await this.$router.push({
+                        name: 'my-account/post',
+                    });
+                this.isDeleteTopicStart = false;
                 this.$nextTick(() => {
                     this.$vuetify.goTo(0);
                 });
                 return;
             }
             this.error = message;
-            this.isDeleteDraftStart = false;
+            this.isDeleteTopicStart = false;
             this.$nextTick(() => {
                 this.$vuetify.goTo(this.$refs.error);
             });
@@ -299,11 +370,33 @@ export default {
             this.drafts = await this.$store.dispatch(GET_DRAFT_TOPICS);
             this.isGetDraftsStart = false;
         },
+
+        async getTopic() {
+            const { topic_section_id, name, description, id } =
+                await this.$store.dispatch(GET_TOPIC, this.slug);
+            this.form = Object.assign(
+                {},
+                {
+                    topic_section_id,
+                    name,
+                    description: description.content || null,
+                    id,
+                }
+            );
+        },
     },
 
     async created() {
+        await this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
         await this.getDrafts();
         this.sections = await this.$store.dispatch(GET_TOPIC_SECTIONS);
+
+        if (this.isEditMode) {
+            if (!this.slug) return this.$router.go(-1);
+            await this.getTopic();
+        }
+
+        this.shouldBootComponent = true;
     },
 };
 </script>

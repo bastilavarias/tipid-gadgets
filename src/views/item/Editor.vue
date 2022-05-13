@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+    <v-row v-if="shouldBootComponent">
         <v-col cols="12" md="9">
             <v-card flat>
                 <v-card-title>
@@ -248,6 +248,7 @@ export default {
 
     data() {
         return {
+            shouldBootComponent: false,
             form: Object.assign({}, defaultForm),
 
             sections: [],
@@ -483,6 +484,7 @@ export default {
     },
 
     async created() {
+        await this.$vuetify.goTo(0, { duration: 0, easing: 'linear' });
         await this.getDrafts();
         this.sections = await this.$store.dispatch(GET_ITEM_SECTIONS);
         this.categories = await this.$store.dispatch(GET_ITEM_CATEGORIES);
@@ -493,6 +495,8 @@ export default {
             if (!this.slug) return this.$router.go(-1);
             await this.getItem();
         }
+
+        this.shouldBootComponent = true;
     },
 };
 </script>

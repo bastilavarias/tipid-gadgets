@@ -15,6 +15,7 @@ import {
     POST_TOPIC_COMMENT,
     SAVE_DRAFT_TOPIC,
     SAVE_POST_TOPIC,
+    UPDATE_POST_TOPIC,
     VIEW_TOPIC,
 } from '@/store/types/topic';
 import apiService from '@/services/api';
@@ -236,6 +237,19 @@ const topicModule = {
                 return response.data.data;
             } catch (error) {
                 return [];
+            }
+        },
+
+        async [UPDATE_POST_TOPIC](_, payload) {
+            try {
+                payload._method = 'PUT';
+                const response = await apiService.post(
+                    `/topic/${payload.id}`,
+                    payload
+                );
+                return response.data;
+            } catch (error) {
+                return error.response.data;
             }
         },
     },

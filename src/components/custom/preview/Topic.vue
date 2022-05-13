@@ -46,6 +46,17 @@
                         small
                         text
                         class="text-capitalize text-decoration-underline"
+                        :to="{
+                            name: 'forum/topic-editor',
+                            params: { operation: 'edit' },
+                            query: { slug },
+                        }"
+                        >Edit</v-btn
+                    >
+                    <v-btn
+                        small
+                        text
+                        class="text-capitalize text-decoration-underline"
                         @click="openDeleteDialog"
                         >Delete</v-btn
                     >
