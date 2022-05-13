@@ -140,6 +140,7 @@
                                         :created-at="topic.created_at"
                                         :slug="topic.slug"
                                         :updated-at="topic.updated_at"
+                                        :comments-count="topic.comments_count"
                                         :index="index"
                                     ></topic-preview>
                                 </v-col>

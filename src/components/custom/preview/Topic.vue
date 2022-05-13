@@ -1,6 +1,6 @@
 <template>
     <v-card flat :color="isEven(index) ? '#EEEEEE' : 'white'">
-        <v-list-item :three-line="canDelete" :two-line="!canDelete">
+        <v-list-item :three-line="hasOperations" :two-line="!hasOperations">
             <v-list-item-content>
                 <v-list-item-title>
                     <router-link
@@ -39,7 +39,7 @@
 
                 <v-list-item-subtitle
                     class="d-flex justify-space-around"
-                    v-if="canDelete"
+                    v-if="hasOperations"
                 >
                     <v-spacer></v-spacer>
                     <v-btn
@@ -88,7 +88,7 @@ export default {
         slug: String,
         commentsCount: Number,
         updatedAt: String,
-        canDelete: {
+        hasOperations: {
             type: Boolean,
             default: false,
         },
