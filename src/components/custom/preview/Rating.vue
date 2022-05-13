@@ -38,7 +38,17 @@
                         component="list-item"
                         :slug="item.slug"
                         :index="0"
+                        v-if="item"
                     ></item-preview>
+                    <v-card outlined v-else>
+                        <v-card-text>
+                            <div class="d-flex justify-center">
+                                <span class="caption font-italic"
+                                    >Preview disabled. Item was deleted.</span
+                                >
+                            </div>
+                        </v-card-text>
+                    </v-card>
                 </v-col>
 
                 <v-col cols="12">
@@ -65,7 +75,7 @@ export default {
     props: {
         rating: String,
         reviewer: Object,
-        item: Object,
+        item: [null, Object],
         content: String,
         createdAt: String,
     },

@@ -17,11 +17,12 @@ const broadcastService = {
                     Authorization: `Bearer ${token}`,
                 },
             },
-            authEndpoint: `http://127.0.0.1:8000/broadcasting/auth`,
+            authEndpoint: process.env.VUE_APP_PUSHER_AUTH_ENDPOINT,
         });
 
         Pusher.log = function (message) {
-            window.console.log(message);
+            if (process.env.VUE_APP_ENV === 'development')
+                window.console.log(message);
         };
     },
 
