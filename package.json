@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build-production": "vue-cli-service build --mode production",
+    "deploy-production": "npm run build-production && aws s3 sync ./dist s3://tipid-gadgets-production --acl=public-read --profile=sebastian"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-vue2": "^2.0.0",

@@ -1,5 +1,9 @@
 const redirectionMixin = {
     methods: {
+        goToHome() {
+            this.$router.push({ name: 'home' });
+        },
+
         goToUser(username) {
             const isAuthenticated =
                 this.$store.state.authentication.isAuthenticated;

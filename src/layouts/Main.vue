@@ -3,7 +3,7 @@
         <v-app-bar app class="secondary" flat>
             <v-container>
                 <div class="d-flex justify-space-between align-center">
-                    <v-toolbar-title>
+                    <v-toolbar-title class="pointer" @click="goToHome">
                         <v-img
                             :src="require('@/assets/tipidgadgets_logo.png')"
                             width="15rem"
@@ -99,8 +99,11 @@ import MainLayoutNewItemBuyCard from '@/components/parts/main-layout/NewItemcBuy
 import SystemSnackbar from '@/components/system/Snackbar';
 import { PURGE_AUTHENTICATION } from '@/store/types/authentication';
 import broadcastService from '@/services/broadcast';
+import redirectionMixin from '@/mixins/redirection';
 export default {
     name: 'main-layout',
+
+    mixins: [redirectionMixin],
 
     components: {
         SystemSnackbar,
