@@ -13,3 +13,4 @@ export const CHECK_ITEM_LIKE = 'item/check-like';
 export const COUNT_ITEM_LIKE = 'item/count-like';
 export const COUNT_ITEM_VIEW = 'item/count-view';
 export const GET_ITEM_BOOKMARKS = 'item/get-bookmarks';
+export const UPDATE_POST_ITEM = 'item/update-post';

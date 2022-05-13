@@ -138,13 +138,16 @@
                                 class="text-capitalize"
                                 color="error"
                                 depressed
-                                :loading="isDeleteDraftStart"
-                                :disabled="isSavePostStart || isSaveDraftStart"
-                                @click="deleteDraft"
-                                v-if="isDraftMode"
-                                >Delete Draft</v-btn
+                                :loading="isDeleteItemStart"
+                                :disabled="
+                                    isSavePostStart ||
+                                    isSaveDraftStart ||
+                                    isUpdatePostStart
+                                "
+                                @click="deleteItem"
+                                v-if="isDraftMode || isEditMode"
+                                >Delete</v-btn
                             >
-
                             <v-spacer></v-spacer>
                             <div>
                                 <v-btn
@@ -153,9 +156,10 @@
                                     depressed
                                     :loading="isSaveDraftStart"
                                     :disabled="
-                                        isSavePostStart || isDeleteDraftStart
+                                        isSavePostStart || isDeleteItemStart
                                     "
                                     @click="saveDraft"
+                                    v-if="!isEditMode"
                                     >Save
                                     <span class="mx-1 text-lowercase">as</span>
                                     Draft</v-btn
@@ -167,10 +171,23 @@
                                     depressed
                                     :loading="isSavePostStart"
                                     :disabled="
-                                        isSaveDraftStart || isDeleteDraftStart
+                                        isSaveDraftStart || isDeleteItemStart
                                     "
+                                    v-if="!isEditMode"
                                     @click="savePost"
                                     >Post Item</v-btn
+                                >
+                                <v-btn
+                                    color="primary"
+                                    class="text-capitalize"
+                                    depressed
+                                    :loading="isUpdatePostStart"
+                                    :disabled="
+                                        isSaveDraftStart || isDeleteItemStart
+                                    "
+                                    v-if="isEditMode"
+                                    @click="updatePost"
+                                    >Update</v-btn
                                 >
                             </div>
                         </v-col>
@@ -207,8 +224,10 @@ import utilityMixin from '@/mixins/utility';
 import {
     DELETE_ITEM,
     GET_DRAFT_ITEMS,
+    GET_ITEM,
     SAVE_DRAFT_ITEM,
     SAVE_POST_ITEM,
+    UPDATE_POST_ITEM,
 } from '@/store/types/item';
 
 const defaultForm = {
@@ -239,8 +258,9 @@ export default {
 
             isSavePostStart: false,
             isSaveDraftStart: false,
+            isUpdatePostStart: false,
             isGetDraftsStart: false,
-            isDeleteDraftStart: false,
+            isDeleteItemStart: false,
 
             drafts: [],
             selectedDraft: null,
@@ -252,6 +272,10 @@ export default {
             return this.$route.params.operation === 'create';
         },
 
+        isEditMode() {
+            return this.$route.params.operation === 'edit';
+        },
+
         title() {
             return this.isCreateMode ? 'Post an Item' : 'Edit an Item';
         },
@@ -259,10 +283,15 @@ export default {
         isDraftMode() {
             return !!this.selectedDraft;
         },
+
+        slug() {
+            if (this.isCreateMode) return null;
+            return this.$route.query.slug || null;
+        },
     },
 
     watch: {
-        selectedDraft(val) {
+        async selectedDraft(val) {
             this.error = null;
             if (val) {
                 const {
@@ -288,10 +317,20 @@ export default {
                         id,
                     }
                 );
-
+                await this.$router.push({
+                    name: 'item-editor',
+                    params: { operation: 'create' },
+                });
                 return;
             }
             this.form = Object.assign({}, defaultForm);
+        },
+
+        async '$route.params.operation'(val) {
+            if (val === 'create' && !this.isDraftMode) {
+                this.form = Object.assign({}, defaultForm);
+                await this.getDrafts();
+            }
         },
     },
 
@@ -308,7 +347,6 @@ export default {
                     message,
                     color: 'success',
                 });
-                await this.getDrafts();
                 this.selectedDraft = null;
                 return await this.$router.push({
                     name: 'view-item',
@@ -317,6 +355,31 @@ export default {
             }
             this.error = message;
             this.isSavePostStart = false;
+            this.$nextTick(() => {
+                this.$vuetify.goTo(this.$refs.error);
+            });
+        },
+
+        async updatePost() {
+            this.isUpdatePostStart = true;
+            const { code, message, data } = await this.$store.dispatch(
+                UPDATE_POST_ITEM,
+                this.form
+            );
+            if (this.isHTTPRequestSuccess(code)) {
+                this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
+                    open: true,
+                    message,
+                    color: 'success',
+                });
+                this.selectedDraft = null;
+                return await this.$router.push({
+                    name: 'view-item',
+                    params: { slug: data.slug },
+                });
+            }
+            this.error = message;
+            this.isUpdatePostStart = false;
             this.$nextTick(() => {
                 this.$vuetify.goTo(this.$refs.error);
             });
@@ -352,11 +415,11 @@ export default {
             });
         },
 
-        async deleteDraft() {
-            this.isDeleteDraftStart = true;
+        async deleteItem() {
+            this.isDeleteItemStart = true;
             const { code, message } = await this.$store.dispatch(
                 DELETE_ITEM,
-                this.selectedDraft.id
+                this.isDraftMode ? this.selectedDraft.id : this.form.id
             );
             if (this.isHTTPRequestSuccess(code)) {
                 this.$store.commit(CONFIGURE_SYSTEM_SNACKBAR, {
@@ -369,14 +432,18 @@ export default {
                 this.selectedDraft = null;
                 this.form = Object.assign({}, defaultForm);
                 this.error = null;
-                this.isDeleteDraftStart = false;
+                if (this.isEditMode)
+                    return await this.$router.push({
+                        name: 'my-account/post',
+                    });
+                this.isDeleteItemStart = false;
                 this.$nextTick(() => {
                     this.$vuetify.goTo(0);
                 });
                 return;
             }
             this.error = message;
-            this.isDeleteDraftStart = false;
+            this.isDeleteItemStart = false;
             this.$nextTick(() => {
                 this.$vuetify.goTo(this.$refs.error);
             });
@@ -387,6 +454,32 @@ export default {
             this.drafts = await this.$store.dispatch(GET_DRAFT_ITEMS);
             this.isGetDraftsStart = false;
         },
+
+        async getItem() {
+            const {
+                item_section_id,
+                name,
+                item_category_id,
+                price,
+                item_condition_id,
+                item_warranty_id,
+                description,
+                id,
+            } = await this.$store.dispatch(GET_ITEM, this.slug);
+            this.form = Object.assign(
+                {},
+                {
+                    item_section_id,
+                    name,
+                    item_category_id,
+                    price,
+                    item_condition_id,
+                    item_warranty_id,
+                    description: description.content || null,
+                    id,
+                }
+            );
+        },
     },
 
     async created() {
@@ -395,6 +488,11 @@ export default {
         this.categories = await this.$store.dispatch(GET_ITEM_CATEGORIES);
         this.conditions = await this.$store.dispatch(GET_ITEM_CONDITIONS);
         this.warranties = await this.$store.dispatch(GET_ITEM_WARRANTIES);
+
+        if (this.isEditMode) {
+            if (!this.slug) return this.$router.go(-1);
+            await this.getItem();
+        }
     },
 };
 </script>

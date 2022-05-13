@@ -18,7 +18,7 @@
                                     :user="item.user"
                                     component="list-item"
                                     :slug="item.slug"
-                                    :can-delete="
+                                    :has-operations="
                                         isAuthenticated &&
                                         isOwnAccount &&
                                         userID === item.user.id
@@ -84,7 +84,7 @@
                                     :user="item.user"
                                     component="list-item"
                                     :slug="item.slug"
-                                    :can-delete="
+                                    :has-operations="
                                         isAuthenticated &&
                                         isOwnAccount &&
                                         userID === item.user.id
@@ -147,7 +147,7 @@
                                     :created-at="topic.created_at"
                                     :slug="topic.slug"
                                     :updated-at="topic.updated_at"
-                                    :can-delete="
+                                    :has-operations="
                                         isAuthenticated &&
                                         isOwnAccount &&
                                         userID === topic.user.id

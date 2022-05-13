@@ -13,6 +13,7 @@ import {
     LIKE_ITEM,
     SAVE_DRAFT_ITEM,
     SAVE_POST_ITEM,
+    UPDATE_POST_ITEM,
     VIEW_ITEM,
 } from '@/store/types/item';
 import apiService from '@/services/api';
@@ -211,6 +212,19 @@ const itemModule = {
                 return response.data.data;
             } catch (error) {
                 return [];
+            }
+        },
+
+        async [UPDATE_POST_ITEM](_, payload) {
+            try {
+                payload._method = 'PUT';
+                const response = await apiService.post(
+                    `/item/${payload.id}`,
+                    payload
+                );
+                return response.data;
+            } catch (error) {
+                return error.response.data;
             }
         },
     },
