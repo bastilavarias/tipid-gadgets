@@ -97,6 +97,9 @@ const routes = [
                                     import(
                                         '@/views/account/modules/Information'
                                     ),
+                                meta: {
+                                    requiresAuth: true,
+                                },
                             },
 
                             {
@@ -104,6 +107,9 @@ const routes = [
                                 name: 'my-account/post',
                                 component: () =>
                                     import('@/views/account/modules/Post'),
+                                meta: {
+                                    requiresAuth: true,
+                                },
                             },
 
                             {
@@ -111,6 +117,9 @@ const routes = [
                                 name: 'my-account/bookmark',
                                 component: () =>
                                     import('@/views/account/modules/Bookmark'),
+                                meta: {
+                                    requiresAuth: true,
+                                },
                             },
 
                             {
@@ -118,13 +127,13 @@ const routes = [
                                 name: 'my-account/reviews',
                                 component: () =>
                                     import('@/views/account/modules/Reviews'),
+                                meta: {
+                                    requiresAuth: true,
+                                },
                             },
                         ],
                     },
                 ],
-                meta: {
-                    requiresAuth: true,
-                },
             },
 
             {

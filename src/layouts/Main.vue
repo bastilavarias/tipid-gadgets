@@ -135,7 +135,11 @@ export default {
 
     methods: {
         logout() {
-            console.log(this.$route);
+            if (this.$route.meta.requiresAuth) {
+                this.$router.push({ name: 'login' });
+                this.$store.commit(PURGE_AUTHENTICATION);
+                return;
+            }
             this.$store.commit(PURGE_AUTHENTICATION);
         },
     },
