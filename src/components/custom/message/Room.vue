@@ -18,9 +18,11 @@
                                         : room.host.username
                                 }}</v-list-item-title
                             >
-                            <v-list-item-subtitle class="secondary--text">{{
-                                room.item.name
-                            }}</v-list-item-subtitle>
+                            <v-list-item-subtitle
+                                class="secondary--text"
+                                v-if="room.item"
+                                >{{ room.item.name }}</v-list-item-subtitle
+                            >
                             <v-list-item-subtitle v-if="room.recent_chat"
                                 >{{
                                     isYou(room.recent_chat.user)

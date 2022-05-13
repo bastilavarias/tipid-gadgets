@@ -135,6 +135,7 @@ export default {
 
     methods: {
         logout() {
+            console.log(this.$route);
             this.$store.commit(PURGE_AUTHENTICATION);
         },
     },

@@ -4,7 +4,7 @@
             v-if="isNoConversationMessageShow"
             class="d-flex fill-height justify-center align-center"
         >
-            <div>
+            <div class="text-center">
                 <h1 class="title primary--text">Welcome to Messages</h1>
                 <h2 class="subtitle-2 secondary--text">
                     Please select a chat room to start.
@@ -12,7 +12,25 @@
             </div>
         </div>
 
-        <template v-if="!isNoConversationMessageShow && shouldBootComponent">
+        <div
+            v-else-if="isItemDeletedMessageShow"
+            class="d-flex fill-height justify-center align-center"
+        >
+            <div class="text-center">
+                <h1 class="title primary--text">Item Deleted</h1>
+                <h2 class="subtitle-2 secondary--text">
+                    Item was deleted by the host.
+                </h2>
+            </div>
+        </div>
+
+        <template
+            v-else-if="
+                !isItemDeletedMessageShow &&
+                !isNoConversationMessageShow &&
+                shouldBootComponent
+            "
+        >
             <v-list-item three-line>
                 <v-list-item-content>
                     <v-list-item-title class="d-flex align-center">
@@ -185,6 +203,7 @@ export default {
             information: null,
             isGetRoomStart: false,
             isNoConversationMessageShow: false,
+            isItemDeletedMessageShow: false,
             chat: {
                 loading: false,
                 items: [],
@@ -262,11 +281,15 @@ export default {
         async roomID(val) {
             if (val) {
                 await this.loadData();
-                this.chat.page = 1;
-                this.chat.items = [];
-                this.infiniteId += 1; // load chats again.
-                this.loadBroadcastListeners();
-                this.shouldBootComponent = true;
+
+                if (!this.isItemDeletedMessageShow) {
+                    // check if item is not deleted.
+                    this.chat.page = 1;
+                    this.chat.items = [];
+                    this.infiniteId += 1; // load chats again.
+                    this.loadBroadcastListeners();
+                    this.shouldBootComponent = true;
+                }
             }
         },
     },
@@ -278,6 +301,11 @@ export default {
                 GET_ROOM,
                 this.roomID
             );
+            if (!this.information.item) {
+                this.isItemDeletedMessageShow = true;
+                this.isNoConversationMessageShow = false;
+                return;
+            }
             this.isGetRoomStart = false;
             this.isNoConversationMessageShow = false;
         },
@@ -432,8 +460,11 @@ export default {
         async loadData() {
             await this.getRoom();
 
-            if (this.isTransactionStatusReceived)
-                await this.checkReviewerValidity();
+            if (
+                !this.isItemDeletedMessageShow &&
+                this.isTransactionStatusReceived
+            )
+                await this.checkReviewerValidity(); // check if item is not deleted.
         },
 
         loadBroadcastListeners() {
@@ -446,9 +477,13 @@ export default {
     async created() {
         if (!this.roomID) return (this.isNoConversationMessageShow = true);
         await this.loadData();
-        this.loadBroadcastListeners();
-        this.shouldBootComponent = true;
-        this.scrollBottom();
+
+        if (!this.isItemDeletedMessageShow) {
+            // check if item is not deleted.
+            this.loadBroadcastListeners();
+            this.shouldBootComponent = true;
+            this.scrollBottom();
+        }
     },
 };
 </script>
