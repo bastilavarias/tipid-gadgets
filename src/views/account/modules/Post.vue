@@ -251,6 +251,7 @@ export default {
                 'my-account/post',
                 'my-account/bookmark',
                 'my-account/reviews',
+                'my-account/follow',
             ];
             return myAccountRoutes.includes(this.$route.name);
         },

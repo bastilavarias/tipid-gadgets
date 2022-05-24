@@ -56,20 +56,26 @@ const tabs = [
     },
 
     {
-        text: 'Posts', // Items for Sale,  Want to Buys, and Topics
+        text: 'Posts',
         to: { name: 'my-account/post' },
         exact: true,
     },
 
     {
-        text: 'Bookmarks', // Items and Topics
+        text: 'Bookmarks',
         to: { name: 'my-account/bookmark' },
         exact: true,
     },
 
     {
-        text: 'Reviews', // Items and Topics
+        text: 'Reviews',
         to: { name: 'my-account/reviews' },
+        exact: true,
+    },
+
+    {
+        text: 'Following/Followers',
+        to: { name: 'my-account/follow' },
         exact: true,
     },
 ];

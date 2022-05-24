@@ -131,6 +131,16 @@ const routes = [
                                     requiresAuth: true,
                                 },
                             },
+
+                            {
+                                path: 'follow',
+                                name: 'my-account/follow',
+                                component: () =>
+                                    import('@/views/account/modules/Follow'),
+                                meta: {
+                                    requiresAuth: true,
+                                },
+                            },
                         ],
                     },
                 ],

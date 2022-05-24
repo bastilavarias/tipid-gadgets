@@ -3,34 +3,31 @@
         <v-col cols="12">
             <v-row dense>
                 <v-col cols="12">
-                    <div class="subtitle-1">Saved Items</div>
+                    <div class="subtitle-1">Followers</div>
                 </v-col>
+
                 <v-col cols="12">
                     <v-row dense>
-                        <template v-for="(item, index) in item.items">
+                        <template v-for="(follower, index) in follower.items">
                             <v-col cols="12" :key="index">
-                                <item-preview
-                                    :section="item.section"
-                                    :itemID="item.id"
-                                    :name="item.name"
-                                    :price="item.price"
-                                    :category="item.category"
-                                    :user="item.user"
-                                    component="list-item"
-                                    :slug="item.slug"
-                                    :index="index"
-                                ></item-preview>
+                                <user-preview
+                                    :userID="follower.id"
+                                    :name="follower.name"
+                                    :username="follower.username"
+                                    :location="follower.location"
+                                    :avatar="follower.avatar"
+                                ></user-preview>
                             </v-col>
                         </template>
                     </v-row>
                     <div
                         class="fill-height d-flex justify-center align-center"
-                        v-if="!item.loading && item.items.length === 0"
+                        v-if="!follower.loading && follower.items.length === 0"
                     >
-                        <span class="caption font-italic">No saved items.</span>
+                        <span class="caption font-italic">No followers.</span>
                     </div>
-                    <v-row dense v-if="item.loading">
-                        <template v-for="i in item.perPage">
+                    <v-row dense v-if="follower.loading">
+                        <template v-for="i in follower.perPage">
                             <v-col cols="12" :key="i">
                                 <v-skeleton-loader type="list-item-two-line">
                                 </v-skeleton-loader>
@@ -43,48 +40,44 @@
                             color="secondary"
                             class="text-capitalize"
                             depressed
-                            @click="getItems"
-                            v-if="item.shouldShowNext && !item.loading"
+                            @click="getFollowers"
+                            v-if="follower.shouldShowNext && !follower.loading"
                             >Next</v-btn
                         >
                     </div>
                 </v-col>
             </v-row>
         </v-col>
-
         <v-col cols="12">
             <v-row dense>
                 <v-col cols="12">
-                    <div class="subtitle-1">Bookmarked Topics</div>
+                    <div class="subtitle-1">Following</div>
                 </v-col>
+
                 <v-col cols="12">
                     <v-row dense>
-                        <template v-for="(topic, index) in topic.items">
+                        <template v-for="(following, index) in following.items">
                             <v-col cols="12" :key="index">
-                                <topic-preview
-                                    :topicID="topic.id"
-                                    :name="topic.name"
-                                    :section="topic.section"
-                                    :user="topic.user"
-                                    :created-at="topic.created_at"
-                                    :slug="topic.slug"
-                                    :updated-at="topic.updated_at"
-                                    :comments-count="topic.comments_count"
-                                    :index="index"
-                                ></topic-preview>
+                                <user-preview
+                                    :userID="following.id"
+                                    :name="following.name"
+                                    :username="following.username"
+                                    :location="following.location"
+                                    :avatar="following.avatar"
+                                ></user-preview>
                             </v-col>
                         </template>
                     </v-row>
                     <div
                         class="fill-height d-flex justify-center align-center"
-                        v-if="!topic.loading && topic.items.length === 0"
+                        v-if="
+                            !following.loading && following.items.length === 0
+                        "
                     >
-                        <span class="caption font-italic"
-                            >No saved topics.</span
-                        >
+                        <span class="caption font-italic">No following.</span>
                     </div>
-                    <v-row dense v-if="topic.loading">
-                        <template v-for="i in 20">
+                    <v-row dense v-if="following.loading">
+                        <template v-for="i in following.perPage">
                             <v-col cols="12" :key="i">
                                 <v-skeleton-loader type="list-item-two-line">
                                 </v-skeleton-loader>
@@ -97,8 +90,10 @@
                             color="secondary"
                             class="text-capitalize"
                             depressed
-                            @click="getTopics"
-                            v-if="topic.shouldShowNext && !topic.loading"
+                            @click="getFollowing"
+                            v-if="
+                                following.shouldShowNext && !following.loading
+                            "
                             >Next</v-btn
                         >
                     </div>
@@ -107,35 +102,30 @@
         </v-col>
     </v-row>
 </template>
-<script>
-import ItemPreview from '@/components/custom/preview/Item';
-import TopicPreview from '@/components/custom/preview/Topic';
-import { GET_ITEM_BOOKMARKS, GET_ITEMS } from '@/store/types/item';
-import { GET_TOPIC_BOOKMARKS, GET_TOPICS } from '@/store/types/topic';
-import { GET_USER_BY_USERNAME } from '@/store/types/user';
-export default {
-    components: { TopicPreview, ItemPreview },
 
+<script>
+import { GET_USER_BY_USERNAME, GET_USER_FOLLOWS } from '@/store/types/user';
+import UserPreview from '@/components/custom/preview/User';
+
+export default {
+    components: { UserPreview },
     data() {
         return {
-            item: {
+            follower: {
                 loading: false,
                 items: [],
                 page: 1,
                 perPage: 5,
-                sortBy: 'created_at',
-                orderBy: 'desc',
+                filterBy: 'follower',
                 shouldShowNext: true,
             },
 
-            topic: {
+            following: {
                 loading: false,
                 items: [],
                 page: 1,
                 perPage: 5,
-                filterBy: 'item_for_sale',
-                sortBy: 'created_at',
-                orderBy: 'desc',
+                filterBy: 'following',
                 shouldShowNext: true,
             },
 
@@ -163,34 +153,13 @@ export default {
     },
 
     methods: {
-        async getItems() {
-            const { page, perPage, sortBy, orderBy } = this.item;
-            const payload = {
-                page,
-                perPage,
-                sortBy,
-                orderBy,
-                userID: this.userID,
-            };
-            this.item.loading = true;
-            let bookmarks = await this.$store.dispatch(
-                GET_ITEM_BOOKMARKS,
-                payload
-            );
-            bookmarks = bookmarks.map((bookmark) => bookmark.item);
-            if (bookmarks.length === perPage) {
-                this.item.items = [...this.item.items, ...bookmarks];
-                this.item.loading = false;
-                this.item.page += 1;
-                return;
-            }
-            this.item.items = [...this.item.items, ...bookmarks];
-            this.item.shouldShowNext = false;
-            this.item.loading = false;
+        async getUser() {
+            const username = this.$route.params.username;
+            return await this.$store.dispatch(GET_USER_BY_USERNAME, username);
         },
 
-        async getTopics() {
-            const { page, perPage, filterBy, sortBy, orderBy } = this.topic;
+        async getFollowers() {
+            const { page, perPage, filterBy, sortBy, orderBy } = this.follower;
             const payload = {
                 page,
                 perPage,
@@ -199,26 +168,48 @@ export default {
                 orderBy,
                 userID: this.userID,
             };
-            this.topic.loading = true;
-            let bookmarks = await this.$store.dispatch(
-                GET_TOPIC_BOOKMARKS,
+            this.follower.loading = true;
+            let followers = await this.$store.dispatch(
+                GET_USER_FOLLOWS,
                 payload
             );
-            bookmarks = bookmarks.map((bookmark) => bookmark.topic);
-            if (bookmarks.length === perPage) {
-                this.topic.items = [...this.topic.items, ...bookmarks];
-                this.topic.loading = false;
-                this.topic.page += 1;
+            followers = followers.map((follower) => follower.follower);
+            if (followers.length === perPage) {
+                this.follower.items = [...this.follower.items, ...followers];
+                this.follower.loading = false;
+                this.follower.page += 1;
                 return;
             }
-            this.topic.items = [...this.topic.items, ...bookmarks];
-            this.topic.shouldShowNext = false;
-            this.topic.loading = false;
+            this.follower.items = [...this.follower.items, ...followers];
+            this.follower.shouldShowNext = false;
+            this.follower.loading = false;
         },
 
-        async getUser() {
-            const username = this.$route.params.username;
-            return await this.$store.dispatch(GET_USER_BY_USERNAME, username);
+        async getFollowing() {
+            const { page, perPage, filterBy, sortBy, orderBy } = this.following;
+            const payload = {
+                page,
+                perPage,
+                filterBy,
+                sortBy,
+                orderBy,
+                userID: this.userID,
+            };
+            this.following.loading = true;
+            let following = await this.$store.dispatch(
+                GET_USER_FOLLOWS,
+                payload
+            );
+            following = following.map((_following) => _following.user);
+            if (following.length === perPage) {
+                this.following.items = [...this.following.items, ...following];
+                this.following.loading = false;
+                this.following.page += 1;
+                return;
+            }
+            this.following.items = [...this.following.items, ...following];
+            this.following.shouldShowNext = false;
+            this.following.loading = false;
         },
     },
 
@@ -232,8 +223,8 @@ export default {
         if (!user) return this.$router.go(-1);
         this.user = Object.assign({}, user);
 
-        await this.getItems();
-        await this.getTopics();
+        await this.getFollowers();
+        await this.getFollowing();
     },
 
     beforeRouteEnter(to, from, next) {

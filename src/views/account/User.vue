@@ -127,6 +127,7 @@ export default {
                 'my-account/post',
                 'my-account/bookmark',
                 'my-account/reviews',
+                'my-account/follow',
             ];
             return (
                 this.isAuthenticated &&
