@@ -102,11 +102,11 @@ const tabs = [
         exact: true,
     },
 
-  {
-    text: 'Reviews',
-    to: { name: 'user/reviews' },
-    exact: true,
-  },
+    {
+        text: 'Following/Followers',
+        to: { name: 'user/follow' },
+        exact: true,
+    },
 ];
 
 export default {
