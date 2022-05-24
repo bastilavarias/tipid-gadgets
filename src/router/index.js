@@ -183,6 +183,13 @@ const routes = [
                                 component: () =>
                                     import('@/views/account/modules/Reviews'),
                             },
+
+                            {
+                                path: 'follow',
+                                name: 'user/follow',
+                                component: () =>
+                                    import('@/views/account/modules/Follow'),
+                            },
                         ],
                     },
                 ],

@@ -91,16 +91,22 @@ const tabs = [
     },
 
     {
-        text: 'Bookmarks', // Items and Topics
+        text: 'Bookmarks',
         to: { name: 'user/bookmark' },
         exact: true,
     },
 
     {
-        text: 'Reviews', // Items and Topics
+        text: 'Reviews',
         to: { name: 'user/reviews' },
         exact: true,
     },
+
+  {
+    text: 'Reviews',
+    to: { name: 'user/reviews' },
+    exact: true,
+  },
 ];
 
 export default {
