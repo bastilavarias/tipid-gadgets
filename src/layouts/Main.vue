@@ -10,26 +10,66 @@
                             height="auto"
                         ></v-img>
                     </v-toolbar-title>
+                    <div v-if="isAuthenticated">
+                        <v-menu offset-y>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn icon dark v-bind="attrs" v-on="on">
+                                    <v-icon>mdi-bell</v-icon>
+                                </v-btn>
+                            </template>
+                            <v-card
+                                width="300"
+                                height="300"
+                                style="overflow-y: auto"
+                            >
+                                <v-card-subtitle>Notifications</v-card-subtitle>
 
-                    <v-menu offset-y v-if="isAuthenticated">
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn text dark v-bind="attrs" v-on="on">
-                                <v-avatar class="mr-1" size="25">
-                                    <v-img
-                                        :src="
-                                            user.avatar
-                                                ? user.avatar
-                                                : 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png'
-                                        "
-                                    ></v-img>
-                                </v-avatar>
-                                <v-icon>mdi-menu-down</v-icon>
-                            </v-btn>
-                        </template>
-                        <v-list>
-                            <v-list-item @click="logout">Logout</v-list-item>
-                        </v-list>
-                    </v-menu>
+                                <template v-for="n in 10">
+                                    <v-list-item two-line dense>
+                                        <v-list-item-avatar>
+                                            <v-avatar>
+                                                <v-img
+                                                    src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
+                                                ></v-img>
+                                            </v-avatar>
+                                        </v-list-item-avatar>
+                                        <v-list-item-content>
+                                            <v-list-item-title
+                                                >John liked your topic
+                                                post.</v-list-item-title
+                                            >
+                                            <v-list-item-subtitle
+                                                >10 minutes
+                                                ago</v-list-item-subtitle
+                                            >
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                </template>
+                            </v-card>
+                        </v-menu>
+
+                        <v-menu offset-y>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn text dark v-bind="attrs" v-on="on">
+                                    <v-avatar class="mr-1" size="25">
+                                        <v-img
+                                            :src="
+                                                user.avatar
+                                                    ? user.avatar
+                                                    : 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png'
+                                            "
+                                        ></v-img>
+                                    </v-avatar>
+                                    <v-icon>mdi-menu-down</v-icon>
+                                </v-btn>
+                            </template>
+                            <v-list>
+                                <v-list-item @click="logout"
+                                    >Logout</v-list-item
+                                >
+                            </v-list>
+                        </v-menu>
+                    </div>
                 </div>
             </v-container>
         </v-app-bar>
