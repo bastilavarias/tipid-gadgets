@@ -1,0 +1,6 @@
+$primary: #e80;
+$secondary: #303030;
+$body-bg: $secondary;
+
+@import 'node_modules/bootstrap/scss/bootstrap.scss';
+@import 'node_modules/bootstrap-vue/src/index.scss';

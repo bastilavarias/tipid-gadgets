@@ -1,38 +1,47 @@
 {
-  "name": "tipid-gadgets",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build-production": "vue-cli-service build --mode production",
-    "deploy-production": "npm run build-production && aws s3 sync ./dist s3://tipid-gadgets-production --acl=public-read --profile=sebastian"
-  },
-  "dependencies": {
-    "@ckeditor/ckeditor5-vue2": "^2.0.0",
-    "axios": "^0.26.1",
-    "axios-cache-interceptor": "^0.10.2",
-    "core-js": "^3.6.5",
-    "laravel-echo": "^1.11.7",
-    "millify": "^4.0.0",
-    "moment": "^2.29.3",
-    "pusher-js": "^7.1.0-beta",
-    "vue": "^2.6.11",
-    "vue-infinite-loading": "^2.4.5",
-    "vue-masonry-css": "^1.0.3",
-    "vue-router": "^3.2.0",
-    "vuetify": "^2.6.0",
-    "vuex": "^3.4.0"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.13",
-    "@vue/cli-plugin-router": "~4.5.13",
-    "@vue/cli-plugin-vuex": "~4.5.13",
-    "@vue/cli-service": "~4.5.13",
-    "prettier": "^2.6.0",
-    "sass": "~1.32.0",
-    "sass-loader": "^10.0.0",
-    "vue-cli-plugin-vuetify": "~2.4.7",
-    "vue-template-compiler": "^2.6.11",
-    "vuetify-loader": "^1.7.0"
-  }
+    "name": "tipid-gadgets",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "serve": "vue-cli-service serve",
+        "build-staging": "vue-cli-service build --mode staging",
+        "deploy-staging": "npm run build-staging && aws s3 sync ./dist s3://staging.tipid-gadgets.com --acl=public-read --profile=default"
+    },
+    "dependencies": {
+        "axios": "^1.1.3",
+        "axios-cache-interceptor": "^0.10.7",
+        "bootstrap": "^4.5.3",
+        "bootstrap-vue": "^2.22.0",
+        "core-js": "^3.8.3",
+        "laravel-echo": "^1.14.1",
+        "moment": "^2.29.4",
+        "pusher-js": "^7.4.0",
+        "vue": "^2.6.14",
+        "vue-class-component": "^7.2.3",
+        "vue-infinite-loading": "^2.4.5",
+        "vue-property-decorator": "^9.1.2",
+        "vue-quill-editor": "^3.0.6",
+        "vue-router": "^3.5.1",
+        "vuex": "^3.6.2"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.4.0",
+        "@typescript-eslint/parser": "^5.4.0",
+        "@vue/cli-plugin-babel": "~5.0.0",
+        "@vue/cli-plugin-eslint": "~5.0.0",
+        "@vue/cli-plugin-router": "~5.0.0",
+        "@vue/cli-plugin-typescript": "~5.0.0",
+        "@vue/cli-plugin-vuex": "~5.0.0",
+        "@vue/cli-service": "~5.0.0",
+        "@vue/eslint-config-typescript": "^9.1.0",
+        "eslint": "^7.32.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-prettier": "^4.0.0",
+        "eslint-plugin-vue": "^8.0.3",
+        "prettier": "^2.4.1",
+        "sass": "^1.32.7",
+        "sass-loader": "^12.0.0",
+        "typescript": "~4.5.5",
+        "vue-template-compiler": "^2.6.14"
+    }
 }
